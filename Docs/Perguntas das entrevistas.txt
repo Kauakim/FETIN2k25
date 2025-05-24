@@ -1,0 +1,61 @@
+Rastreio de itens (Gateway + tag)
+- Rastreio e gerência completa da produção
+- Rastreio de mercadorias prontas para serem entregues, esperando inspeção e com erros na fabricação
+- Geração de relatórios relacionados a capacidade de produção
+- Analise de qualidade dos produtos ao longo da linha, impedindo que passem para a próxima etapa de fabricação com algum problema
+- Analise de parâmetros como pressão, temperatura e umidade
+- Rastreio de equipamentos críticos (Área de saúde e em procedimentos de segurança e evacuação)
+
+Rastreio de ferramentas (Gateway + tag)
+- Utilização de ferramentas somente em determinados locais
+- Impedir a remoção de uma ferramenta de um determinado local
+- Criação de status das ferramentas atuais (Bateria, quebrada, em uso, etc)
+- Autoconfiguração de ferramenta de acordo com o tipo de serviço
+
+Rastreio de pessoas (Gateway + Smartphone)
+- Impedir que as pessoas entrem em determinados locais
+- Evacuação controlada de pessoas
+- Analise de pessoas que trabalham afastadas e passam mal
+- Evitar colisões entre ferramentas, maquinas e pessoas
+- Rastreio de pacientes em hospitais, impedindo que pessoas saiam ou entrem em locais não permitidos
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Perguntas para os gestores das linhas de produção
+
+- Como sua empresa hoje localiza ferramentas, equipamentos e produtos dentro da fábrica? Sua empresa já teve problemas para tentar localizar algum desses itens? Se sim, conte mais sobre quando vocês tiveram dificuldade para encontrar algum item importante. O que aconteceu?
+- Que impacto (Tempo, custo e/ou segurança) essas dificuldades causam nas operações?
+- Em quais momentos do processo produtivo vocês mais percebem perda de tempo ou falhas de comunicação?
+
+- Existem etapas críticas onde a ausência ou localização errada de uma ferramenta/produto já causou atraso ou acidente?
+- Já aconteceu de um produto errado ou defeituoso ser liberado por falta de controle nas etapas? Se sim, como vocês monitoram se produtos defeituosos ou mal montados estão seguindo para as próximas fases da produção?
+
+- Como vocês controlam se a sequência de produção (ordem de montagem, movimentação de materiais) está sendo seguida corretamente?
+- Você sabe quais são os principais motivos de parada ou atraso na linha de produção hoje? Se sim, poderia dar exemplos?
+
+- Existem iniciativas na sua empresa para digitalizar processos de chão de fábrica?
+- Como vocês coletam hoje informações da produção (ex.: status de máquinas, andamento de pedidos, localização de materiais)?
+- Que desafios vocês enfrentam para automatizar o monitoramento da produção?
+- Quais tipos de dados vocês sentem mais falta para tomar decisões rápidas na fábrica?
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Perguntas para os trabalhadores da linha de produção
+
+- No seu dia a dia, você já perdeu muito tempo procurando uma ferramenta ou peça que precisava? Como isso afetou o seu trabalho ou atrasou a produção?
+- Quando você precisa de uma ferramenta específica, é fácil encontrar? Ou você depende de alguém para localizar ou liberar para você?
+- Em algum momento você já precisou improvisar com a ferramenta errada porque não encontrou a certa? Como foi?
+
+- Já aconteceu de você ficar parado esperando chegar alguma peça, equipamento ou informação para poder continuar o seu serviço? Isso acontece com frequência?
+- Se existisse uma forma de você saber rapidamente onde estão as ferramentas ou materiais que precisa, isso facilitaria seu trabalho? Como?
+
+- Quando algo dá errado na linha (ex.: peça errada, ferramenta quebrada, material que sumiu), como isso é resolvido? Você sente que perde muito tempo nisso?
+- Existem situações em que você tem que fazer retrabalho porque faltou alguma informação ou material na hora certa? Como isso impacta seu trabalho? Como você se sente quando precisa fazer isso?
+
+- Na sua rotina, qual é a parte mais enrolada do seu trabalho? (ex.: encontrar coisas, esperar material, conferir peças, etc.)
+- O que mais atrapalha o seu ritmo de trabalho hoje na fábrica?
+- Você sente que muitas vezes perde tempo por problemas que não são culpa sua? Se sim, pode contar um exemplo?
+- Que tipo de tecnologia ou solução faria seu dia ser mais rápido, fácil e com menos retrabalho?
+- Se você pudesse mudar uma coisa para melhorar seu dia a dia na fábrica, o que mudaria primeiro?
