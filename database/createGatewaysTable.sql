@@ -1,0 +1,10 @@
+USE fetindb;
+
+CREATE TABLE gateways (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    beacon VARCHAR(100) NOT NULL,
+    rssi1 FLOAT NOT NULL,
+    rssi2 FLOAT NOT NULL,
+    rssi3 FLOAT NOT NULL,
+	status VARCHAR(100) UNIQUE NOT NULL
+);
