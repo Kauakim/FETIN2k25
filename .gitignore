@@ -1,2 +1,6 @@
 # Ignore vscode settings
 .vscode/
+
+# Ignore hardware files
+3d/
+pcb/

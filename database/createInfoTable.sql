@@ -6,6 +6,5 @@ CREATE TABLE info (
     maquina INT NOT NULL,
     numeroProdutos INT NOT NULL,
     horasTrabalhadas INT NOT NULL,
-    rendimento FLOAT NOT NULL,
     falhas INT NOT NULL
 );
