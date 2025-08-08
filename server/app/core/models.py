@@ -126,14 +126,31 @@ def getLastBeaconsData(time):
         cursor.close()
         connection.close()
 
-def createBeacon(utc, beacon, tipo, status, linha, rssi1, rssi2, rssi3, x, y):
+def getBeacon(beacon):
+    connection = connectToDatabase()
+    if connection is None:
+        return {}
+    cursor = connection.cursor(dictionary=True)
+    try:
+        query = "SELECT * FROM beacons WHERE beacon = %s"
+        cursor.execute(query, (beacon,))
+        result = cursor.fetchall()
+        return result if result else {}
+    except mysql.connector.Error as e:
+        print(f"Error fetching beacon: {e}")
+        return {}
+    finally:
+        cursor.close()
+        connection.close()
+
+def createBeacon(utc, beacon, tipo, status, rssi1, rssi2, rssi3, x, y):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
-        query = "INSERT INTO beacons (utc, beacon, tipo, status, linha, rssi1, rssi2, rssi3, x, y) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (utc, beacon, tipo, status, linha, rssi1, rssi2, rssi3, x, y)
+        query = "INSERT INTO beacons (utc, beacon, tipo, status, rssi1, rssi2, rssi3, x, y) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (utc, beacon, tipo, status, rssi1, rssi2, rssi3, x, y)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -223,18 +240,18 @@ def updateBeaconType(utc, beacon, tipo):
         cursor.close()
         connection.close()
 
-def updateBeaconStatusAndLine(utc, beacon, status, linha):
+def updateBeaconStatus(utc, beacon, status):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
-        query = "UPDATE beacons SET status = %s, linha = %s WHERE beacon = %s AND utc = %s"
-        values = (status, linha, beacon, utc)
+        query = "UPDATE beacons SET status = %s WHERE beacon = %s AND utc = %s"
+        values = (status, beacon, utc)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
-        print(f"Error updating beacon status and line: {e}")
+        print(f"Error updating beacon status: {e}")
         connection.rollback()
     finally:
         cursor.close()
@@ -292,14 +309,31 @@ def getTaskByUser(user):
         cursor.close()
         connection.close()
 
-def createTask(user, mensagem, linha , beacons, dependencias, tipo, status):
+def getTaskById(id):
+    connection = connectToDatabase()
+    if connection is None:
+        return {}
+    cursor = connection.cursor(dictionary=True)
+    try:
+        query = "SELECT * FROM tasks WHERE id = %s"
+        cursor.execute(query, (id,))
+        task = cursor.fetchone()
+        return task if task else {}
+    except mysql.connector.Error as e:
+        print(f"Error fetching task by ID: {e}")
+        return {}
+    finally:
+        cursor.close()
+        connection.close()
+
+def createTask(mensagem, destino, tipoDestino, beacons, dependencias, tipo, status):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
-        query = "INSERT INTO tasks (user, mensagem, linha, beacons, dependencias, tipo, status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        values = (user, mensagem, linha, beacons, dependencias, tipo, status)
+        query = "INSERT INTO tasks (mensagem, destino, tipoDestino, beacons, dependencias, tipo, status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (mensagem, destino, tipoDestino, beacons, dependencias, tipo, status)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -309,7 +343,7 @@ def createTask(user, mensagem, linha , beacons, dependencias, tipo, status):
         cursor.close()
         connection.close()
 
-def updateTask(id, user, mensagem, linha , beacons, dependencias, tipo, status):
+def updateTask(id, user, mensagem, destino, tipoDestino, beacons, dependencias, tipo, status):
     connection = connectToDatabase()
     if connection is None:
         return
@@ -317,10 +351,10 @@ def updateTask(id, user, mensagem, linha , beacons, dependencias, tipo, status):
     try:
         query = """
         UPDATE tasks
-        SET user = %s, mensagem = %s, linha = %s, beacons = %s, dependencias = %s, tipo = %s, status = %s
+        SET user = %s, mensagem = %s, destino = %s, tipoDestino = %s, beacons = %s, dependencias = %s, tipo = %s, status = %s
         WHERE id = %s
         """
-        values = (user, mensagem, linha, beacons, dependencias, tipo, status, id)
+        values = (user, mensagem, destino, tipoDestino, beacons, dependencias, tipo, status, id)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -330,7 +364,24 @@ def updateTask(id, user, mensagem, linha , beacons, dependencias, tipo, status):
         cursor.close()
         connection.close()
 
-def updateStatus(id, status):
+def cancelTask(id, status, mensagemCancelamento):
+    connection = connectToDatabase()
+    if connection is None:
+        return
+    cursor = connection.cursor()
+    try:
+        query = "UPDATE tasks SET status = %s, cancelamento = %s WHERE id = %s"
+        values = (status, mensagemCancelamento, id)
+        cursor.execute(query, values)
+        connection.commit()
+    except mysql.connector.Error as e:
+        print(f"Error cancelling task: {e}")
+        connection.rollback()
+    finally:
+        cursor.close()
+        connection.close()
+
+def updateTaskStatus(id, status):
     connection = connectToDatabase()
     if connection is None:
         return
@@ -382,14 +433,14 @@ def getInfoData():
         cursor.close()
         connection.close()
 
-def createInfo(linha, maquina, numeroProdutos, horasTrabalhadas, falhas):
+def createInfo(maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data):
     connection = connectToDatabase()
     if connection is None:
         return {}
     cursor = connection.cursor(dictionary=True)
     try:
-        query = "INSERT INTO info (linha, maquina, numeroProdutos, horasTrabalhadas, falhas) VALUES (%s, %s, %s, %s, %s)"
-        values = (linha, maquina, numeroProdutos, horasTrabalhadas, falhas)
+        query = "INSERT INTO info (maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data) VALUES (%s, %s, %s, %s, %s)"
+        values = (maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -398,7 +449,7 @@ def createInfo(linha, maquina, numeroProdutos, horasTrabalhadas, falhas):
         cursor.close()
         connection.close()
 
-def updateInfo(linha, maquina, numeroProdutos, horasTrabalhadas, falhas):
+def updateInfo(maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data):
     connection = connectToDatabase()
     if connection is None:
         return
@@ -406,10 +457,10 @@ def updateInfo(linha, maquina, numeroProdutos, horasTrabalhadas, falhas):
     try:
         query = """
         UPDATE info 
-        SET numeroProdutos = %s, horasTrabalhadas = %s, falhas = %s 
-        WHERE linha = %s AND maquina = %s
+        SET tasksConcluidas = %s, SET tasksCanceladas = %s, horasTrabalhadas = %s
+        WHERE maquina = %s AND data = %s
         """
-        values = (numeroProdutos, horasTrabalhadas, falhas, linha, maquina)
+        values = (tasksConcluidas, tasksCanceladas, horasTrabalhadas, maquina, data)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -419,14 +470,15 @@ def updateInfo(linha, maquina, numeroProdutos, horasTrabalhadas, falhas):
         cursor.close()
         connection.close()
 
-def deleteInfo(linha, maquina):
+def deleteInfo(maquina, data):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
-        query = "DELETE FROM info WHERE linha = %s AND maquina = %s"
-        cursor.execute(query, (linha, maquina))
+        query = "DELETE FROM info WHERE maquina = %s AND data = %s"
+        values = (maquina, data)
+        cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
         print(f"Error deleting info: {e}")

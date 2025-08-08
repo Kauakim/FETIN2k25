@@ -29,7 +29,6 @@ class BeaconModel(BaseModel):
     beacon: str
     tipo: str
     status: str
-    linha: str
     x: float
     y: float
 
@@ -56,7 +55,8 @@ class taskModel(BaseModel):
     id: int
     user: str
     mensagem: str
-    linha: int
+    destino: str
+    tipoDestino: str
     beacons: list
     dependencias: list
     tipo: str
@@ -66,9 +66,9 @@ class TaskResponseSchema(BaseModel):
     Tasks: Dict[int, taskModel]
 
 class TaskCreateRequest(BaseModel):
-    user: str
     mensagem: str
-    linha: int
+    destino: str
+    tipoDestino: str
     beacons: list
     dependencias: list
     tipo: str
@@ -78,15 +78,21 @@ class TaskUpdateRequest(BaseModel):
     id: int
     user: str
     mensagem: str
-    linha: int
+    destino: str
+    tipoDestino: str
     beacons: list
     dependencias: list
     tipo: str
     status: str
 
+class TaskUpdateStatusRequest(BaseModel):
+    id: int
+    status: str
+
 class TaskCancelRequest(BaseModel):
     id: int
     status: str
+    cancelamento: str
 
 class TaskDeleteRequest(BaseModel):
     id: int
@@ -95,22 +101,22 @@ class TaskDeleteRequest(BaseModel):
 
 class InfoModel(BaseModel):
     id: int
-    linha: int
-    maquina: int
-    numeroProdutos: int
-    horasTrabalhadas: int
-    falhas: int
-
+    maquina: str
+    tasksConcluidas: int
+    tasksCanceladas: int
+    horasTrabalhadas: float
+    data: str
+    
 class InfoResponseSchema(BaseModel):
     Info: Dict[int, InfoModel]
 
 class InfoRequest(BaseModel):
-    linha: int
-    maquina: int
-    numeroProdutos: int
-    horasTrabalhadas: int 
-    falhas: int
+    maquina: str
+    tasksConcluidas: int
+    tasksCanceladas: int
+    horasTrabalhadas: float
+    data: str
 
 class InfoDeleteRequest(BaseModel):
-    linha: int
-    maquina: int
+    maquina: str
+    data: str

@@ -154,36 +154,50 @@ async def getUserTasks(user: str):
 
 @router.post("/tasks/create/")
 async def createTask(request: schemas.TaskCreateRequest):
-    if not request.user or not request.mensagem or not request.linha or not request.beacons or not request.dependencias or not request.tipo or not request.status:
+    if not request.mensagem or not request.destino or not request.tipoDestino or not request.beacons or not request.dependencias or not request.tipo or not request.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing required fields"
         )
     
-    task = models.createTask(request.user, request.mensagem, request.linha, request.beacons, request.dependencias, request.tipo, request.status)
-    return {"message": "Task created successfully", "task_id": task.id, "status_code": status.HTTP_201_CREATED}
+    task = models.createTask(request.mensagem, request.destino, request.tipoDestino, request.beacons, request.dependencias, request.tipo, request.status)
+    return {"message": "Task created successfully", "task_id": request.id, "status_code": status.HTTP_201_CREATED}
 
 @router.post("/tasks/update/")
 async def updateTask(request: schemas.TaskUpdateRequest):
-    if not request.user or not request.mensagem or not request.linha or not request.beacons or not request.dependencias or not request.tipo or not request.status:
+    if not request.user or not request.mensagem or not request.destino or not request.tipoDestino or not request.beacons or not request.dependencias or not request.tipo or not request.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing required fields"
         )
     
-    task = models.updateTask(request.id, request.user, request.mensagem, request.linha, request.beacons, request.dependencias, request.tipo, request.status)
-    return {"message": "Task created successfully", "task_id": task.id, "status_code": status.HTTP_201_CREATED}
+    task = models.updateTask(request.id, request.user, request.mensagem, request.destino, request.tipoDestino, request.beacons, request.dependencias, request.tipo, request.status)
+    return {"message": "Task updated successfully", "task_id": request.id, "status_code": status.HTTP_201_CREATED}
 
-@router.post("/tasks/cancel/")
-async def cancelTask(request: schemas.TaskCancelRequest):
+@router.post("/tasks/status/")
+async def updateTaskStatus(request: schemas.TaskUpdateStatusRequest):
     if not request.id or not request.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing required fields"
         )
     
-    task = models.updateStatus(request.id, request.status)
-    return {"message": "Task cancelled successfully", "task_id": task.id, "status_code": status.HTTP_200_OK}
+    task = models.updateTaskStatus(request.id, request.status)
+    return {"message": "Task status updated successfully", "task_id": request.id, "status_code": status.HTTP_200_OK}
+
+@router.post("/tasks/cancel/")
+async def cancelTask(request: schemas.TaskCancelRequest):
+    if not request.id or not request.status or not request.cancelamento:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing required fields"
+        )
+    
+    task = models.cancelTask(request.id, request.status, request.cancelamento)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    return {"message": "Task cancelled successfully", "task_id": request.id, "status_code": status.HTTP_200_OK}
 
 @router.post("/tasks/delete/")
 async def deleteTask(request: schemas.TaskDeleteRequest):
@@ -197,7 +211,7 @@ async def deleteTask(request: schemas.TaskDeleteRequest):
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
-    return {"message": "Task deleted successfully", "task_id": task.id, "status_code": status.HTTP_200_OK}
+    return {"message": "Task deleted successfully", "task_id": request.id, "status_code": status.HTTP_200_OK}
 
 #---------------------------------------------------------------------------------------------------------------------------
 
@@ -210,12 +224,12 @@ async def getBeacons():
 
 @router.post("/info/create/")
 async def createInfo(request: schemas.InfoRequest):
-    if not request.linha or not request.maquina or not request.numeroProdutos or not request.horasTrabalhadas or not request.falhas:
+    if not request.maquina or not request.tasksConcluidas or not request.tasksCanceladas or not request.horasTrabalhadas or not request.data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing required fields"
         )
-    if request.linha < 0 or request.maquina < 0 or request.numeroProdutos < 0 or request.horasTrabalhadas < 0 or request.falhas < 0:
+    if request.tasksConcluidas < 0 or request.tasksCanceladas < 0 or request.horasTrabalhadas < 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid info request value"
@@ -226,36 +240,31 @@ async def createInfo(request: schemas.InfoRequest):
 
 @router.post("/info/update/")
 async def updateInfo(request: schemas.InfoRequest):
-    if not request.linha or not request.maquina or not request.numeroProdutos or not request.horasTrabalhadas or not request.falhas:
+    if not request.maquina or not request.tasksConcluidas or not request.tasksCanceladas or not request.horasTrabalhadas or not request.data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing required fields"
         )
-    if request.linha < 0 or request.maquina < 0 or request.numeroProdutos < 0 or request.horasTrabalhadas < 0 or request.falhas < 0:
+    if request.tasksConcluidas < 0 or request.tasksCanceladas < 0 or request.horasTrabalhadas < 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid info request value"
         )
     
-    info = models.updateInfo(request.linha, request.maquina, request.numeroProdutos, request.horasTrabalhadas, request.falhas)
+    info = models.updateInfo(request.maquina, request.tasksConcluidas, request.tasksCanceladas,request.horasTrabalhadas, request.data)
     if not info:
         raise HTTPException(status_code=404, detail="Info not found")
     return {"message": "Info updated successfully", "info_id": info.id, "status_code": status.HTTP_200_OK}
 
 @router.post("/info/delete/")
 async def deleteInfo(request: schemas.InfoDeleteRequest):
-    if not request.linha or not request.maquina:
+    if not request.maquina or not request.data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing required fields"
         )
-    if request.linha < 0 or request.maquina < 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid info request value"
-        )
     
-    info = models.deleteInfo(request.linha, request.maquina)
+    info = models.deleteInfo(request.maquina, request.data)
     if not info:
         raise HTTPException(status_code=404, detail="Info not found")
     return {"message": "Info deleted successfully", "status_code": status.HTTP_200_OK}
