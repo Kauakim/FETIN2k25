@@ -1,0 +1,76 @@
+Tabela de beacons: ID, Utc, Beacon, Tipo, Status, Linha, RSSI1, RSSI2, RSSI3, X, Y
+Tabela de users: Nome, Senha, Email e Role
+Tabela de notificações: ID, User, Linha, Mensagem, Beacons list, Dependências, Status, Tipo 
+Tabela de informações: Linha, Maquina, Numero de produtos, Horas trabalhadas, Falhas
+
+
+
+GATEWAYS
+- Gateways recebem a informação de todos os beacons que biparam no momento UTC X (Falado pelos próprios beacons), com as chaves Beacon, Status e Tipo, ao longo de X segundos, montam um json, na qual o número de linhas é o numero de beacons, informando, em cada linha, as chaves enviadas pelos beacons, o gateway responsável por enviá-las e o valor de RSSI.
+
+SERVER POSITION
+- Server recebe os envios dos gateways e procura no banco de dados, para cada linha do json, o valor de beacon X e UTC Y
+- Caso não encontre nada, cria uma nova linha no banco de dados com os valores de beacon, status e tipo recebidos, preenche o valor do RSSIX com o valor recebido e seta como VALOR NULO (A ser definido), nos outros valores de RSSI, de X e de Y
+- Caso encontre algo com um valor de RSSI setado (Dois valores de RSSI default), atualiza o valor de RSSIX que encontrou para aquele beacon naquele UTC
+- Caso encontre algo com dois ou mais valores de RSSI já setados (1 ou menos valores de RSSI default), atualiza o valor de RSSIX que encontrou para aquele beacon naquele UTC e chama a função de calcular posição, que deve descobrir os valores de X e Y e subi-los ao banco de dados
+
+SERVER RELATORIES AND NOTIFICATIONS GENERATION (Resolver depois)
+- A cada 15 segundos, busca todos os valores de beacons do sistema
+- Para cada beacon encontrado, descobre quando foi a última vez que este foi encontrado em uso
+- Para cada beacon encontrado em uso nos últimos X minutos, checa o status deste
+- Caso o status seja carregando, procura a primeira vez na sequência em que este estava carregando. Caso o tempo desde o primeiro status de carregando até o último UTC tenham se passado X minutos (Tempo necessário para dar uma carga completa no beacon), troca o status deste para carregado 
+DEFINIÇÃO DA LINHA DE PRODUÇÃO E SUAS ESTATISTICAS
+DEFINIÇÃO E ALTERAÇÃO DOS STATUS
+CRIAÇÃO DAS NOTIFICAÇÕES E ALTERAÇÃO DOS NOMES DOS BEACONS
+
+SERVER NOTIFICATIONS CONTROL
+- A cada X segundos, checa no banco de dados por notificações existentes que não tenham funcionários atribuídos a todas suas etapas
+- Caso encontre algo, procura pelo funcionário ativo mais próximo capaz de realizar aquela tarefa e atribui a ele
+- Procura também notificações que descrevem um processo em específico, atribuindo tanto os beacons quanto os funcionários a elas
+- Procura também pelas notificações cujo status é de cancelado e caso encontre algo, congela automaticamente todas as notificações atreladas a esta e espera pela confirmação de um gestor
+- Caso um gestor confirme o cancelamento ou 1 minuto se passe desde o aviso, deleta a notificação do sistema e apaga todas as notificações que dependem desta
+- Caso contrário, remove o status de cancelada da notificação principal e o status de congelamento das outras
+- Exibe uma mensagem de aviso com base no que aconteceu a notificação cancelada a todos os usuários afetados por isto
+
+SERVER USERS LOG-IN
+- Recebe os valores do usuário X via requisição
+- Caso o valor de nome e senha estejam de acordo, checa se é ou não um admin da rede e entra no aplicativo na versão correspondente a sua função
+- Ao entrar, define o valor de user, no backend do aplicativo, como sendo o nome daquele funcionário
+
+SERVER USERS SIGN-IN
+- Após efetuado o login, checa se o usuário é ou não um admin
+- Se sim, permite que ele cadastre novos usuários no aplicativo, enviando uma requisição ao backend com um nome, número, senha e email
+
+APP NOTIFICATIONS WORKER
+- A cada X segundos, checa na tabela de notificações as linhas cujo responsável é o nome do usuário. Caso não encontre nada, prossegue com o código, caso encontre, exibe a notificação na tela
+- Caso o usuário aceite a notificação, adiciona a lista de tasks recebida ao aplicativo
+- Deleta a notificação do banco de dados
+- Redireciona o usuário a página do gêmeo digital
+- Caso alguma task atrelada a notificação seja cancelada, retorna um código Y ao servidor indicando que isto aconteceu
+- Ao retornar ao servidor, a notificação deve aparecer para outro responsável por ela na região mais próxima
+- Caso ninguém aceite a notificação, adiciona os processos desta ao usuário responsável pela task mestra
+- Na tela de notificações, caso uma notificação aceita precise ser cancelada, o usuário deve ser capaz de cancelar a operação por completo, enviando uma mensagem de cancelamento ao servidor com uma justificativa, id da notificação cancelada e id do usuário que realizou seu cancelamento, para que um supervisor possa aceitar esse cancelamento (Padrão do sistema após 1 minuto), ou reabri-la novamente
+
+APP NOTIFICATIONS MANAGER
+- A cada X segundos, checa na tabela de notificações por todas as notificações com estado de cancelada verdadeiro
+- Caso encontre algo, a notificação deve ser exibida na tela para o gestor com suas informações de cancelamento, para que este possa aceitar o cancelamento da operação em até 1 minuto (Tempo limite no qual a notificação é automaticamente cancelada) ou reabri-la após X tempo (Controlado pelo próprio gestor) ou imediatamente.
+- A cada X segundos, também checa na tabela de notificações por notificações de trabalhadores inativos, que acabaram de desligar o rastreador, indicando qual usuário ficou inativo por tal motivo
+- Os gestores também podem criar notificações diretamente por esta tela, definindo funcionários, beacons, processos e tudo o que for necessário, ou deixar que o sistema realize esse processo automaticamente  
+
+APP DIGITAL TWIN
+- A cada 5 segundos, busca todos os beacons do sistema cujo valor de UTC indicam que a informação foi coletada nos últimos X minutos
+- Exibe todos os beacons coletados no mapa de acordo com o filtro setado pelo usuário (All por padrão)
+- Caso a tela tenha sido aberta a partir de uma notificação, deve ser exibido na tela do gêmeo digital a descrição da task a ser feita pelo usuário e as posições dos beacons ou máquinas atreladas a esta task. Este processo precisa ser repetido até que todas as tasks da notificação aceita acabem
+
+APP BEACONS LIST
+- Descobre o tempo limite mais antigo de beacon que o usuário quer que seja exibido na lista de beacons
+- A cada 5 segundos, busca todos os beacons do sistema
+- Exibe todos os beacons coletados no mapa de acordo com o filtro setado pelo usuário (Por padrão, all, porém somente dos beacons cujo valor de UTC indica que estes foram coletados dentro do intervalo de tempo definido pelo usuário)
+
+BEACON CELULAR
+- Se o rastreador estiver ligado (Modo padrão), a cada X segundos, ativa a função de tag do celular informando as exatas mesmas coisas das tags em hardware (Chaves UTC, calculada pelo próprio celular, Beacon, Status e Tipo)
+- Sempre que o usuário desligar o rastreador, uma notificação, com ou sem uma justificativa, deve ser informada ao gestor, com algumas mensagens pré-defindas
+
+APP RELATORIES
+- Ao entrar na página, busca no banco de dados todos as linhas da tabela de relatórios e exibe na tela
+- A cada X segundos, busca essas informações novamente no banco de dados e atualiza a lista
