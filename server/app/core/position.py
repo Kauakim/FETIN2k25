@@ -1,5 +1,5 @@
-import math
 import models
+import time
 
 # Posições fixas dos gateways
 gateways = [
@@ -14,6 +14,7 @@ def RSSIToDistance(RSSI, txPower=-59, n=2.0):
     return 10 ** ((txPower - RSSI) / (10 * n))
 
 def discoverXY(gateways, distancia1, distancia2, distancia3):
+    # Coleta a posição dos gateways
     x1, y1 = gateways[0]["x"], gateways[0]["y"]
     x2, y2 = gateways[1]["x"], gateways[1]["y"]
     x3, y3 = gateways[2]["x"], gateways[2]["y"]
@@ -40,24 +41,31 @@ def discoverXY(gateways, distancia1, distancia2, distancia3):
     return x, y
 
 def calculateBeaconsPositions(gateways):
-    gatewayDB = tuple(getRSSI())
+    beacons = models.getLastBeaconsData(10)
     
-    for i in range(len(gatewayDB)):
-        distancia1 = RSSIToDistance(gatewayDB[i]["rssi1"])  
-        distancia2 = RSSIToDistance(gatewayDB[i]["rssi2"])
-        distancia3 = RSSIToDistance(gatewayDB[i]["rssi3"])
+    for beacon in beacons:
+        rssi1 = beacon["rssi1"]
+        rssi2 = beacon["rssi2"]
+        rssi3 = beacon["rssi3"]
+
+        if rssi1 is None or rssi2 is None or rssi3 is None:
+            continue
+
+        distancia1 = RSSIToDistance(rssi1)  
+        distancia2 = RSSIToDistance(rssi2)
+        distancia3 = RSSIToDistance(rssi3)
 
         x,y = discoverXY(gateways, distancia1, distancia2, distancia3)
         
-        print(gatewayDB[i]["beacon"], x, y)
+        print(f"Beacon : {beacon["beacon"]} ({x}, {y})")
 
-        # TODO: Corrigir essa parte do código para atualziar apenas a posição dos beacons a partir de uma nova funcao chamada updateBeaconPosition
-        '''
-        getBeaconsData()
-        if gatewayDB[i]["beacon"] not in getBeaconsData():
-            createBeacon(gatewayDB[i]["beacon"], gatewayDB[i]["tipo"], gatewayDB[i]["status"], x, y)
-        else:
-            updateBeacon(gatewayDB[i]["beacon"], gatewayDB[i]["tipo"], gatewayDB[i]["status"], x, y)
-        '''
+        models.updateBeaconPosition(beacon["utc"], beacon["beacon"], x, y)
         
-calculateBeaconsPositions(gateways)
+while True:
+    try:
+        calculateBeaconsPositions(gateways)
+    except Exception as e:
+        print(f"Erro ao calcular posições dos beacons: {e}")
+    
+    # Espera 10 segundos antes de recalcular
+    time.sleep(10)
