@@ -2,9 +2,9 @@ USE fetindb;
 
 CREATE TABLE info (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-    linha INT NOT NULL,
-    maquina INT NOT NULL,
-    numeroProdutos INT NOT NULL,
-    horasTrabalhadas INT NOT NULL,
-    falhas INT NOT NULL
+    maquina VARCHAR(250) NOT NULL,
+    tasksConcluidas INT NOT NULL,
+    tasksCanceladas INT NOT NULL,
+    horasTrabalhadas FLOAT NOT NULL,
+    data date NOT NULL
 );
