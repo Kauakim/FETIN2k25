@@ -52,7 +52,7 @@ async def updateUser(request: schemas.UpdateUserSchema):
             detail="New username already exists"
         )
     
-    models.updateUser(request.newUsername, request.password, request.email, request.role)
+    models.updateUser(request.oldUsername, request.newUsername, request.password, request.email, request.role)
     return {"message": "User updated successfully", "status_code": status.HTTP_201_CREATED}
 
 @router.post("/users/delete/")
@@ -74,19 +74,30 @@ async def deleteUser(request: schemas.DeleteUserSchema):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-@router.get("/beacons/all", response_model=schemas.BeaconsResponseSchema)
+@router.get("/beacons/get/all", response_model=schemas.BeaconsResponseSchema)
 async def getAllBeacons():
     beaconsData = models.getAllBeaconsData()
     if not beaconsData:
         raise HTTPException(status_code=404, detail="No beacons found")
     return {"Beacons": beaconsData}
 
-@router.get("/beacons/{seconds}", response_model=schemas.BeaconsResponseSchema)
+@router.get("/beacons/get/{seconds}", response_model=schemas.BeaconsResponseSchema)
 async def getLastBeacons(seconds: int):
     beaconsData = models.getLastBeaconsData(seconds)
     if not beaconsData:
         raise HTTPException(status_code=404, detail="No beacons found")
     return {"Beacons": beaconsData}
+
+@router.post("/beacons/create/")
+async def createBeacon(request: schemas.BeaconCreateRequest):
+    if not request.beacon or not request.tipo or not request.status or not request.rssi1 or not request.rssi2 or not request.rssi3 or not request.x or not request.y or not request.utc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing required fields"
+        )
+
+    models.createBeacon(request.utc, request.beacon, request.tipo, request.status, request.rssi1, request.rssi2, request.rssi3, request.x, request.y)
+    return {"message": "Beacon created successfully", "status_code": status.HTTP_200_OK}
 
 @router.post("/beacons/delete/")
 async def deleteBeacon(request: schemas.BeaconDeleteRequest):
@@ -96,25 +107,45 @@ async def deleteBeacon(request: schemas.BeaconDeleteRequest):
             detail="Missing required fields"
         )
         
-    beacon = models.deleteBeacon(request.beacon)
-    if not beacon:
-        raise HTTPException(status_code=404, detail="Beacon not found")
+    models.deleteBeacon(request.beacon)
     return {"message": "Beacon deleted successfully", "status_code": status.HTTP_200_OK}
+
+@router.post("/beacons/update/tipo")
+async def updateBeaconRssi(request: schemas.BeaconUpdateTypeRequest):
+    if not request.beacon or not request.tipo or not request.utc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing required fields"
+        )
+
+    models.updateBeaconType(request.utc, request.beacon, request.tipo)
+    return {"message": "Beacon type updated successfully", "status_code": status.HTTP_200_OK}
+
+@router.post("/beacons/update/status")
+async def updateBeaconStatus(request: schemas.BeaconUpdateStatusRequest):
+    if not request.beacon or not request.status or not request.utc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing required fields"
+        )
+
+    models.updateBeaconStatus(request.utc, request.beacon, request.status)
+    return {"message": "Beacon status updated successfully", "status_code": status.HTTP_200_OK}
 
 @router.post("/rssi/")
 async def RSSIRequest(request: schemas.GatewayRequest):
     beaconsData = models.getLastBeaconsData(10)
     
-    for item in request.Gateways.items():
-        beacon = item.get("beacon")
-        status = item.get("status")
-        tipo = item.get("tipo")
-        gateway = item.get("gateway")
-        rssi = item.get("rssi")
-        utc = item.get("utc")
+    for item in request.Gateways.values():
+        beacon = item.beacon
+        beaconStatus = item.status
+        tipo = item.tipo
+        gateway = item.gateway
+        rssi = item.rssi
+        utc = item.utc
 
         if beacon not in beaconsData:
-            models.createBeacon(utc, beacon, tipo, status, None, None, None, None, None, None)
+            models.createBeacon(utc, beacon, tipo, beaconStatus, None, None, None, None, None)
 
         if rssi < 0 or rssi > 10000:
             raise HTTPException(
@@ -235,7 +266,7 @@ async def createInfo(request: schemas.InfoRequest):
             detail="Invalid info request value"
         )
     
-    models.createInfo(request.linha, request.maquina, request.numeroProdutos, request.horasTrabalhadas, request.falhas)
+    models.createInfo(request.maquina, request.tasksConcluidas, request.tasksCanceladas, request.horasTrabalhadas, request.data)
     return {"message": "Info created successfully", "status_code": status.HTTP_200_OK}
 
 @router.post("/info/update/")
@@ -251,10 +282,10 @@ async def updateInfo(request: schemas.InfoRequest):
             detail="Invalid info request value"
         )
     
-    info = models.updateInfo(request.maquina, request.tasksConcluidas, request.tasksCanceladas,request.horasTrabalhadas, request.data)
+    info = models.updateInfo(request.maquina, request.tasksConcluidas, request.tasksCanceladas, request.horasTrabalhadas, request.data)
     if not info:
         raise HTTPException(status_code=404, detail="Info not found")
-    return {"message": "Info updated successfully", "info_id": info.id, "status_code": status.HTTP_200_OK}
+    return {"message": "Info updated successfully", "status_code": status.HTTP_200_OK}
 
 @router.post("/info/delete/")
 async def deleteInfo(request: schemas.InfoDeleteRequest):

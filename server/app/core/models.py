@@ -425,6 +425,10 @@ def getInfoData():
         query = "SELECT * FROM info"
         cursor.execute(query)
         infos = cursor.fetchall()
+        # Converter datetime.date para string
+        for info in infos:
+            if info.get('data') and hasattr(info['data'], 'strftime'):
+                info['data'] = info['data'].strftime('%Y-%m-%d')
         return {info["id"]: info for info in infos}
     except mysql.connector.Error as e:
         print(f"Error fetching info data: {e}")
@@ -452,7 +456,7 @@ def createInfo(maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data
 def updateInfo(maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data):
     connection = connectToDatabase()
     if connection is None:
-        return
+        return None
     cursor = connection.cursor()
     try:
         query = """
@@ -463,9 +467,11 @@ def updateInfo(maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data
         values = (tasksConcluidas, tasksCanceladas, horasTrabalhadas, maquina, data)
         cursor.execute(query, values)
         connection.commit()
+        return cursor.rowcount > 0
     except mysql.connector.Error as e:
         print(f"Error updating info: {e}")
         connection.rollback()
+        return None
     finally:
         cursor.close()
         connection.close()
@@ -473,16 +479,18 @@ def updateInfo(maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data
 def deleteInfo(maquina, data):
     connection = connectToDatabase()
     if connection is None:
-        return
+        return None
     cursor = connection.cursor()
     try:
         query = "DELETE FROM info WHERE maquina = %s AND data = %s"
         values = (maquina, data)
         cursor.execute(query, values)
         connection.commit()
+        return cursor.rowcount > 0
     except mysql.connector.Error as e:
         print(f"Error deleting info: {e}")
         connection.rollback()
+        return None
     finally:
         cursor.close()
         connection.close()

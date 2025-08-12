@@ -46,6 +46,27 @@ class RssiModel(BaseModel):
 class GatewayRequest(BaseModel):
     Gateways: Dict[int, RssiModel]
 
+class BeaconCreateRequest(BaseModel):
+    beacon: str
+    status: str
+    tipo: str
+    rssi1: float
+    rssi2: float
+    rssi3: float
+    x: float
+    y: float
+    utc: int
+
+class BeaconUpdateTypeRequest(BaseModel):
+    beacon: str
+    tipo: str
+    utc: int
+
+class BeaconUpdateStatusRequest(BaseModel):
+    beacon: str
+    status: str
+    utc: int
+
 class BeaconDeleteRequest(BaseModel):
     beacon: str
 
