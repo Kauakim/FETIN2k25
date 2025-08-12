@@ -1,5 +1,4 @@
-import models
-import time
+from . import models
 from datetime import datetime
 
 # TODO: DEFINIR A POSIÇÃO DAS MÁQUINAS A SEGUIR
@@ -24,7 +23,7 @@ def calculateBeaconsStatus(maquinas):
     
     for beacon in lastBeacons:
         status = beacon["status"]
-        x = beacon["X"]
+        x = beacon["x"]
         y = beacon["y"]
 
         if x is None or y is None:
@@ -77,11 +76,3 @@ def calculateBeaconsStatus(maquinas):
                 
         models.updateBeaconStatus(beacon["utc"], beacon["beacon"], status)
         
-while True:
-    try:
-        calculateBeaconsStatus(maquinas)
-    except Exception as e:
-        print(f"Erro ao calcular o status dos beacons: {e}")
-    
-    # Espera 10 segundos antes de recalcular
-    time.sleep(10)

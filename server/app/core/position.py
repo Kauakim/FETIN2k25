@@ -1,5 +1,4 @@
-import models
-import time
+from . import models
 
 # Posições fixas dos gateways
 gateways = [
@@ -60,12 +59,3 @@ def calculateBeaconsPositions(gateways):
         print(f"Beacon : {beacon["beacon"]} ({x}, {y})")
 
         models.updateBeaconPosition(beacon["utc"], beacon["beacon"], x, y)
-        
-while True:
-    try:
-        calculateBeaconsPositions(gateways)
-    except Exception as e:
-        print(f"Erro ao calcular posições dos beacons: {e}")
-    
-    # Espera 10 segundos antes de recalcular
-    time.sleep(10)

@@ -171,7 +171,7 @@ def updateBeaconPosition(utc, beacon, x, y):
         SET x = %s, y = %s 
         WHERE beacon = %s AND utc = %s
         """
-        values = (x, y, beacon, beacon, utc)
+        values = (x, y, beacon, utc)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -457,7 +457,7 @@ def updateInfo(maquina, tasksConcluidas, tasksCanceladas, horasTrabalhadas, data
     try:
         query = """
         UPDATE info 
-        SET tasksConcluidas = %s, SET tasksCanceladas = %s, horasTrabalhadas = %s
+        SET tasksConcluidas = %s, tasksCanceladas = %s, horasTrabalhadas = %s
         WHERE maquina = %s AND data = %s
         """
         values = (tasksConcluidas, tasksCanceladas, horasTrabalhadas, maquina, data)

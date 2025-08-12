@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-import schemas
+from . import schemas
 from .core import models
 
 router = APIRouter()
@@ -33,7 +33,7 @@ async def signin(request: schemas.SigninResponseSchema):
     models.createUser(request.username, request.password, request.email, request.role)
     return {"message": "User created successfully", "status_code": status.HTTP_201_CREATED}
 
-@router.post("/users/signin/")
+@router.post("/users/update/")
 async def updateUser(request: schemas.UpdateUserSchema):
     usersData = models.getUsersData()
     if not request.oldUsername or not request.newUsername or not request.password or not request.email or not request.role:
@@ -55,7 +55,7 @@ async def updateUser(request: schemas.UpdateUserSchema):
     models.updateUser(request.newUsername, request.password, request.email, request.role)
     return {"message": "User updated successfully", "status_code": status.HTTP_201_CREATED}
 
-@router.post("/users/signin/")
+@router.post("/users/delete/")
 async def deleteUser(request: schemas.DeleteUserSchema):
     usersData = models.getUsersData()
     if not request.username:
@@ -216,7 +216,7 @@ async def deleteTask(request: schemas.TaskDeleteRequest):
 #---------------------------------------------------------------------------------------------------------------------------
 
 @router.get("/info", response_model=schemas.InfoResponseSchema)
-async def getBeacons():
+async def getInfo():
     infoData = models.getInfoData()
     if not infoData:
         raise HTTPException(status_code=404, detail="No info found")

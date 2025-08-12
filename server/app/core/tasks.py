@@ -1,5 +1,4 @@
-import models
-import time
+from. import models
 
 def calcularDistancia(x1, y1, x2, y2):
     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
@@ -77,14 +76,3 @@ def atributeUser():
                     distancia = calcularDistancia()
                     user = u["user"]
                     break
-
-while True:
-    try:
-        alterarStatus()
-        atributeBeacons()
-        atributeUser()
-    except Exception as e:
-        print(f"Erro ao atualizar a lista de tasks: {e}")
-    
-    # Espera 5 segundos antes de recalcular
-    time.sleep(5)
