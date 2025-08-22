@@ -50,11 +50,11 @@ extension AnimatedWidgetExtension on Widget {
       effects: animationInfo.effects,
       child: this,
       onPlay: (controller) => animationInfo.loop
-          ? controller.repeat(reverse: animationInfo.reverse)
-          : null,
+        ? controller.repeat(reverse: animationInfo.reverse)
+        : null,
       onComplete: (controller) => !animationInfo.loop && animationInfo.reverse
-          ? controller.reverse()
-          : null,
+        ? controller.reverse()
+        : null,
     );
   }
 
@@ -65,12 +65,12 @@ extension AnimatedWidgetExtension on Widget {
   }) {
     animationInfo.maybeUpdateEffects(effects);
     return hasBeenTriggered || animationInfo.applyInitialState
-        ? Animate(
-            controller: animationInfo.controller,
-            autoPlay: false,
-            effects: animationInfo.effects,
-            child: this)
-        : this;
+      ? Animate(
+        controller: animationInfo.controller,
+        autoPlay: false,
+        effects: animationInfo.effects,
+        child: this)
+      : this;
   }
 }
 
@@ -82,12 +82,12 @@ class TiltEffect extends Effect<Offset> {
     Offset? begin,
     Offset? end,
   }) : super(
-          delay: delay,
-          duration: duration,
-          curve: curve,
-          begin: begin ?? const Offset(0.0, 0.0),
-          end: end ?? const Offset(0.0, 0.0),
-        );
+    delay: delay,
+    duration: duration,
+    curve: curve,
+    begin: begin ?? const Offset(0.0, 0.0),
+    end: end ?? const Offset(0.0, 0.0),
+  );
 
   @override
   Widget build(

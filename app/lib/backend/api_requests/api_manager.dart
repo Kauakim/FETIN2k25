@@ -97,37 +97,37 @@ class ApiCallOptions extends Equatable {
   }
 
   ApiCallOptions clone() => ApiCallOptions(
-        callName: callName,
-        callType: callType,
-        apiUrl: apiUrl,
-        headers: _cloneMap(headers),
-        params: _cloneMap(params),
-        bodyType: bodyType,
-        body: body,
-        returnBody: returnBody,
-        encodeBodyUtf8: encodeBodyUtf8,
-        decodeUtf8: decodeUtf8,
-        alwaysAllowBody: alwaysAllowBody,
-        cache: cache,
-        isStreamingApi: isStreamingApi,
-      );
+    callName: callName,
+    callType: callType,
+    apiUrl: apiUrl,
+    headers: _cloneMap(headers),
+    params: _cloneMap(params),
+    bodyType: bodyType,
+    body: body,
+    returnBody: returnBody,
+    encodeBodyUtf8: encodeBodyUtf8,
+    decodeUtf8: decodeUtf8,
+    alwaysAllowBody: alwaysAllowBody,
+    cache: cache,
+    isStreamingApi: isStreamingApi,
+  );
 
   @override
   List<Object?> get props => [
-        callName,
-        callType.name,
-        apiUrl,
-        headers,
-        params,
-        bodyType,
-        body,
-        returnBody,
-        encodeBodyUtf8,
-        decodeUtf8,
-        alwaysAllowBody,
-        cache,
-        isStreamingApi,
-      ];
+    callName,
+    callType.name,
+    apiUrl,
+    headers,
+    params,
+    bodyType,
+    body,
+    returnBody,
+    encodeBodyUtf8,
+    decodeUtf8,
+    alwaysAllowBody,
+    cache,
+    isStreamingApi,
+  ];
 
   static Map<String, dynamic> _cloneMap(Map<String, dynamic> map) {
     try {
@@ -194,8 +194,8 @@ class ApiCallResponse {
     dynamic jsonBody;
     try {
       final responseBody = decodeUtf8 && returnBody
-          ? const Utf8Decoder().convert(response.bodyBytes)
-          : response.body;
+        ? const Utf8Decoder().convert(response.bodyBytes)
+        : response.body;
       jsonBody = returnBody ? json.decode(responseBody) : null;
     } catch (_) {}
     return ApiCallResponse(
@@ -207,11 +207,11 @@ class ApiCallResponse {
   }
 
   static ApiCallResponse fromCloudCallResponse(Map<String, dynamic> response) =>
-      ApiCallResponse(
-        response['body'],
-        ApiManager.toStringMap(response['headers'] ?? {}),
-        response['statusCode'] ?? 400,
-      );
+    ApiCallResponse(
+      response['body'],
+      ApiManager.toStringMap(response['headers'] ?? {}),
+      response['statusCode'] ?? 400,
+    );
 }
 
 class ApiManager {
@@ -230,16 +230,15 @@ class ApiManager {
   // database and no longer want the cached result of a call that may
   // have changed.
   static void clearCache(String callName) => _apiCache.keys
-      .toSet()
-      .forEach((k) => k.callName == callName ? _apiCache.remove(k) : null);
+    .toSet()
+    .forEach((k) => k.callName == callName ? _apiCache.remove(k) : null);
 
   static Map<String, String> toStringMap(Map map) =>
-      map.map((key, value) => MapEntry(key.toString(), value.toString()));
+    map.map((key, value) => MapEntry(key.toString(), value.toString()));
 
   static String asQueryParams(Map<String, dynamic> map) => map.entries
-      .map((e) =>
-          "${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}")
-      .join('&');
+    .map((e) => "${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}")
+    .join('&');
 
   static Future<ApiCallResponse> urlRequest(
     ApiCallType callType,
@@ -253,14 +252,14 @@ class ApiManager {
   }) async {
     if (params.isNotEmpty) {
       final specifier =
-          Uri.parse(apiUrl).queryParameters.isNotEmpty ? '&' : '?';
+        Uri.parse(apiUrl).queryParameters.isNotEmpty ? '&' : '?';
       apiUrl = '$apiUrl$specifier${asQueryParams(params)}';
     }
     if (isStreamingApi) {
       client ??= http.Client();
       final request =
-          http.Request(callType.toString().split('.').last, Uri.parse(apiUrl))
-            ..headers.addAll(toStringMap(headers));
+        http.Request(callType.toString().split('.').last, Uri.parse(apiUrl))
+        ..headers.addAll(toStringMap(headers));
       final streamedResponse = await getStreamedResponse(request);
       return ApiCallResponse(
         null,
@@ -270,10 +269,10 @@ class ApiManager {
       );
     }
     final makeRequest = callType == ApiCallType.GET
-        ? (client != null ? client.get : http.get)
-        : (client != null ? client.delete : http.delete);
+      ? (client != null ? client.get : http.get)
+      : (client != null ? client.delete : http.delete);
     final response =
-        await makeRequest(Uri.parse(apiUrl), headers: toStringMap(headers));
+      await makeRequest(Uri.parse(apiUrl), headers: toStringMap(headers));
     return ApiCallResponse.fromHttpResponse(response, returnBody, decodeUtf8);
   }
 
@@ -293,16 +292,16 @@ class ApiManager {
   }) async {
     assert(
       {ApiCallType.POST, ApiCallType.PUT, ApiCallType.PATCH}.contains(type) ||
-          (alwaysAllowBody && type == ApiCallType.DELETE),
+        (alwaysAllowBody && type == ApiCallType.DELETE),
       'Invalid ApiCallType $type for request with body',
     );
     final postBody =
-        createBody(headers, params, body, bodyType, encodeBodyUtf8);
+      createBody(headers, params, body, bodyType, encodeBodyUtf8);
     if (isStreamingApi) {
       client ??= http.Client();
       final request =
-          http.Request(type.toString().split('.').last, Uri.parse(apiUrl))
-            ..headers.addAll(toStringMap(headers));
+        http.Request(type.toString().split('.').last, Uri.parse(apiUrl))
+        ..headers.addAll(toStringMap(headers));
       request.body = postBody;
       final streamedResponse = await getStreamedResponse(request);
       return ApiCallResponse(
@@ -314,8 +313,7 @@ class ApiManager {
     }
 
     if (bodyType == BodyType.MULTIPART) {
-      return multipartRequest(type, apiUrl, headers, params, returnBody,
-          decodeUtf8, alwaysAllowBody);
+      return multipartRequest(type, apiUrl, headers, params, returnBody, decodeUtf8, alwaysAllowBody);
     }
 
     final requestFn = {
@@ -325,7 +323,7 @@ class ApiManager {
       ApiCallType.DELETE: client != null ? client.delete : http.delete,
     }[type]!;
     final response = await requestFn(Uri.parse(apiUrl),
-        headers: toStringMap(headers), body: postBody);
+      headers: toStringMap(headers), body: postBody);
     return ApiCallResponse.fromHttpResponse(response, returnBody, decodeUtf8);
   }
 
@@ -340,24 +338,24 @@ class ApiManager {
   ) async {
     assert(
       {ApiCallType.POST, ApiCallType.PUT, ApiCallType.PATCH}.contains(type) ||
-          (alwaysAllowBody && type == ApiCallType.DELETE),
+        (alwaysAllowBody && type == ApiCallType.DELETE),
       'Invalid ApiCallType $type for request with body',
     );
 
     bool isFile(dynamic e) =>
-        e is FFUploadedFile ||
-        e is List<FFUploadedFile> ||
-        (e is List && e.firstOrNull is FFUploadedFile);
+      e is FFUploadedFile ||
+      e is List<FFUploadedFile> ||
+      (e is List && e.firstOrNull is FFUploadedFile);
 
     final nonFileParams = toStringMap(
-        Map.fromEntries(params.entries.where((e) => !isFile(e.value))));
+      Map.fromEntries(params.entries.where((e) => !isFile(e.value))));
 
     List<http.MultipartFile> files = [];
     params.entries.where((e) => isFile(e.value)).forEach((e) {
       final param = e.value;
       final uploadedFiles = param is List
-          ? param as List<FFUploadedFile>
-          : [param as FFUploadedFile];
+        ? param as List<FFUploadedFile>
+        : [param as FFUploadedFile];
       for (var uploadedFile in uploadedFiles) {
         files.add(
           http.MultipartFile.fromBytes(
@@ -371,7 +369,7 @@ class ApiManager {
     });
 
     final request = http.MultipartRequest(
-        type.toString().split('.').last, Uri.parse(apiUrl))
+      type.toString().split('.').last, Uri.parse(apiUrl))
       ..headers.addAll(toStringMap(headers))
       ..files.addAll(files);
     nonFileParams.forEach((key, value) => request.fields[key] = value);
@@ -423,36 +421,35 @@ class ApiManager {
         break;
     }
     // Set "Content-Type" header if it was previously unset.
-    if (contentType != null &&
-        !headers.keys.any((h) => h.toLowerCase() == 'content-type')) {
+    if (contentType != null && !headers.keys.any((h) => h.toLowerCase() == 'content-type')) {
       headers['Content-Type'] = contentType;
     }
     return encodeBodyUtf8 && postBody is String
-        ? utf8.encode(postBody)
-        : postBody;
+      ? utf8.encode(postBody)
+      : postBody;
   }
 
   Future<ApiCallResponse> call(
     ApiCallOptions options, {
     http.Client? client,
   }) =>
-      makeApiCall(
-        callName: options.callName,
-        apiUrl: options.apiUrl,
-        callType: options.callType,
-        headers: options.headers,
-        params: options.params,
-        body: options.body,
-        bodyType: options.bodyType,
-        returnBody: options.returnBody,
-        encodeBodyUtf8: options.encodeBodyUtf8,
-        decodeUtf8: options.decodeUtf8,
-        alwaysAllowBody: options.alwaysAllowBody,
-        cache: options.cache,
-        isStreamingApi: options.isStreamingApi,
-        options: options,
-        client: client,
-      );
+    makeApiCall(
+      callName: options.callName,
+      apiUrl: options.apiUrl,
+      callType: options.callType,
+      headers: options.headers,
+      params: options.params,
+      body: options.body,
+      bodyType: options.bodyType,
+      returnBody: options.returnBody,
+      encodeBodyUtf8: options.encodeBodyUtf8,
+      decodeUtf8: options.decodeUtf8,
+      alwaysAllowBody: options.alwaysAllowBody,
+      cache: options.cache,
+      isStreamingApi: options.isStreamingApi,
+      options: options,
+      client: client,
+    );
 
   Future<ApiCallResponse> makeApiCall({
     required String callName,
@@ -472,21 +469,21 @@ class ApiManager {
     http.Client? client,
   }) async {
     final callOptions = options ??
-        ApiCallOptions(
-          callName: callName,
-          callType: callType,
-          apiUrl: apiUrl,
-          headers: headers,
-          params: params,
-          bodyType: bodyType,
-          body: body,
-          returnBody: returnBody,
-          encodeBodyUtf8: encodeBodyUtf8,
-          decodeUtf8: decodeUtf8,
-          alwaysAllowBody: alwaysAllowBody,
-          cache: cache,
-          isStreamingApi: isStreamingApi,
-        );
+      ApiCallOptions(
+        callName: callName,
+        callType: callType,
+        apiUrl: apiUrl,
+        headers: headers,
+        params: params,
+        bodyType: bodyType,
+        body: body,
+        returnBody: returnBody,
+        encodeBodyUtf8: encodeBodyUtf8,
+        decodeUtf8: decodeUtf8,
+        alwaysAllowBody: alwaysAllowBody,
+        cache: cache,
+        isStreamingApi: isStreamingApi,
+      );
     // Modify for your specific needs if this differs from your API.
     if (_accessToken != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $_accessToken';
@@ -518,30 +515,30 @@ class ApiManager {
           break;
         case ApiCallType.DELETE:
           result = alwaysAllowBody
-              ? await requestWithBody(
-                  callType,
-                  apiUrl,
-                  headers,
-                  params,
-                  body,
-                  bodyType,
-                  returnBody,
-                  encodeBodyUtf8,
-                  decodeUtf8,
-                  alwaysAllowBody,
-                  isStreamingApi,
-                  client: client,
-                )
-              : await urlRequest(
-                  callType,
-                  apiUrl,
-                  headers,
-                  params,
-                  returnBody,
-                  decodeUtf8,
-                  isStreamingApi,
-                  client: client,
-                );
+            ? await requestWithBody(
+              callType,
+              apiUrl,
+              headers,
+              params,
+              body,
+              bodyType,
+              returnBody,
+              encodeBodyUtf8,
+              decodeUtf8,
+              alwaysAllowBody,
+              isStreamingApi,
+              client: client,
+            )
+            : await urlRequest(
+              callType,
+              apiUrl,
+              headers,
+              params,
+              returnBody,
+              decodeUtf8,
+              isStreamingApi,
+              client: client,
+            );
           break;
         case ApiCallType.POST:
         case ApiCallType.PUT:

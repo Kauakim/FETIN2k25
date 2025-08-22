@@ -13,7 +13,7 @@ class NavigationBarTesteWidget extends StatefulWidget {
 
   @override
   State<NavigationBarTesteWidget> createState() =>
-      _NavigationBarTesteWidgetState();
+    _NavigationBarTesteWidgetState();
 }
 
 class _NavigationBarTesteWidgetState extends State<NavigationBarTesteWidget> {
@@ -50,20 +50,16 @@ class _NavigationBarTesteWidgetState extends State<NavigationBarTesteWidget> {
           title: Text(
             'Page Title',
             style: FlutterFlowTheme.of(context).headlineMedium.override(
-                  font: GoogleFonts.outfit(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                  ),
-                  color: Colors.white,
-                  fontSize: 22.0,
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
+              font: GoogleFonts.outfit(
+                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+              ),
+              color: Colors.white,
+              fontSize: 22.0,
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+            ),
           ),
           actions: [],
           centerTitle: false,

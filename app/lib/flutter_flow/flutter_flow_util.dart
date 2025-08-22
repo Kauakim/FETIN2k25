@@ -25,7 +25,7 @@ export 'package:page_transition/page_transition.dart';
 export 'nav/nav.dart';
 
 T valueOrDefault<T>(T? value, T defaultValue) =>
-    (value is String && value.isEmpty) || value == null ? defaultValue : value;
+  (value is String && value.isEmpty) || value == null ? defaultValue : value;
 
 String dateTimeFormat(String format, DateTime? dateTime, {String? locale}) {
   if (dateTime == null) {
@@ -121,7 +121,7 @@ String formatNumber(
     case FormatType.custom:
       final hasLocale = locale != null && locale.isNotEmpty;
       formattedValue =
-          NumberFormat(format, hasLocale ? locale : null).format(value);
+        NumberFormat(format, hasLocale ? locale : null).format(value);
   }
 
   if (formattedValue.isEmpty) {
@@ -130,8 +130,8 @@ String formatNumber(
 
   if (currency != null) {
     final currencySymbol = currency.isNotEmpty
-        ? currency
-        : NumberFormat.simpleCurrency().format(0.0).substring(0, 1);
+      ? currency
+      : NumberFormat.simpleCurrency().format(0.0).substring(0, 1);
     formattedValue = '$currencySymbol$formattedValue';
   }
 
@@ -190,8 +190,8 @@ dynamic getJsonField(
   final value = field.first.value;
   if (isForList) {
     return value is! Iterable
-        ? [value]
-        : (value is List ? value : value.toList());
+      ? [value]
+      : (value is List ? value : value.toList());
   }
   return value;
 }
@@ -213,7 +213,7 @@ const kBreakpointSmall = 479.0;
 const kBreakpointMedium = 767.0;
 const kBreakpointLarge = 991.0;
 bool isMobileWidth(BuildContext context) =>
-    MediaQuery.sizeOf(context).width < kBreakpointSmall;
+  MediaQuery.sizeOf(context).width < kBreakpointSmall;
 bool responsiveVisibility({
   required BuildContext context,
   bool phone = true,
@@ -236,9 +236,9 @@ bool responsiveVisibility({
 const kTextValidatorUsernameRegex = r'^[a-zA-Z][a-zA-Z0-9_-]{2,16}$';
 // https://stackoverflow.com/a/201378
 const kTextValidatorEmailRegex =
-    "^(?:[a-zA-Z0-9!#\$%&\'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#\$%&\'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])\$";
+  "^(?:[a-zA-Z0-9!#\$%&\'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#\$%&\'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])\$";
 const kTextValidatorWebsiteRegex =
-    r'(https?:\/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)';
+  r'(https?:\/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)';
 
 extension FFTextEditingControllerExt on TextEditingController? {
   String get text => this == null ? '' : this!.text;
@@ -247,24 +247,24 @@ extension FFTextEditingControllerExt on TextEditingController? {
 
 extension IterableExt<T> on Iterable<T> {
   List<T> sortedList<S extends Comparable>(
-      {S Function(T)? keyOf, bool desc = false}) {
-    final sortedAscending = toList()
-      ..sort(keyOf == null ? null : ((a, b) => keyOf(a).compareTo(keyOf(b))));
-    if (desc) {
-      return sortedAscending.reversed.toList();
-    }
-    return sortedAscending;
+    {S Function(T)? keyOf, bool desc = false}) {
+      final sortedAscending = toList()
+        ..sort(keyOf == null ? null : ((a, b) => keyOf(a).compareTo(keyOf(b))));
+      if (desc) {
+        return sortedAscending.reversed.toList();
+      }
+      return sortedAscending;
   }
 
   List<S> mapIndexed<S>(S Function(int, T) func) => toList()
-      .asMap()
-      .map((index, value) => MapEntry(index, func(index, value)))
-      .values
-      .toList();
+    .asMap()
+    .map((index, value) => MapEntry(index, func(index, value)))
+    .values
+    .toList();
 }
 
 void setDarkModeSetting(BuildContext context, ThemeMode themeMode) =>
-    MyApp.of(context).setThemeMode(themeMode);
+  MyApp.of(context).setThemeMode(themeMode);
 
 void showSnackbar(
   BuildContext context,
@@ -298,9 +298,9 @@ void showSnackbar(
 
 extension FFStringExt on String {
   String maybeHandleOverflow({int? maxChars, String replacement = ''}) =>
-      maxChars != null && length > maxChars
-          ? replaceRange(maxChars, null, replacement)
-          : this;
+    maxChars != null && length > maxChars
+      ? replaceRange(maxChars, null, replacement)
+      : this;
 
   String toCapitalization(TextCapitalization textCapitalization) {
     switch (textCapitalization) {
@@ -322,40 +322,40 @@ extension ListFilterExt<T> on Iterable<T?> {
 
 extension MapFilterExtensions<T> on Map<String, T?> {
   Map<String, T> get withoutNulls => Map.fromEntries(
-        entries
-            .where((e) => e.value != null)
-            .map((e) => MapEntry(e.key, e.value as T)),
-      );
+    entries
+      .where((e) => e.value != null)
+      .map((e) => MapEntry(e.key, e.value as T)),
+  );
 }
 
 extension MapListContainsExt on List<dynamic> {
   bool containsMap(dynamic map) => map is Map
-      ? any((e) => e is Map && const DeepCollectionEquality().equals(e, map))
-      : contains(map);
+    ? any((e) => e is Map && const DeepCollectionEquality().equals(e, map))
+    : contains(map);
 }
 
 extension ListDivideExt<T extends Widget> on Iterable<T> {
   Iterable<MapEntry<int, Widget>> get enumerate => toList().asMap().entries;
 
   List<Widget> divide(Widget t, {bool Function(int)? filterFn}) => isEmpty
-      ? []
-      : (enumerate
-          .map((e) => [e.value, if (filterFn == null || filterFn(e.key)) t])
-          .expand((i) => i)
-          .toList()
-        ..removeLast());
+    ? []
+    : (enumerate
+      .map((e) => [e.value, if (filterFn == null || filterFn(e.key)) t])
+      .expand((i) => i)
+      .toList()
+    ..removeLast());
 
   List<Widget> around(Widget t) => addToStart(t).addToEnd(t);
 
   List<Widget> addToStart(Widget t) =>
-      enumerate.map((e) => e.value).toList()..insert(0, t);
+    enumerate.map((e) => e.value).toList()..insert(0, t);
 
   List<Widget> addToEnd(Widget t) =>
-      enumerate.map((e) => e.value).toList()..add(t);
+    enumerate.map((e) => e.value).toList()..add(t);
 
   List<Padding> paddingTopEach(double val) =>
-      map((w) => Padding(padding: EdgeInsets.only(top: val), child: w))
-          .toList();
+    map((w) => Padding(padding: EdgeInsets.only(top: val), child: w))
+      .toList();
 }
 
 extension StatefulWidgetExtensions on State<StatefulWidget> {

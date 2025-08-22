@@ -12,19 +12,19 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
   void removeFromAllBeacons(dynamic item) => allBeacons.remove(item);
   void removeAtIndexFromAllBeacons(int index) => allBeacons.removeAt(index);
   void insertAtIndexInAllBeacons(int index, dynamic item) =>
-      allBeacons.insert(index, item);
+    allBeacons.insert(index, item);
   void updateAllBeaconsAtIndex(int index, Function(dynamic) updateFn) =>
-      allBeacons[index] = updateFn(allBeacons[index]);
+    allBeacons[index] = updateFn(allBeacons[index]);
 
   List<dynamic> filteredBeacons = [];
   void addToFilteredBeacons(dynamic item) => filteredBeacons.add(item);
   void removeFromFilteredBeacons(dynamic item) => filteredBeacons.remove(item);
   void removeAtIndexFromFilteredBeacons(int index) =>
-      filteredBeacons.removeAt(index);
+    filteredBeacons.removeAt(index);
   void insertAtIndexInFilteredBeacons(int index, dynamic item) =>
-      filteredBeacons.insert(index, item);
+    filteredBeacons.insert(index, item);
   void updateFilteredBeaconsAtIndex(int index, Function(dynamic) updateFn) =>
-      filteredBeacons[index] = updateFn(filteredBeacons[index]);
+    filteredBeacons[index] = updateFn(filteredBeacons[index]);
 
   String searchText = '.';
 

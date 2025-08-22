@@ -8,25 +8,25 @@ SharedPreferences? _prefs;
 
 abstract class FlutterFlowTheme {
   static Future initialize() async =>
-      _prefs = await SharedPreferences.getInstance();
+    _prefs = await SharedPreferences.getInstance();
 
   static ThemeMode get themeMode {
     final darkMode = _prefs?.getBool(kThemeModeKey);
     return darkMode == null
-        ? ThemeMode.system
-        : darkMode
-            ? ThemeMode.dark
-            : ThemeMode.light;
+      ? ThemeMode.system
+      : darkMode
+        ? ThemeMode.dark
+        : ThemeMode.light;
   }
 
   static void saveThemeMode(ThemeMode mode) => mode == ThemeMode.system
-      ? _prefs?.remove(kThemeModeKey)
-      : _prefs?.setBool(kThemeModeKey, mode == ThemeMode.dark);
+    ? _prefs?.remove(kThemeModeKey)
+    : _prefs?.setBool(kThemeModeKey, mode == ThemeMode.dark);
 
   static FlutterFlowTheme of(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
-        ? DarkModeTheme()
-        : LightModeTheme();
+      ? DarkModeTheme()
+      : LightModeTheme();
   }
 
   @Deprecated('Use primary instead')
@@ -213,108 +213,108 @@ class ThemeTypography extends Typography {
   String get displayLargeFamily => 'Outfit';
   bool get displayLargeIsCustom => false;
   TextStyle get displayLarge => GoogleFonts.outfit(
-        color: theme.primaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 64.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 64.0,
+  );
   String get displayMediumFamily => 'Outfit';
   bool get displayMediumIsCustom => false;
   TextStyle get displayMedium => GoogleFonts.outfit(
-        color: theme.primaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 44.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 44.0,
+  );
   String get displaySmallFamily => 'Outfit';
   bool get displaySmallIsCustom => false;
   TextStyle get displaySmall => GoogleFonts.outfit(
-        color: theme.primaryText,
-        fontWeight: FontWeight.w600,
-        fontSize: 36.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.w600,
+    fontSize: 36.0,
+  );
   String get headlineLargeFamily => 'Outfit';
   bool get headlineLargeIsCustom => false;
   TextStyle get headlineLarge => GoogleFonts.outfit(
-        color: theme.primaryText,
-        fontWeight: FontWeight.w600,
-        fontSize: 32.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.w600,
+    fontSize: 32.0,
+  );
   String get headlineMediumFamily => 'Outfit';
   bool get headlineMediumIsCustom => false;
   TextStyle get headlineMedium => GoogleFonts.outfit(
-        color: theme.primaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 24.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 24.0,
+  );
   String get headlineSmallFamily => 'Outfit';
   bool get headlineSmallIsCustom => false;
   TextStyle get headlineSmall => GoogleFonts.outfit(
-        color: theme.primaryText,
-        fontWeight: FontWeight.w500,
-        fontSize: 24.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.w500,
+    fontSize: 24.0,
+  );
   String get titleLargeFamily => 'Outfit';
   bool get titleLargeIsCustom => false;
   TextStyle get titleLarge => GoogleFonts.outfit(
-        color: theme.primaryText,
-        fontWeight: FontWeight.w500,
-        fontSize: 22.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.w500,
+    fontSize: 22.0,
+  );
   String get titleMediumFamily => 'Readex Pro';
   bool get titleMediumIsCustom => false;
   TextStyle get titleMedium => GoogleFonts.readexPro(
-        color: theme.info,
-        fontWeight: FontWeight.normal,
-        fontSize: 18.0,
-      );
+    color: theme.info,
+    fontWeight: FontWeight.normal,
+    fontSize: 18.0,
+  );
   String get titleSmallFamily => 'Readex Pro';
   bool get titleSmallIsCustom => false;
   TextStyle get titleSmall => GoogleFonts.readexPro(
-        color: theme.info,
-        fontWeight: FontWeight.w500,
-        fontSize: 16.0,
-      );
+    color: theme.info,
+    fontWeight: FontWeight.w500,
+    fontSize: 16.0,
+  );
   String get labelLargeFamily => 'Readex Pro';
   bool get labelLargeIsCustom => false;
   TextStyle get labelLarge => GoogleFonts.readexPro(
-        color: theme.secondaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 16.0,
-      );
+    color: theme.secondaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 16.0,
+  );
   String get labelMediumFamily => 'Readex Pro';
   bool get labelMediumIsCustom => false;
   TextStyle get labelMedium => GoogleFonts.readexPro(
-        color: theme.secondaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 14.0,
-      );
+    color: theme.secondaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 14.0,
+  );
   String get labelSmallFamily => 'Readex Pro';
   bool get labelSmallIsCustom => false;
   TextStyle get labelSmall => GoogleFonts.readexPro(
-        color: theme.secondaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 12.0,
-      );
+    color: theme.secondaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 12.0,
+  );
   String get bodyLargeFamily => 'Readex Pro';
   bool get bodyLargeIsCustom => false;
   TextStyle get bodyLarge => GoogleFonts.readexPro(
-        color: theme.primaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 16.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 16.0,
+  );
   String get bodyMediumFamily => 'Readex Pro';
   bool get bodyMediumIsCustom => false;
   TextStyle get bodyMedium => GoogleFonts.readexPro(
-        color: theme.primaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 14.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 14.0,
+  );
   String get bodySmallFamily => 'Readex Pro';
   bool get bodySmallIsCustom => false;
   TextStyle get bodySmall => GoogleFonts.readexPro(
-        color: theme.primaryText,
-        fontWeight: FontWeight.normal,
-        fontSize: 12.0,
-      );
+    color: theme.primaryText,
+    fontWeight: FontWeight.normal,
+    fontSize: 12.0,
+  );
 }
 
 class DarkModeTheme extends FlutterFlowTheme {
@@ -360,32 +360,32 @@ extension TextStyleHelper on TextStyle {
   }) {
     if (useGoogleFonts && fontFamily != null) {
       font = GoogleFonts.getFont(fontFamily,
-          fontWeight: fontWeight ?? this.fontWeight,
-          fontStyle: fontStyle ?? this.fontStyle);
+        fontWeight: fontWeight ?? this.fontWeight,
+        fontStyle: fontStyle ?? this.fontStyle);
     }
 
     return font != null
-        ? font.copyWith(
-            color: color ?? this.color,
-            fontSize: fontSize ?? this.fontSize,
-            letterSpacing: letterSpacing ?? this.letterSpacing,
-            fontWeight: fontWeight ?? this.fontWeight,
-            fontStyle: fontStyle ?? this.fontStyle,
-            decoration: decoration,
-            height: lineHeight,
-            shadows: shadows,
-          )
-        : copyWith(
-            fontFamily: fontFamily,
-            package: package,
-            color: color,
-            fontSize: fontSize,
-            letterSpacing: letterSpacing,
-            fontWeight: fontWeight,
-            fontStyle: fontStyle,
-            decoration: decoration,
-            height: lineHeight,
-            shadows: shadows,
-          );
+      ? font.copyWith(
+        color: color ?? this.color,
+        fontSize: fontSize ?? this.fontSize,
+        letterSpacing: letterSpacing ?? this.letterSpacing,
+        fontWeight: fontWeight ?? this.fontWeight,
+        fontStyle: fontStyle ?? this.fontStyle,
+        decoration: decoration,
+        height: lineHeight,
+        shadows: shadows,
+      )
+      : copyWith(
+        fontFamily: fontFamily,
+        package: package,
+        color: color,
+        fontSize: fontSize,
+        letterSpacing: letterSpacing,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        decoration: decoration,
+        height: lineHeight,
+        shadows: shadows,
+      );
   }
 }

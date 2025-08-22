@@ -10,21 +10,21 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
   // State field(s) for TabBar widget.
   TabController? tabBarController;
   int get tabBarCurrentIndex =>
-      tabBarController != null ? tabBarController!.index : 0;
+    tabBarController != null ? tabBarController!.index : 0;
   int get tabBarPreviousIndex =>
-      tabBarController != null ? tabBarController!.previousIndex : 0;
+    tabBarController != null ? tabBarController!.previousIndex : 0;
 
   // State field(s) for textField_Username widget.
   FocusNode? textFieldUsernameFocusNode;
   TextEditingController? textFieldUsernameTextController;
   String? Function(BuildContext, String?)?
-      textFieldUsernameTextControllerValidator;
+    textFieldUsernameTextControllerValidator;
   // State field(s) for textField_Password widget.
   FocusNode? textFieldPasswordFocusNode;
   TextEditingController? textFieldPasswordTextController;
   late bool textFieldPasswordVisibility;
   String? Function(BuildContext, String?)?
-      textFieldPasswordTextControllerValidator;
+    textFieldPasswordTextControllerValidator;
   // Stores action output result for [Backend Call - API (UserLogin)] action in Button widget.
   ApiCallResponse? apiResultxi5;
 

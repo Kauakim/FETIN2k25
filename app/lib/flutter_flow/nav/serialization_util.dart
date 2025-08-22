@@ -12,19 +12,17 @@ String dateTimeRangeToString(DateTimeRange dateTimeRange) {
 }
 
 String placeToString(FFPlace place) => jsonEncode({
-      'latLng': place.latLng.serialize(),
-      'name': place.name,
-      'address': place.address,
-      'city': place.city,
-      'state': place.state,
-      'country': place.country,
-      'zipCode': place.zipCode,
-    });
+  'latLng': place.latLng.serialize(),
+  'name': place.name,
+  'address': place.address,
+  'city': place.city,
+  'state': place.state,
+  'country': place.country,
+  'zipCode': place.zipCode,
+});
 
 String uploadedFileToString(FFUploadedFile uploadedFile) =>
-    uploadedFile.serialize();
-
-// DocumentReference serialization removed - not needed without Firestore
+  uploadedFile.serialize();
 
 String? serializeParam(
   dynamic param,
@@ -37,10 +35,10 @@ String? serializeParam(
     }
     if (isList) {
       final serializedValues = (param as Iterable)
-          .map((p) => serializeParam(p, paramType, isList: false))
-          .where((p) => p != null)
-          .map((p) => p!)
-          .toList();
+        .map((p) => serializeParam(p, paramType, isList: false))
+        .where((p) => p != null)
+        .map((p) => p!)
+        .toList();
       return json.encode(serializedValues);
     }
     String? data;
@@ -67,7 +65,6 @@ String? serializeParam(
         data = uploadedFileToString(param as FFUploadedFile);
       case ParamType.JSON:
         data = json.encode(param);
-      // DocumentReference and Document cases removed - not needed without Firestore
     }
     return data;
   } catch (e) {
@@ -106,8 +103,8 @@ FFPlace placeFromString(String placeStr) {
   final serializedData = jsonDecode(placeStr) as Map<String, dynamic>;
   final data = {
     'latLng': serializedData.containsKey('latLng')
-        ? latLngFromString(serializedData['latLng'] as String)
-        : const LatLng(0.0, 0.0),
+      ? latLngFromString(serializedData['latLng'] as String)
+      : const LatLng(0.0, 0.0),
     'name': serializedData['name'] ?? '',
     'address': serializedData['address'] ?? '',
     'city': serializedData['city'] ?? '',
@@ -127,9 +124,7 @@ FFPlace placeFromString(String placeStr) {
 }
 
 FFUploadedFile uploadedFileFromString(String uploadedFileStr) =>
-    FFUploadedFile.deserialize(uploadedFileStr);
-
-// DocumentReference functions removed - not needed without Firestore
+  FFUploadedFile.deserialize(uploadedFileStr);
 
 enum ParamType {
   int,
@@ -142,8 +137,7 @@ enum ParamType {
   Color,
   FFPlace,
   FFUploadedFile,
-  JSON,
-  // DocumentReference and Document removed - not needed without Firestore
+  JSON
 }
 
 dynamic deserializeParam<T>(
@@ -162,13 +156,13 @@ dynamic deserializeParam<T>(
         return null;
       }
       return paramValues
-          .where((p) => p is String)
-          .map((p) => p as String)
-          .map((p) => deserializeParam<T>(p, paramType, false,
-              collectionNamePath: collectionNamePath))
-          .where((p) => p != null)
-          .map((p) => p! as T)
-          .toList();
+        .where((p) => p is String)
+        .map((p) => p as String)
+        .map((p) => deserializeParam<T>(p, paramType, false,
+            collectionNamePath: collectionNamePath))
+        .where((p) => p != null)
+        .map((p) => p! as T)
+        .toList();
     }
     switch (paramType) {
       case ParamType.int:
@@ -182,8 +176,8 @@ dynamic deserializeParam<T>(
       case ParamType.DateTime:
         final milliseconds = int.tryParse(param);
         return milliseconds != null
-            ? DateTime.fromMillisecondsSinceEpoch(milliseconds)
-            : null;
+          ? DateTime.fromMillisecondsSinceEpoch(milliseconds)
+          : null;
       case ParamType.DateTimeRange:
         return dateTimeRangeFromString(param);
       case ParamType.LatLng:
@@ -196,12 +190,9 @@ dynamic deserializeParam<T>(
         return uploadedFileFromString(param);
       case ParamType.JSON:
         return json.decode(param);
-      // DocumentReference case removed - not needed without Firestore
     }
   } catch (e) {
     print('Error deserializing parameter: $e');
     return null;
   }
 }
-
-// Document functions removed - not needed without Firestore

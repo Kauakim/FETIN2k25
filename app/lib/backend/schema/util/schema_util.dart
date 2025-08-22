@@ -18,21 +18,21 @@ List<T>? getStructList<T>(
   dynamic value,
   StructBuilder<T> structBuilder,
 ) =>
-    value is! List
-        ? null
-        : value
-            .where((e) => e is Map<String, dynamic>)
-            .map((e) => structBuilder(e as Map<String, dynamic>))
-            .toList();
+  value is! List
+    ? null
+    : value
+      .where((e) => e is Map<String, dynamic>)
+      .map((e) => structBuilder(e as Map<String, dynamic>))
+      .toList();
 
 Color? getSchemaColor(dynamic value) => value is String
-    ? fromCssColor(value)
-    : value is Color
-        ? value
-        : null;
+  ? fromCssColor(value)
+  : value is Color
+    ? value
+    : null;
 
 List<Color>? getColorsList(dynamic value) =>
-    value is! List ? null : value.map(getSchemaColor).withoutNulls;
+  value is! List ? null : value.map(getSchemaColor).withoutNulls;
 
 List<T>? getDataList<T>(dynamic value) =>
-    value is! List ? null : value.map((e) => castToType<T>(e)!).toList();
+  value is! List ? null : value.map((e) => castToType<T>(e)!).toList();

@@ -82,9 +82,9 @@ abstract class FlutterFlowModel<W extends Widget> {
     bool updateOnChange = false,
     required VoidCallback onUpdate,
   }) =>
-      this
-        .._updateCallback = onUpdate
-        ..updateOnChange = updateOnChange;
+    this
+      .._updateCallback = onUpdate
+      ..updateOnChange = updateOnChange;
   // Update the containing page when this model received an update.
   void updatePage(VoidCallback callback) {
     callback();
@@ -108,19 +108,19 @@ class FlutterFlowDynamicModels<T extends FlutterFlowModel> {
 
   List<S> getValues<S>(S? Function(T) getValue) {
     return _childrenIndexes.entries
-        // Sort keys by index.
-        .sorted((a, b) => a.value.compareTo(b.value))
-        .where((e) => _childrenModels[e.key] != null)
-        // Map each model to the desired value and return as list. In order
-        // to preserve index order, rather than removing null values we provide
-        // default values (for types with reasonable defaults).
-        .map((e) => getValue(_childrenModels[e.key]!) ?? _getDefaultValue<S>()!)
-        .toList();
+      // Sort keys by index.
+      .sorted((a, b) => a.value.compareTo(b.value))
+      .where((e) => _childrenModels[e.key] != null)
+      // Map each model to the desired value and return as list. In order
+      // to preserve index order, rather than removing null values we provide
+      // default values (for types with reasonable defaults).
+      .map((e) => getValue(_childrenModels[e.key]!) ?? _getDefaultValue<S>()!)
+      .toList();
   }
 
   S? getValueAtIndex<S>(int index, S? Function(T) getValue) {
     final uniqueKey =
-        _childrenIndexes.entries.firstWhereOrNull((e) => e.value == index)?.key;
+      _childrenIndexes.entries.firstWhereOrNull((e) => e.value == index)?.key;
     return getValueForKey(uniqueKey, getValue);
   }
 
@@ -143,11 +143,11 @@ class FlutterFlowDynamicModels<T extends FlutterFlowModel> {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         _childrenIndexes.removeWhere((k, _) => !_activeKeys!.contains(k));
         _childrenModels.keys
-            .toSet()
-            .difference(_activeKeys!)
-            // Remove and dispose of unused models since they are  not being used
-            // elsewhere and would not otherwise be disposed.
-            .forEach((k) => _childrenModels.remove(k)?.maybeDispose());
+          .toSet()
+          .difference(_activeKeys!)
+          // Remove and dispose of unused models since they are  not being used
+          // elsewhere and would not otherwise be disposed.
+          .forEach((k) => _childrenModels.remove(k)?.maybeDispose());
         _activeKeys = null;
       });
     }
@@ -171,5 +171,5 @@ T? _getDefaultValue<T>() {
 
 extension TextValidationExtensions on String? Function(BuildContext, String?)? {
   String? Function(String?)? asValidator(BuildContext context) =>
-      this != null ? (val) => this!(context, val) : null;
+    this != null ? (val) => this!(context, val) : null;
 }

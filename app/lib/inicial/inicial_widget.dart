@@ -133,25 +133,25 @@ class _InicialWidgetState extends State<InicialWidget>
                     alignment: AlignmentDirectional(0.0, 0.0),
                     child: Padding(
                       padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
                       child: Text(
                         'SIMTER',
                         style:
-                            FlutterFlowTheme.of(context).displaySmall.override(
-                                  font: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .displaySmall
-                                        .fontStyle,
-                                  ),
-                                  color: Color(0xFF101213),
-                                  fontSize: 50.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .displaySmall
-                                      .fontStyle,
-                                ),
+                          FlutterFlowTheme.of(context).displaySmall.override(
+                            font: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                .displaySmall
+                                .fontStyle,
+                            ),
+                            color: Color(0xFF101213),
+                            fontSize: 50.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                              .displaySmall
+                              .fontStyle,
+                          ),
                       ),
                     ),
                   ),
@@ -171,8 +171,8 @@ class _InicialWidgetState extends State<InicialWidget>
                           child: Container(
                             width: double.infinity,
                             height: MediaQuery.sizeOf(context).width >= 768.0
-                                ? 530.0
-                                : 630.0,
+                              ? 530.0
+                              : 630.0,
                             constraints: BoxConstraints(
                               maxWidth: 570.0,
                             ),
@@ -198,7 +198,7 @@ class _InicialWidgetState extends State<InicialWidget>
                               alignment: AlignmentDirectional(0.0, 0.0),
                               child: Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 12.0, 0.0, 0.0),
+                                  0.0, 12.0, 0.0, 0.0),
                                 child: Column(
                                   children: [
                                     Align(
@@ -208,52 +208,51 @@ class _InicialWidgetState extends State<InicialWidget>
                                         labelColor: Color(0xFF101213),
                                         unselectedLabelColor: Color(0xFF57636C),
                                         labelPadding:
-                                            EdgeInsetsDirectional.fromSTEB(
-                                                32.0, 0.0, 32.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(32.0, 0.0, 32.0, 0.0),
                                         labelStyle: FlutterFlowTheme.of(context)
-                                            .headlineMedium
-                                            .override(
-                                              font: GoogleFonts.outfit(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .headlineMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .headlineMedium
-                                                        .fontStyle,
-                                              ),
-                                              fontSize: 36.0,
-                                              letterSpacing: 0.0,
+                                          .headlineMedium
+                                          .override(
+                                            font: GoogleFonts.outfit(
                                               fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .headlineMedium
-                                                      .fontWeight,
+                                                FlutterFlowTheme.of(context)
+                                                  .headlineMedium
+                                                  .fontWeight,
                                               fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .headlineMedium
-                                                      .fontStyle,
+                                                FlutterFlowTheme.of(context)
+                                                  .headlineMedium
+                                                  .fontStyle,
+                                            ),
+                                            fontSize: 36.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                              FlutterFlowTheme.of(context)
+                                                .headlineMedium
+                                                .fontWeight,
+                                            fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .headlineMedium
+                                                  .fontStyle,
                                             ),
                                         unselectedLabelStyle: FlutterFlowTheme
-                                                .of(context)
-                                            .titleMedium
-                                            .override(
-                                              font: GoogleFonts.plusJakartaSans(
-                                                fontWeight: FontWeight.w500,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleMedium
-                                                        .fontStyle,
-                                              ),
-                                              color: Colors.white,
-                                              fontSize: 18.0,
-                                              letterSpacing: 0.0,
+                                          .of(context)
+                                          .titleMedium
+                                          .override(
+                                            font: GoogleFonts.plusJakartaSans(
                                               fontWeight: FontWeight.w500,
                                               fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleMedium
-                                                      .fontStyle,
+                                                FlutterFlowTheme.of(context)
+                                                  .titleMedium
+                                                  .fontStyle,
                                             ),
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.w500,
+                                            fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                .titleMedium
+                                                .fontStyle,
+                                          ),
                                         indicatorColor: Color(0xFF4B39EF),
                                         indicatorWeight: 3.0,
                                         tabs: [
@@ -272,18 +271,16 @@ class _InicialWidgetState extends State<InicialWidget>
                                         controller: _model.tabBarController,
                                         children: [
                                           Align(
-                                            alignment:
-                                                AlignmentDirectional(0.0, -1.0),
+                                            alignment: AlignmentDirectional(0.0, -1.0),
                                             child: Padding(
                                               padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      24.0, 2.0, 24.0, 0.0),
+                                                .fromSTEB(24.0, 2.0, 24.0, 0.0),
                                               child: SingleChildScrollView(
                                                 child: Column(
                                                   mainAxisSize:
-                                                      MainAxisSize.max,
+                                                    MainAxisSize.max,
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                   children: [
                                                     if (responsiveVisibility(
                                                       context: context,
@@ -293,426 +290,288 @@ class _InicialWidgetState extends State<InicialWidget>
                                                       Container(
                                                         width: 230.0,
                                                         height: 40.0,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.white,
-                                                        ),
+                                                        decoration: BoxDecoration(color: Colors.white),
                                                       ),
                                                     Align(
                                                       alignment:
-                                                          AlignmentDirectional(
-                                                              0.0, 0.0),
+                                                        AlignmentDirectional(0.0, 0.0),
                                                       child: Padding(
                                                         padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    6.0,
-                                                                    0.0,
-                                                                    24.0),
+                                                          EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 6.0, 0.0, 24.0),
                                                         child: Text(
                                                           'Bem vindo ao APP do SIMTER',
                                                           textAlign:
-                                                              TextAlign.start,
+                                                            TextAlign.start,
                                                           style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .labelMedium
-                                                              .override(
-                                                                font: GoogleFonts
-                                                                    .plusJakartaSans(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .fontStyle,
-                                                                ),
-                                                                color: Color(
-                                                                    0xFF57636C),
+                                                            .of(context)
+                                                            .labelMedium
+                                                            .override(
+                                                              font: GoogleFonts.plusJakartaSans(
+                                                                fontWeight: FontWeight.w500,
+                                                                fontStyle: FlutterFlowTheme.of(context)
+                                                                  .labelMedium
+                                                                  .fontStyle,
+                                                              ),
+                                                              color: Color(0xFF57636C),
                                                                 fontSize: 12.0,
                                                                 letterSpacing:
-                                                                    0.0,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .fontStyle,
+                                                                  0.0,
+                                                                fontWeight:FontWeight.w500,
+                                                                fontStyle: FlutterFlowTheme.of(context)
+                                                                  .labelMedium
+                                                                  .fontStyle,
                                                               ),
                                                         ),
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  0.0,
-                                                                  0.0,
-                                                                  16.0),
+                                                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
                                                       child: Container(
                                                         width: double.infinity,
                                                         child: TextFormField(
                                                           controller: _model
-                                                              .textFieldUsernameTextController,
+                                                            .textFieldUsernameTextController,
                                                           focusNode: _model
-                                                              .textFieldUsernameFocusNode,
+                                                            .textFieldUsernameFocusNode,
                                                           autofocus: true,
                                                           autofillHints: [
                                                             AutofillHints.email
                                                           ],
                                                           obscureText: false,
-                                                          decoration:
-                                                              InputDecoration(
+                                                          decoration: InputDecoration(
                                                             labelText:
-                                                                'Usuário',
+                                                              'Usuário',
                                                             labelStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
+                                                              FlutterFlowTheme.of(context)
+                                                                .labelLarge
+                                                                .override(
+                                                                  font: GoogleFonts.plusJakartaSans(
+                                                                    fontWeight:FontWeight.w500,
+                                                                    fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                                                  ),
+                                                                  color: Color(0xFF57636C),
+                                                                  fontSize: 16.0,
+                                                                  letterSpacing: 0.0,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  fontStyle: FlutterFlowTheme.of(context)
                                                                     .labelLarge
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .plusJakartaSans(
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelLarge
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Color(
-                                                                          0xFF57636C),
-                                                                      fontSize:
-                                                                          16.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelLarge
-                                                                          .fontStyle,
-                                                                    ),
-                                                            enabledBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Color(
-                                                                    0xFFE0E3E7),
+                                                                    .fontStyle,
+                                                                  ),
+                                                            enabledBorder: OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                color: Color(0xFFE0E3E7),
                                                                 width: 2.0,
                                                               ),
                                                               borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
+                                                                BorderRadius.circular(40.0),
                                                             ),
                                                             focusedBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Color(
-                                                                    0xFF4B39EF),
-                                                                width: 2.0,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                            ),
-                                                            errorBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Color(
-                                                                    0xFFFF5963),
-                                                                width: 2.0,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                            ),
-                                                            focusedErrorBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Color(
-                                                                    0xFFFF5963),
-                                                                width: 2.0,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                            ),
-                                                            filled: true,
-                                                            fillColor:
-                                                                Colors.white,
-                                                            contentPadding:
-                                                                EdgeInsets.all(
-                                                                    24.0),
-                                                          ),
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .bodyLarge
-                                                              .override(
-                                                                font: GoogleFonts
-                                                                    .plusJakartaSans(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyLarge
-                                                                      .fontStyle,
+                                                              OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                  color: Color(0xFF4B39EF),
+                                                                  width: 2.0,
                                                                 ),
-                                                                color: Color(
-                                                                    0xFF101213),
-                                                                fontSize: 16.0,
-                                                                letterSpacing:
-                                                                    0.0,
+                                                                borderRadius:
+                                                                  BorderRadius.circular(40.0),
+                                                              ),
+                                                            errorBorder:
+                                                              OutlineInputBorder(
+                                                                borderSide:
+                                                                  BorderSide(
+                                                                    color: Color(0xFFFF5963),
+                                                                    width: 2.0,
+                                                                  ),
+                                                                borderRadius:
+                                                                  BorderRadius.circular(40.0),
+                                                              ),
+                                                            focusedErrorBorder:
+                                                              OutlineInputBorder(
+                                                                borderSide:
+                                                                  BorderSide(
+                                                                    color: Color(0xFFFF5963),
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                  BorderRadius.circular(40.0),
+                                                              ),
+                                                            filled: true,
+                                                            fillColor: Colors.white,
+                                                            contentPadding:
+                                                              EdgeInsets.all(24.0),
+                                                          ),
+                                                          style: FlutterFlowTheme.of(context)
+                                                            .bodyLarge
+                                                            .override(
+                                                              font: GoogleFonts.plusJakartaSans(
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
+                                                                  FontWeight.w500,
+                                                                  fontStyle: FlutterFlowTheme.of(context)
                                                                     .bodyLarge
                                                                     .fontStyle,
                                                               ),
+                                                              color: Color(0xFF101213),
+                                                              fontSize: 16.0,
+                                                              letterSpacing:0.0,
+                                                              fontWeight: FontWeight.w500,
+                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                .bodyLarge
+                                                                .fontStyle,
+                                                              ),
                                                           validator: _model
-                                                              .textFieldUsernameTextControllerValidator
-                                                              .asValidator(
-                                                                  context),
+                                                            .textFieldUsernameTextControllerValidator
+                                                            .asValidator(context),
                                                         ),
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  0.0,
-                                                                  0.0,
-                                                                  24.0),
+                                                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
                                                       child: Container(
                                                         width: double.infinity,
                                                         child: TextFormField(
-                                                          controller: _model
-                                                              .textFieldPasswordTextController,
-                                                          focusNode: _model
-                                                              .textFieldPasswordFocusNode,
+                                                          controller: _model.textFieldPasswordTextController,
+                                                          focusNode: _model.textFieldPasswordFocusNode,
                                                           autofocus: true,
                                                           autofillHints: [
-                                                            AutofillHints
-                                                                .password
+                                                            AutofillHints.password
                                                           ],
-                                                          obscureText: !_model
-                                                              .textFieldPasswordVisibility,
+                                                          obscureText: !_model.textFieldPasswordVisibility,
                                                           decoration:
-                                                              InputDecoration(
-                                                            labelText: 'Senha',
-                                                            labelStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
+                                                            InputDecoration(
+                                                              labelText: 'Senha',
+                                                              labelStyle:
+                                                              FlutterFlowTheme.of(context)
+                                                                .labelLarge
+                                                                .override(
+                                                                  font: GoogleFonts.plusJakartaSans(
+                                                                    fontWeight:FontWeight.w500,
+                                                                    fontStyle: FlutterFlowTheme.of(context)
+                                                                      .labelLarge
+                                                                      .fontStyle,
+                                                                  ),
+                                                                  color: Color(0xFF57636C),
+                                                                  fontSize: 16.0,
+                                                                  letterSpacing: 0.0,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  fontStyle: FlutterFlowTheme.of(context)
                                                                     .labelLarge
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .plusJakartaSans(
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelLarge
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Color(
-                                                                          0xFF57636C),
-                                                                      fontSize:
-                                                                          16.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelLarge
-                                                                          .fontStyle,
-                                                                    ),
+                                                                    .fontStyle,
+                                                                ),
                                                             enabledBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
+                                                              OutlineInputBorder(
+                                                                borderSide:
                                                                   BorderSide(
-                                                                color: Color(
-                                                                    0xFFE0E3E7),
-                                                                width: 2.0,
+                                                                    color: Color(0xFFE0E3E7),
+                                                                    width: 2.0,
+                                                                  ),
+                                                                borderRadius:
+                                                                  BorderRadius.circular(40.0),
                                                               ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                            ),
                                                             focusedBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
+                                                              OutlineInputBorder(
+                                                                borderSide:
                                                                   BorderSide(
-                                                                color: Color(
-                                                                    0xFF4B39EF),
-                                                                width: 2.0,
+                                                                  color: Color(0xFF4B39EF),
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                  BorderRadius.circular(40.0),
                                                               ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                            ),
                                                             errorBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
+                                                              OutlineInputBorder(
+                                                                borderSide:
                                                                   BorderSide(
-                                                                color: Color(
-                                                                    0xFFFF5963),
-                                                                width: 2.0,
+                                                                    color: Color(0xFFFF5963),
+                                                                    width: 2.0,
+                                                                  ),
+                                                                borderRadius:
+                                                                  BorderRadius.circular(40.0),
                                                               ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                            ),
                                                             focusedErrorBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide:
+                                                              OutlineInputBorder(
+                                                                borderSide:
                                                                   BorderSide(
-                                                                color: Color(
-                                                                    0xFFFF5963),
-                                                                width: 2.0,
+                                                                    color: Color(0xFFFF5963),
+                                                                    width: 2.0,
+                                                                  ),
+                                                                borderRadius:
+                                                                  BorderRadius.circular(40.0),
                                                               ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          40.0),
-                                                            ),
                                                             filled: true,
-                                                            fillColor:
-                                                                Colors.white,
+                                                            fillColor:Colors.white,
                                                             contentPadding:
-                                                                EdgeInsets.all(
-                                                                    24.0),
+                                                              EdgeInsets.all(24.0),
                                                             suffixIcon: InkWell(
                                                               onTap: () =>
-                                                                  safeSetState(
-                                                                () => _model
-                                                                        .textFieldPasswordVisibility =
-                                                                    !_model
-                                                                        .textFieldPasswordVisibility,
-                                                              ),
-                                                              focusNode: FocusNode(
-                                                                  skipTraversal:
-                                                                      true),
+                                                                safeSetState(
+                                                                  () => _model.textFieldPasswordVisibility =!_model.textFieldPasswordVisibility,
+                                                                ),
+                                                              focusNode: FocusNode(skipTraversal:true),
                                                               child: Icon(
                                                                 _model.textFieldPasswordVisibility
-                                                                    ? Icons
-                                                                        .visibility_outlined
-                                                                    : Icons
-                                                                        .visibility_off_outlined,
-                                                                color: Color(
-                                                                    0xFF57636C),
-                                                                size: 24.0,
+                                                                  ? Icons
+                                                                    .visibility_outlined
+                                                                  : Icons
+                                                                    .visibility_off_outlined,
+                                                                color: Color(0xFF57636C),
+                                                                  size: 24.0,
                                                               ),
                                                             ),
                                                           ),
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .bodyLarge
-                                                              .override(
-                                                                font: GoogleFonts
-                                                                    .plusJakartaSans(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyLarge
-                                                                      .fontStyle,
-                                                                ),
-                                                                color: Color(
-                                                                    0xFF101213),
-                                                                fontSize: 16.0,
-                                                                letterSpacing:
-                                                                    0.0,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .fontStyle,
+                                                          style: FlutterFlowTheme.of(context)
+                                                            .bodyLarge
+                                                            .override(
+                                                              font: GoogleFonts.plusJakartaSans(
+                                                                fontWeight: FontWeight.w500,
+                                                                fontStyle: FlutterFlowTheme.of(context)
+                                                                  .bodyLarge
+                                                                  .fontStyle,
                                                               ),
+                                                              color: Color(0xFF101213),
+                                                              fontSize: 16.0,
+                                                              letterSpacing: 0.0,
+                                                              fontWeight: FontWeight.w500,
+                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                .bodyLarge
+                                                                .fontStyle,
+                                                            ),
                                                           validator: _model
-                                                              .textFieldPasswordTextControllerValidator
-                                                              .asValidator(
-                                                                  context),
+                                                            .textFieldPasswordTextControllerValidator
+                                                            .asValidator(context),
                                                         ),
                                                       ),
                                                     ),
                                                     Align(
-                                                      alignment:
-                                                          AlignmentDirectional(
-                                                              0.0, 0.0),
+                                                      alignment: AlignmentDirectional(0.0, 0.0),
                                                       child: Padding(
                                                         padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0,
-                                                                    16.0),
+                                                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
                                                         child: FFButtonWidget(
                                                           onPressed: () async {
                                                             _model.apiResultxi5 =
-                                                                await UserLoginCall
-                                                                    .call(
-                                                              username: _model
-                                                                  .textFieldUsernameTextController
-                                                                  .text,
-                                                              password: _model
-                                                                  .textFieldPasswordTextController
-                                                                  .text,
-                                                            );
+                                                              await UserLoginCall.call(
+                                                                username: _model.textFieldUsernameTextController.text,
+                                                                password: _model.textFieldPasswordTextController.text,
+                                                              );
 
-                                                            if ((_model
-                                                                    .apiResultxi5
-                                                                    ?.succeeded ??
-                                                                true)) {
-                                                              context.pushNamed(
-                                                                  TabelaPagWidget
-                                                                      .routeName);
+                                                            if ((_model.apiResultxi5?.succeeded ?? true)) {
+                                                              context.pushNamed(TabelaPagWidget.routeName);
                                                             } else {
-                                                              ScaffoldMessenger
-                                                                      .of(context)
-                                                                  .showSnackBar(
+                                                              ScaffoldMessenger.of(context).showSnackBar(
                                                                 SnackBar(
                                                                   content: Text(
                                                                     getJsonField(
-                                                                      (_model.apiResultxi5
-                                                                              ?.jsonBody ??
-                                                                          ''),
+                                                                      (_model.apiResultxi5?.jsonBody ?? ''),
                                                                       r'''$.detail''',
                                                                     ).toString(),
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .primaryBackground,
+                                                                    style: TextStyle(
+                                                                      color: FlutterFlowTheme.of(context).primaryBackground,
                                                                     ),
                                                                   ),
-                                                                  duration: Duration(
-                                                                      milliseconds:
-                                                                          3000),
-                                                                  backgroundColor:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .error,
+                                                                  duration: Duration(milliseconds: 3000),
+                                                                  backgroundColor: FlutterFlowTheme.of(context).error,
                                                                 ),
                                                               );
                                                             }
@@ -720,103 +579,52 @@ class _InicialWidgetState extends State<InicialWidget>
                                                             safeSetState(() {});
                                                           },
                                                           text: 'Entrar',
-                                                          options:
-                                                              FFButtonOptions(
+                                                          options: FFButtonOptions(
                                                             width: 240.0,
                                                             height: 60.0,
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                            iconPadding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                            color: Color(
-                                                                0xFF4B39EF),
+                                                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                                            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                                            color: Color(0xFF4B39EF),
                                                             textStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleSmall
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .plusJakartaSans(
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          16.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
-                                                                    ),
+                                                              FlutterFlowTheme.of(context)
+                                                                .titleSmall
+                                                                .override(
+                                                                  font: GoogleFonts.plusJakartaSans(
+                                                                    fontWeight:FontWeight.w500,
+                                                                    fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                                  ),
+                                                                  color: Colors.white,
+                                                                  fontSize:16.0,
+                                                                  letterSpacing:0.0,
+                                                                  fontWeight:FontWeight.w500,
+                                                                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                                ),
                                                             elevation: 3.0,
-                                                            borderSide:
-                                                                BorderSide(
-                                                              color: Colors
-                                                                  .transparent,
+                                                            borderSide: BorderSide(
+                                                              color: Colors.transparent,
                                                               width: 1.0,
                                                             ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        40.0),
+                                                            borderRadius: BorderRadius.circular(40.0),
                                                           ),
                                                         ),
                                                       ),
                                                     ),
                                                     Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
+                                                      mainAxisSize: MainAxisSize.max,
                                                       children: [
                                                         Align(
-                                                          alignment:
-                                                              AlignmentDirectional(
-                                                                  0.0, 0.0),
+                                                          alignment: AlignmentDirectional(0.0, 0.0),
                                                           child: Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        16.0),
+                                                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
                                                             child: Wrap(
                                                               spacing: 16.0,
                                                               runSpacing: 0.0,
-                                                              alignment:
-                                                                  WrapAlignment
-                                                                      .center,
-                                                              crossAxisAlignment:
-                                                                  WrapCrossAlignment
-                                                                      .center,
-                                                              direction: Axis
-                                                                  .horizontal,
-                                                              runAlignment:
-                                                                  WrapAlignment
-                                                                      .center,
-                                                              verticalDirection:
-                                                                  VerticalDirection
-                                                                      .down,
-                                                              clipBehavior:
-                                                                  Clip.none,
+                                                              alignment: WrapAlignment.center,
+                                                              crossAxisAlignment: WrapCrossAlignment.center,
+                                                              direction: Axis.horizontal,
+                                                              runAlignment: WrapAlignment.center,
+                                                              verticalDirection: VerticalDirection.down,
+                                                              clipBehavior: Clip.none,
                                                               children: [],
                                                             ),
                                                           ),
@@ -825,8 +633,7 @@ class _InicialWidgetState extends State<InicialWidget>
                                                     ),
                                                   ],
                                                 ),
-                                              ).animateOnPageLoad(animationsMap[
-                                                  'columnOnPageLoadAnimation']!),
+                                              ).animateOnPageLoad(animationsMap['columnOnPageLoadAnimation']!),
                                             ),
                                           ),
                                         ],
@@ -836,8 +643,7 @@ class _InicialWidgetState extends State<InicialWidget>
                                 ),
                               ),
                             ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation']!),
+                          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
                         ),
                       ],
                     ),

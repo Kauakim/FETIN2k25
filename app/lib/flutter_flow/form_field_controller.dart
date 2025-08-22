@@ -16,7 +16,7 @@ class FormListFieldController<T> extends FormFieldController<List<T>> {
   final List<T>? _initialListValue;
 
   FormListFieldController(super.initialValue)
-      : _initialListValue = List<T>.from(initialValue ?? []);
+    : _initialListValue = List<T>.from(initialValue ?? []);
 
   @override
   void reset() => value = List<T>.from(_initialListValue ?? []);

@@ -13,7 +13,7 @@ class LatLng {
 
   @override
   bool operator ==(other) =>
-      other is LatLng &&
-      latitude == other.latitude &&
-      longitude == other.longitude;
+    other is LatLng &&
+    latitude == other.latitude &&
+    longitude == other.longitude;
 }

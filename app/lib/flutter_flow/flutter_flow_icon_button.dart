@@ -90,17 +90,15 @@ class _FlutterFlowIconButtonState extends State<FlutterFlowIconButton> {
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 0),
               side: BorderSide(
                 color: widget.hoverBorderColor ??
-                    widget.borderColor ??
-                    Colors.transparent,
+                  widget.borderColor ??
+                  Colors.transparent,
                 width: widget.borderWidth ?? 0,
               ),
             );
           }
-          if (states.contains(WidgetState.focused) &&
-              widget.focusBorderSide != null) {
+          if (states.contains(WidgetState.focused) && widget.focusBorderSide != null) {
             return RoundedRectangleBorder(
-              borderRadius:
-                  widget.focusBorderRadius ?? BorderRadius.circular(8),
+              borderRadius: widget.focusBorderRadius ?? BorderRadius.circular(8),
               side: widget.focusBorderSide!,
             );
           }
@@ -115,8 +113,7 @@ class _FlutterFlowIconButtonState extends State<FlutterFlowIconButton> {
       ),
       iconColor: WidgetStateProperty.resolveWith<Color?>(
         (states) {
-          if (states.contains(WidgetState.disabled) &&
-              widget.disabledIconColor != null) {
+          if (states.contains(WidgetState.disabled) && widget.disabledIconColor != null) {
             return widget.disabledIconColor;
           }
           if (states.contains(WidgetState.hovered) &&
@@ -128,12 +125,10 @@ class _FlutterFlowIconButtonState extends State<FlutterFlowIconButton> {
       ),
       backgroundColor: WidgetStateProperty.resolveWith<Color?>(
         (states) {
-          if (states.contains(WidgetState.disabled) &&
-              widget.disabledColor != null) {
+          if (states.contains(WidgetState.disabled) && widget.disabledColor != null) {
             return widget.disabledColor;
           }
-          if (states.contains(WidgetState.hovered) &&
-              widget.hoverColor != null) {
+          if (states.contains(WidgetState.hovered) && widget.hoverColor != null) {
             return widget.hoverColor;
           }
 
@@ -160,31 +155,31 @@ class _FlutterFlowIconButtonState extends State<FlutterFlowIconButton> {
           ignoring: (widget.showLoadingIndicator && loading),
           child: IconButton(
             icon: (widget.showLoadingIndicator && loading)
-                ? Container(
-                    width: iconSize,
-                    height: iconSize,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        iconColor ?? Colors.white,
-                      ),
-                    ),
-                  )
-                : effectiveIcon,
+              ? Container(
+                width: iconSize,
+                height: iconSize,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    iconColor ?? Colors.white,
+                  ),
+                ),
+              )
+              : effectiveIcon,
             onPressed: widget.onPressed == null
-                ? null
-                : () async {
-                    if (loading) {
-                      return;
-                    }
-                    setState(() => loading = true);
-                    try {
-                      await widget.onPressed!();
-                    } finally {
-                      if (mounted) {
-                        setState(() => loading = false);
-                      }
-                    }
-                  },
+              ? null
+              : () async {
+                if (loading) {
+                  return;
+                }
+                setState(() => loading = true);
+                try {
+                  await widget.onPressed!();
+                } finally {
+                  if (mounted) {
+                    setState(() => loading = false);
+                  }
+                }
+              },
             splashRadius: widget.buttonSize,
             style: style,
           ),

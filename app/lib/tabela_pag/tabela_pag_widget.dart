@@ -56,20 +56,16 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
           title: Text(
             'Page Title',
             style: FlutterFlowTheme.of(context).headlineMedium.override(
-                  font: GoogleFonts.outfit(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                  ),
-                  color: Colors.white,
-                  fontSize: 22.0,
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
+              font: GoogleFonts.outfit(
+                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+              ),
+              color: Colors.white,
+              fontSize: 22.0,
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+            ),
           ),
           actions: [],
           centerTitle: false,
@@ -102,9 +98,8 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                               Duration(milliseconds: 2000),
                               () async {
                                 safeSetState(
-                                    () => _model.apiRequestCompleter = null);
-                                await _model.waitForApiRequestCompleted(
-                                    minWait: 500, maxWait: 1000);
+                                  () => _model.apiRequestCompleter = null);
+                                await _model.waitForApiRequestCompleted(minWait: 500, maxWait: 1000);
                               },
                             ),
                             autofocus: false,
@@ -112,44 +107,44 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                             decoration: InputDecoration(
                               isDense: true,
                               labelStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
+                                .labelMedium
+                                .override(
+                                  font: GoogleFonts.readexPro(
                                     fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
+                                      .labelMedium
+                                      .fontWeight,
                                     fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
+                                      .labelMedium
+                                      .fontStyle,
                                   ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                                ),
                               hintText: 'Pesquisar',
                               hintStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
+                                .labelMedium
+                                .override(
+                                  font: GoogleFonts.readexPro(
                                     fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
+                                      .labelMedium
+                                      .fontWeight,
                                     fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
+                                      .labelMedium
+                                      .fontStyle,
                                   ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                                ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Color(0x00000000),
@@ -179,33 +174,28 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               filled: true,
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
+                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
                             ),
-                            style: FlutterFlowTheme.of(context)
+                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                              ),
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
                                 .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                            cursorColor:
-                                FlutterFlowTheme.of(context).primaryText,
+                                .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                            ),
+                            cursorColor: FlutterFlowTheme.of(context).primaryText,
                             enableInteractiveSelection: true,
-                            validator: _model.textControllerValidator
-                                .asValidator(context),
+                            validator: _model.textControllerValidator.asValidator(context),
                           ),
                         ),
                       ),
@@ -218,31 +208,29 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                           text: 'Filtro',
                           options: FFButtonOptions(
                             height: 40.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                16.0, 0.0, 16.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
+                            padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                             color: FlutterFlowTheme.of(context).primary,
                             textStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
+                              .titleSmall
+                              .override(
+                                font: GoogleFonts.readexPro(
                                   fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
+                                    .titleSmall
+                                    .fontWeight,
                                   fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
+                                    .titleSmall
+                                    .fontStyle,
                                 ),
+                                color: Colors.white,
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .fontStyle,
+                              ),
                             elevation: 0.0,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -264,8 +252,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                         width: 100.0,
                         height: 100.0,
                         decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          color: FlutterFlowTheme.of(context).secondaryBackground,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
@@ -276,24 +263,24 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                 'Beacon',
                                 textAlign: TextAlign.center,
                                 style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
+                                  .bodyMedium
+                                  .override(
+                                    font: GoogleFonts.readexPro(
                                       fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
+                                        .bodyMedium
+                                        .fontWeight,
                                       fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
+                                        .bodyMedium
+                                        .fontStyle,
                                     ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                  ),
                               ),
                             ),
                           ],
@@ -303,8 +290,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                         width: 100.0,
                         height: 100.0,
                         decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          color: FlutterFlowTheme.of(context).secondaryBackground,
                         ),
                         child: Align(
                           alignment: AlignmentDirectional(0.0, 0.0),
@@ -312,24 +298,24 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                             'Tipo',
                             textAlign: TextAlign.center,
                             style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
+                              .bodyMedium
+                              .override(
+                                font: GoogleFonts.readexPro(
                                   fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
+                                    .bodyMedium
+                                    .fontWeight,
                                   fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
+                                    .bodyMedium
+                                    .fontStyle,
                                 ),
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                              ),
                           ),
                         ),
                       ),
@@ -337,8 +323,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                         width: 100.0,
                         height: 100.0,
                         decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          color: FlutterFlowTheme.of(context).secondaryBackground,
                         ),
                         child: Align(
                           alignment: AlignmentDirectional(0.0, 0.0),
@@ -346,24 +331,24 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                             'Status',
                             textAlign: TextAlign.center,
                             style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
+                              .bodyMedium
+                              .override(
+                                font: GoogleFonts.readexPro(
                                   fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
+                                    .bodyMedium
+                                    .fontWeight,
                                   fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
+                                    .bodyMedium
+                                    .fontStyle,
                                 ),
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                              ),
                           ),
                         ),
                       ),
@@ -371,8 +356,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                         width: 100.0,
                         height: 100.0,
                         decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          color: FlutterFlowTheme.of(context).secondaryBackground,
                         ),
                         child: Align(
                           alignment: AlignmentDirectional(0.0, 0.0),
@@ -380,24 +364,24 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                             'Coordenada',
                             textAlign: TextAlign.center,
                             style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
+                              .bodyMedium
+                              .override(
+                                font: GoogleFonts.readexPro(
                                   fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
+                                    .bodyMedium
+                                    .fontWeight,
                                   fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
+                                    .bodyMedium
+                                    .fontStyle,
                                 ),
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                              ),
                           ),
                         ),
                       ),
@@ -407,9 +391,9 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
               ),
               FutureBuilder<ApiCallResponse>(
                 future:
-                    (_model.apiRequestCompleter ??= Completer<ApiCallResponse>()
-                          ..complete(BeaconsGetAllCall.call()))
-                        .future,
+                  (_model.apiRequestCompleter ??= Completer<ApiCallResponse>()
+                    ..complete(BeaconsGetAllCall.call()))
+                    .future,
                 builder: (context, snapshot) {
                   // Customize what your widget looks like when it's loading.
                   if (!snapshot.hasData) {
@@ -445,24 +429,24 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                               return Text(
                                 '',
                                 style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
+                                  .bodyMedium
+                                  .override(
+                                    font: GoogleFonts.readexPro(
                                       fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
+                                        .bodyMedium
+                                        .fontWeight,
                                       fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
+                                        .bodyMedium
+                                        .fontStyle,
                                     ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                  ),
                               );
                             }),
                           );
@@ -472,29 +456,28 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                         width: 100.0,
                         height: 100.0,
                         decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          color: FlutterFlowTheme.of(context).secondaryBackground,
                         ),
                       ),
                       Text(
                         '\n',
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontStyle,
+                          ),
+                          letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontWeight,
+                          fontStyle: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontStyle,
+                        ),
                       ),
                     ],
                   );
