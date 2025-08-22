@@ -147,7 +147,7 @@ class _NavBarPageState extends State<NavBarPage> {
               size: 24.0,
             ),
             activeIcon: FaIcon(
-              FontAwesomeIcons.mapMarked,
+              FontAwesomeIcons.mapLocation,
               size: 24.0,
             ),
             label: 'Home',

@@ -1,19 +1,13 @@
-// ignore_for_file: constant_identifier_names, depend_on_referenced_packages, prefer_final_fields
-
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 import 'package:equatable/equatable.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
-
 import '/flutter_flow/uploaded_file.dart';
-
-import 'get_streamed_response.dart';
 
 enum ApiCallType {
   GET,
@@ -30,6 +24,9 @@ enum BodyType {
   X_WWW_FORM_URL_ENCODED,
   MULTIPART,
 }
+
+Future<http.StreamedResponse> getStreamedResponse(http.Request request) =>
+    http.Client().send(request);
 
 class ApiCallOptions extends Equatable {
   const ApiCallOptions({

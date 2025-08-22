@@ -408,7 +408,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
               FutureBuilder<ApiCallResponse>(
                 future:
                     (_model.apiRequestCompleter ??= Completer<ApiCallResponse>()
-                          ..complete(GetAllBeaconsDataCall.call()))
+                          ..complete(BeaconsGetAllCall.call()))
                         .future,
                 builder: (context, snapshot) {
                   // Customize what your widget looks like when it's loading.
@@ -441,10 +441,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
 
                           return Row(
                             mainAxisSize: MainAxisSize.max,
-                            children: List.generate(beaconItem.length,
-                                (beaconItemIndex) {
-                              final beaconItemItem =
-                                  beaconItem[beaconItemIndex];
+                            children: List.generate(beaconItem.length, (beaconItemIndex) {
                               return Text(
                                 '',
                                 style: FlutterFlowTheme.of(context)

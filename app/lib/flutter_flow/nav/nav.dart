@@ -1,11 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '/main.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-
 import '/index.dart';
 
 export 'package:go_router/go_router.dart';
