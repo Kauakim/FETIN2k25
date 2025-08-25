@@ -84,12 +84,12 @@ Remove um usuário do sistema.
 
 ### Rotas de Beacons (BEACONS)
 
-#### GET `/beacons/get/all`
+#### GET `/beacons/get/all/`
 Retorna todos os beacons cadastrados no sistema.
 
 **Resposta:** Lista de todos os beacons
 
-#### GET `/beacons/get/{seconds}`
+#### GET `/beacons/get/{seconds}/`
 Retorna beacons dos últimos X segundos.
 
 **Exemplo:** `/beacons/get/30` - Retorna beacons dos últimos 30 segundos
@@ -112,7 +112,7 @@ Cria um novo beacon no sistema.
 }
 ```
 
-#### POST `/beacons/update/tipo`
+#### POST `/beacons/update/tipo/`
 Atualiza o tipo de um beacon.
 
 **Body:**
@@ -124,7 +124,7 @@ Atualiza o tipo de um beacon.
 }
 ```
 
-#### POST `/beacons/update/status`
+#### POST `/beacons/update/status/`
 Atualiza o status de um beacon.
 
 **Body:**
@@ -175,10 +175,10 @@ Atualiza dados RSSI dos beacons através dos gateways.
 
 ### Rotas de Tarefas (TASKS)
 
-#### GET `/tasks/read/all`
+#### GET `/tasks/read/all/`
 Retorna todas as tarefas do sistema.
 
-#### GET `/tasks/read/{user}`
+#### GET `/tasks/read/{user}/`
 Retorna todas as tarefas de um usuário específico.
 
 **Exemplo:** `/tasks/read/joao1234`

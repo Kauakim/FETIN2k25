@@ -74,14 +74,14 @@ async def deleteUser(request: schemas.DeleteUserSchema):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-@router.get("/beacons/get/all", response_model=schemas.BeaconsResponseSchema)
+@router.get("/beacons/get/all/", response_model=schemas.BeaconsResponseSchema)
 async def getAllBeacons():
     beaconsData = models.getAllBeaconsData()
     if not beaconsData:
         raise HTTPException(status_code=404, detail="No beacons found")
     return {"Beacons": beaconsData}
 
-@router.get("/beacons/get/{seconds}", response_model=schemas.BeaconsResponseSchema)
+@router.get("/beacons/get/{seconds}/", response_model=schemas.BeaconsResponseSchema)
 async def getLastBeacons(seconds: int):
     beaconsData = models.getLastBeaconsData(seconds)
     if not beaconsData:
@@ -110,7 +110,7 @@ async def deleteBeacon(request: schemas.BeaconDeleteRequest):
     models.deleteBeacon(request.beacon)
     return {"message": "Beacon deleted successfully", "status_code": status.HTTP_200_OK}
 
-@router.post("/beacons/update/tipo")
+@router.post("/beacons/update/tipo/")
 async def updateBeaconRssi(request: schemas.BeaconUpdateTypeRequest):
     if not request.beacon or not request.tipo or not request.utc:
         raise HTTPException(
@@ -121,7 +121,7 @@ async def updateBeaconRssi(request: schemas.BeaconUpdateTypeRequest):
     models.updateBeaconType(request.utc, request.beacon, request.tipo)
     return {"message": "Beacon type updated successfully", "status_code": status.HTTP_200_OK}
 
-@router.post("/beacons/update/status")
+@router.post("/beacons/update/status/")
 async def updateBeaconStatus(request: schemas.BeaconUpdateStatusRequest):
     if not request.beacon or not request.status or not request.utc:
         raise HTTPException(
@@ -169,14 +169,14 @@ async def RSSIRequest(request: schemas.GatewayRequest):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-@router.get("/tasks/read/all", response_model=schemas.TaskResponseSchema)
+@router.get("/tasks/read/all/", response_model=schemas.TaskResponseSchema)
 async def getTasks():
     tasksData = models.getTasksData()
     if not tasksData:
         raise HTTPException(status_code=404, detail="No tasks found")
     return {"Tasks": tasksData}
 
-@router.get("/tasks/read/{user}", response_model=schemas.TaskResponseSchema)
+@router.get("/tasks/read/{user}/", response_model=schemas.TaskResponseSchema)
 async def getUserTasks(user: str):
     tasksData = models.getTaskByUser(user)
     if not tasksData:
@@ -246,7 +246,7 @@ async def deleteTask(request: schemas.TaskDeleteRequest):
 
 #---------------------------------------------------------------------------------------------------------------------------
 
-@router.get("/info", response_model=schemas.InfoResponseSchema)
+@router.get("/info/", response_model=schemas.InfoResponseSchema)
 async def getInfo():
     infoData = models.getInfoData()
     if not infoData:

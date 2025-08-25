@@ -54,7 +54,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
           backgroundColor: FlutterFlowTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Text(
-            'Page Title',
+            'Tabela',
             style: FlutterFlowTheme.of(context).headlineMedium.override(
               font: GoogleFonts.outfit(
                 fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
@@ -421,7 +421,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                           final beaconItem = getJsonField(
                             listViewGetAllBeaconsDataResponse.jsonBody,
                             r'''$.Beacons.values''',
-                          ).toList();
+                          )?.toList() ?? [];
 
                           return Row(
                             mainAxisSize: MainAxisSize.max,

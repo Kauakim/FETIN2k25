@@ -2,6 +2,8 @@ import 'api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
 
+const String apiBaseUrl = 'http://192.168.0.111:5501';
+
 class UserLoginCall {
   static Future<ApiCallResponse> call({
     String? username = '',
@@ -9,13 +11,13 @@ class UserLoginCall {
   }) async {
     final ffApiRequestBody = '''
       {
-        "username": "[username]",
-        "password": "[password]"
+        "username": "$username",
+        "password": "$password"
       }
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'UserLogin',
-      apiUrl: 'http://127.0.0.1:5501/users/login',
+      apiUrl: '${apiBaseUrl}/users/login/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +47,7 @@ class UserSigninCall {
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'UserSignin',
-      apiUrl: 'http://127.0.0.1:5501/users/signin',
+      apiUrl: '${apiBaseUrl}/users/signin/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
@@ -76,7 +78,7 @@ class UserUpdateCall {
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'UserUpdate',
-      apiUrl: 'http://127.0.0.1:5501/users/update',
+      apiUrl: '${apiBaseUrl}/users/update/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +101,7 @@ class UserDeleteCall {
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'UserDelete',
-      apiUrl: 'http://127.0.0.1:5501/users/delete',
+      apiUrl: '${apiBaseUrl}/users/delete/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
@@ -115,7 +117,7 @@ class BeaconsGetAllCall {
   static Future<ApiCallResponse> call() async {
     return ApiManager.instance.makeApiCall(
       callName: 'BeaconsGetAll',
-      apiUrl: 'http://127.0.0.1:5501/beacons/get/all',
+      apiUrl: '${apiBaseUrl}/beacons/get/all/',
       callType: ApiCallType.GET,
       headers: {},
       params: {},
@@ -130,7 +132,7 @@ class BeaconsGetRecentCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'BeaconsGetRecent',
-      apiUrl: 'http://127.0.0.1:5501/beacons/get/$seconds',
+      apiUrl: '${apiBaseUrl}/beacons/get/$seconds/',
       callType: ApiCallType.GET,
       headers: {},
       returnBody: true,
@@ -142,7 +144,7 @@ class InfoGetCall {
   static Future<ApiCallResponse> call() async {
     return ApiManager.instance.makeApiCall(
       callName: 'InfoGet',
-      apiUrl: 'http://127.0.0.1:5501/info',
+      apiUrl: '${apiBaseUrl}/info/',
       callType: ApiCallType.GET,
       headers: {},
       returnBody: true,
@@ -169,7 +171,7 @@ class InfoCreateCall {
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'InfoCreate',
-      apiUrl: 'http://127.0.0.1:5501/info/create',
+      apiUrl: '${apiBaseUrl}/info/create/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
@@ -200,7 +202,7 @@ class InfoUpdateCall {
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'InfoUpdate',
-      apiUrl: 'http://127.0.0.1:5501/info/update',
+      apiUrl: '${apiBaseUrl}/info/update/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
@@ -225,7 +227,7 @@ class InfoDeleteCall {
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'InfoDelete',
-      apiUrl: 'http://127.0.0.1:5501/info/delete',
+      apiUrl: '${apiBaseUrl}/info/delete/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
