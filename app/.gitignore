@@ -4,6 +4,7 @@
 .pub-cache/
 .pub/
 /build/
+.idea/
 
 /android/app/debug
 /android/app/profile
