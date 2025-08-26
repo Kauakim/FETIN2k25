@@ -115,48 +115,56 @@ class _InicialWidgetState extends State<InicialWidget>
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
-        body: SafeArea(
-          top: true,
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(32.0, 12.0, 32.0, 32.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFF1F4F8),
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  alignment: AlignmentDirectional(0.0, 0.0),
-                  child: Align(
-                    alignment: AlignmentDirectional(0.0, 0.0),
-                    child: Padding(
-                      padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
-                      child: Text(
-                        'SIMTER',
-                        style:
-                          FlutterFlowTheme.of(context).displaySmall.override(
-                            font: GoogleFonts.plusJakartaSans(
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobileDevice = isMobile || constraints.maxWidth < 768;
+            
+            return SafeArea(
+              top: true,
+              child: Stack(
+                children: [
+                  // Header SIMTER
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      isMobileDevice ? 16.0 : 32.0, 
+                      isMobileDevice ? 8.0 : 12.0, 
+                      isMobileDevice ? 16.0 : 32.0, 
+                      isMobileDevice ? 16.0 : 32.0
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      height: isMobileDevice ? 150.0 : 200.0,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF1F4F8),
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      alignment: AlignmentDirectional(0.0, 0.0),
+                      child: Align(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
+                          child: Text(
+                            'SIMTER',
+                            style: FlutterFlowTheme.of(context).displaySmall.override(
+                              font: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                  .displaySmall
+                                  .fontStyle,
+                              ),
+                              color: Color(0xFF101213),
+                              fontSize: isMobileDevice ? 36.0 : 50.0,
+                              letterSpacing: 0.0,
                               fontWeight: FontWeight.w600,
                               fontStyle: FlutterFlowTheme.of(context)
                                 .displaySmall
                                 .fontStyle,
                             ),
-                            color: Color(0xFF101213),
-                            fontSize: 50.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                              .displaySmall
-                              .fontStyle,
                           ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
               Align(
                 alignment: AlignmentDirectional(0.0, -1.0),
                 child: Padding(
@@ -658,8 +666,10 @@ class _InicialWidgetState extends State<InicialWidget>
                   ),
                 ),
               ),
-            ],
-          ),
+              ],
+              ),
+            );
+          },
         ),
       ),
     );

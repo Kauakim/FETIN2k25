@@ -27,6 +27,58 @@ export 'nav/nav.dart';
 T valueOrDefault<T>(T? value, T defaultValue) =>
   (value is String && value.isEmpty) || value == null ? defaultValue : value;
 
+// Platform detection utility
+bool get isMobile {
+  if (kIsWeb) {
+    // On web, check screen width
+    return MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).size.width < 768;
+  }
+  // On native platforms, check if it's Android or iOS
+  return Platform.isAndroid || Platform.isIOS;
+}
+
+bool isDesktop(BuildContext context) {
+  if (kIsWeb) {
+    return MediaQuery.of(context).size.width >= 768;
+  }
+  return Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+}
+
+// Responsive sizing utilities
+double getResponsivePadding(BuildContext context, {double? mobile, double? desktop}) {
+  final isMobileDevice = isMobile || MediaQuery.of(context).size.width < 768;
+  return isMobileDevice ? (mobile ?? 16) : (desktop ?? 68);
+}
+
+double getResponsiveSpacing(BuildContext context, {double? mobile, double? desktop}) {
+  final isMobileDevice = isMobile || MediaQuery.of(context).size.width < 768;
+  return isMobileDevice ? (mobile ?? 8) : (desktop ?? 16);
+}
+
+double getResponsiveFontSize(BuildContext context, {double? mobile, double? desktop}) {
+  final isMobileDevice = isMobile || MediaQuery.of(context).size.width < 768;
+  return isMobileDevice ? (mobile ?? 14) : (desktop ?? 16);
+}
+
+EdgeInsets getResponsiveEdgeInsets(BuildContext context, {
+  EdgeInsets? mobile,
+  EdgeInsets? desktop,
+}) {
+  final isMobileDevice = isMobile || MediaQuery.of(context).size.width < 768;
+  return isMobileDevice 
+    ? (mobile ?? EdgeInsets.all(16)) 
+    : (desktop ?? EdgeInsets.all(68));
+}
+
+double getResponsiveWidth(BuildContext context, {double? mobile, double? desktop}) {
+  final isMobileDevice = isMobile || MediaQuery.of(context).size.width < 768;
+  if (isMobileDevice) {
+    return mobile ?? MediaQuery.of(context).size.width;
+  } else {
+    return desktop ?? 1200;
+  }
+}
+
 String dateTimeFormat(String format, DateTime? dateTime, {String? locale}) {
   if (dateTime == null) {
     return '';
