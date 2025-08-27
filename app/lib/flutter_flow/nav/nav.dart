@@ -59,6 +59,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       name: TabelaPagWidget.routeName,
       path: TabelaPagWidget.routePath,
       builder: (context, params) => TabelaPagWidget(),
+    ),
+    FFRoute(
+      name: TasksWidget.routeName,
+      path: TasksWidget.routePath,
+      builder: (context, params) => TasksWidget(),
+    ),
+    FFRoute(
+      name: PerfilUsuarioWidget.routeName,
+      path: PerfilUsuarioWidget.routePath,
+      builder: (context, params) => PerfilUsuarioWidget(),
     )
   ].map((r) => r.toRoute(appStateNotifier)).toList(),
 );

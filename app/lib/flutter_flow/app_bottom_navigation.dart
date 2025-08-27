@@ -2,7 +2,8 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/tabela_pag/tabela_pag_widget.dart';
 import '/home_mapa/home_mapa_widget.dart';
-import '/inicial/inicial_widget.dart';
+import '/tasks/tasks_widget.dart';
+import '/perfil_usuario/perfil_usuario_widget.dart';
 import 'package:flutter/material.dart';
 
 class AppBottomNavigation extends StatelessWidget {
@@ -59,12 +60,22 @@ class AppBottomNavigation extends StatelessWidget {
               ),
               _buildNavItem(
                 context: context,
-                icon: Icons.logout_outlined,
-                selectedIcon: Icons.logout,
-                label: 'Sair',
+                icon: Icons.assignment_outlined,
+                selectedIcon: Icons.assignment,
+                label: 'Tasks',
                 index: 2,
-                isSelected: false,
+                isSelected: currentIndex == 2,
                 onTap: () => _navigateToPage(context, 2),
+                isMobile: isMobileDevice,
+              ),
+              _buildNavItem(
+                context: context,
+                icon: Icons.person_outline,
+                selectedIcon: Icons.person,
+                label: 'Perfil',
+                index: 3,
+                isSelected: currentIndex == 3,
+                onTap: () => _navigateToPage(context, 3),
                 isMobile: isMobileDevice,
               ),
             ],
@@ -140,7 +151,10 @@ class AppBottomNavigation extends StatelessWidget {
         context.pushNamed(TabelaPagWidget.routeName);
         break;
       case 2:
-        context.pushNamed(InicialWidget.routeName);
+        context.pushNamed(TasksWidget.routeName);
+        break;
+      case 3:
+        context.pushNamed(PerfilUsuarioWidget.routeName);
         break;
     }
   }
