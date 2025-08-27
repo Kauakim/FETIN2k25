@@ -2,7 +2,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/tabela_pag/tabela_pag_widget.dart';
 import '/home_mapa/home_mapa_widget.dart';
-import '/tasks/tasks_widget.dart';
+import '/tasks_pag/tasks_widget.dart';
 import '/perfil_usuario/perfil_usuario_widget.dart';
 import 'package:flutter/material.dart';
 
