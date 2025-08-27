@@ -149,7 +149,7 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
           filterMaquinaCorrosao || filterEstacaoSolda || filterCNC || 
           filterMaquinaCorte || filterBancadaReparos) {
         bool machineMatch = false;
-        String maquina = (beacon['maquina'] ?? '').toString().toLowerCase();
+        String maquina = (beacon['beacon'] ?? '').toString().toLowerCase();
         
         if (filterEstacaoCarga && maquina.contains('estacao de carga')) machineMatch = true;
         if (filterImpressora3d && maquina.contains('impressora 3d')) machineMatch = true;

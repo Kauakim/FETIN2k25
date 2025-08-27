@@ -58,16 +58,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
     FFRoute(
       name: TabelaPagWidget.routeName,
       path: TabelaPagWidget.routePath,
-      builder: (context, params) => params.isEmpty
-          ? NavBarPage(initialPage: 'TabelaPag')
-          : TabelaPagWidget(),
-    ),
-    FFRoute(
-      name: NavigationBarTesteWidget.routeName,
-      path: NavigationBarTesteWidget.routePath,
-      builder: (context, params) => params.isEmpty
-          ? NavBarPage(initialPage: 'NavigationBarTeste')
-          : NavigationBarTesteWidget(),
+      builder: (context, params) => TabelaPagWidget(),
     )
   ].map((r) => r.toRoute(appStateNotifier)).toList(),
 );

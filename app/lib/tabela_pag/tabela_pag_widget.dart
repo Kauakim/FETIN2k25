@@ -2,6 +2,7 @@ import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/app_bottom_navigation.dart';
 import 'dart:async';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
           centerTitle: false,
           elevation: 2.0,
         ),
+        bottomNavigationBar: AppBottomNavigation(currentIndex: 1),
         body: LayoutBuilder(
           builder: (context, constraints) {
             final isMobileDevice = isMobile || constraints.maxWidth < 768;
