@@ -13,6 +13,18 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   double mapWidth = 800.0;
   double mapHeight = 600.0;
   
+  // Pan limits (how far the map can be dragged in each direction)
+  double maxPanLeft = 200.0;   // Maximum distance to pan left
+  double maxPanRight = 200.0;  // Maximum distance to pan right
+  double maxPanUp = 150.0;     // Maximum distance to pan up
+  double maxPanDown = 150.0;   // Maximum distance to pan down
+  
+  // Track if we're at pan limits (for visual feedback)
+  bool isAtLeftLimit = false;
+  bool isAtRightLimit = false;
+  bool isAtTopLimit = false;
+  bool isAtBottomLimit = false;
+  
   // Beacons and machines data with coordinates
   List<MapItem> mapItems = [
     // Máquinas
@@ -185,17 +197,68 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
     zoomLevel = newZoom.clamp(minZoom, maxZoom);
   }
   
-  // Update map offset for panning (constrained to keep items visible)
+  // Update map offset for panning (constrained to predefined limits)
   void updateOffset(Offset delta) {
-    mapOffset += delta;
-    // Optional: Add constraints to prevent panning too far
-    // This keeps the beacons within reasonable bounds
+    // Calculate new offset
+    final newOffset = mapOffset + delta;
+    
+    // Apply zoom-based scaling to pan limits (more zoom = more pan allowed)
+    // When zoomed in, we see less of the map, so we need more pan distance
+    // When zoomed out, we see more of the map, so we need less pan distance
+    final double scaledMaxPanLeft = maxPanLeft * zoomLevel;
+    final double scaledMaxPanRight = maxPanRight * zoomLevel;
+    final double scaledMaxPanUp = maxPanUp * zoomLevel;
+    final double scaledMaxPanDown = maxPanDown * zoomLevel;
+    
+    // Constrain the offset to the defined limits
+    // X-axis: negative values = pan right, positive values = pan left
+    // Y-axis: negative values = pan down, positive values = pan up
+    final clampedX = newOffset.dx.clamp(-scaledMaxPanRight, scaledMaxPanLeft);
+    final clampedY = newOffset.dy.clamp(-scaledMaxPanDown, scaledMaxPanUp);
+    
+    mapOffset = Offset(clampedX, clampedY);
+    
+    // Update limit flags for visual feedback
+    isAtLeftLimit = clampedX >= scaledMaxPanLeft;
+    isAtRightLimit = clampedX <= -scaledMaxPanRight;
+    isAtTopLimit = clampedY >= scaledMaxPanUp;
+    isAtBottomLimit = clampedY <= -scaledMaxPanDown;
   }
   
   // Reset map to center
   void resetMap() {
     zoomLevel = 1.0;
     mapOffset = Offset.zero;
+    // Reset limit flags
+    isAtLeftLimit = false;
+    isAtRightLimit = false;
+    isAtTopLimit = false;
+    isAtBottomLimit = false;
+  }
+  
+  // Configure pan limits (useful for adjusting constraints)
+  void configurePanLimits({
+    double? left,
+    double? right, 
+    double? up,
+    double? down,
+  }) {
+    if (left != null) maxPanLeft = left;
+    if (right != null) maxPanRight = right;
+    if (up != null) maxPanUp = up;
+    if (down != null) maxPanDown = down;
+  }
+  
+  // Get current pan limits (useful for debugging)
+  Map<String, double> getCurrentPanLimits() {
+    // Current limits are proportional to zoom level
+    return {
+      'left': maxPanLeft * zoomLevel,
+      'right': maxPanRight * zoomLevel,
+      'up': maxPanUp * zoomLevel,
+      'down': maxPanDown * zoomLevel,
+      'zoomLevel': zoomLevel,
+    };
   }
 }
 

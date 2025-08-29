@@ -575,13 +575,31 @@ class _InicialWidgetState extends State<InicialWidget>
                                                             if (_model.apiResultxi5?.statusCode == 200) {
                                                               context.pushNamed(TabelaPagWidget.routeName);
                                                             } else {
+                                                              String errorMessage;
+                                                              
+                                                              // Check for communication failure
+                                                              if (_model.apiResultxi5?.statusCode == -1 || 
+                                                                  _model.apiResultxi5?.exception != null ||
+                                                                  _model.apiResultxi5?.jsonBody == null) {
+                                                                errorMessage = 'Falha de comunicação';
+                                                              } else {
+                                                                // Extract error message from FastAPI response
+                                                                final apiError = getJsonField(
+                                                                  (_model.apiResultxi5?.jsonBody ?? ''),
+                                                                  r'''$.detail''',
+                                                                );
+                                                                
+                                                                if (apiError != null && apiError.toString().isNotEmpty) {
+                                                                  errorMessage = apiError.toString();
+                                                                } else {
+                                                                  errorMessage = 'Falha de comunicação';
+                                                                }
+                                                              }
+                                                              
                                                               ScaffoldMessenger.of(context).showSnackBar(
                                                                 SnackBar(
                                                                   content: Text(
-                                                                    getJsonField(
-                                                                      (_model.apiResultxi5?.jsonBody ?? ''),
-                                                                      r'''$.detail''',
-                                                                    ).toString(),
+                                                                    errorMessage,
                                                                     style: TextStyle(
                                                                       color: FlutterFlowTheme.of(context).primaryBackground,
                                                                     ),

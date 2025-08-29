@@ -4,7 +4,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/app_bottom_navigation.dart';
 import 'dart:async';
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'tabela_pag_model.dart';
 export 'tabela_pag_model.dart';
@@ -72,7 +71,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                   top: true,
                   child: Column(
                     children: [
-                      // Search and Filter Row
+                      // Filter Button Row
                       Container(
                         padding: EdgeInsets.only(
                           top: isMobileDevice ? 8 : 16,
@@ -82,65 +81,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                         ),
                         child: Row(
                           children: [
-                            Expanded(
-                              flex: isMobileDevice ? 1 : 3,
-                              child: Container(
-                                constraints: BoxConstraints(
-                                  maxWidth: isMobileDevice ? double.infinity : 400,
-                                ),
-                                child: TextFormField(
-                                  controller: _model.textController,
-                                  focusNode: _model.textFieldFocusNode,
-                                  onChanged: (_) => EasyDebounce.debounce(
-                                    '_model.textController',
-                                    Duration(milliseconds: 2000),
-                                    () async {
-                                      safeSetState(() => _model.apiRequestCompleter = null);
-                                      await _model.waitForApiRequestCompleted(minWait: 500, maxWait: 1000);
-                                    },
-                                  ),
-                                  decoration: InputDecoration(
-                                    isDense: !isMobileDevice,
-                                    hintText: 'Pesquisar',
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: isMobileDevice ? 12 : 16,
-                                      vertical: isMobileDevice ? 12 : 14,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).alternate,
-                                        width: 1.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).primary,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: FlutterFlowTheme.of(context).error),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: FlutterFlowTheme.of(context).error),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    filled: true,
-                                    fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: isMobileDevice ? 14 : 16,
-                                  ),
-                                  cursorColor: FlutterFlowTheme.of(context).primaryText,
-                                  validator: _model.textControllerValidator.asValidator(context),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: isMobileDevice ? 8.0 : 16.0),
-                            if (!isMobileDevice) Spacer(),
+                            Spacer(),
                             FFButtonWidget(
                               onPressed: () {
                                 setState(() {
@@ -391,36 +332,6 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Row(
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _model.clearAllFilters();
-                                            });
-                                          },
-                                          child: Text(
-                                            'Limpar Tudo',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _model.toggleFilterMenu();
-                                            });
-                                          },
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                            size: 24.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                   ],
                                 ),
                               ),
@@ -432,6 +343,64 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      // Pesquisa Section
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Pesquisa',
+                                            style: FlutterFlowTheme.of(context).titleLarge.copyWith(
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: FlutterFlowTheme.of(context).primary,
+                                            ),
+                                          ),
+                                          SizedBox(height: 12.0),
+                                          TextFormField(
+                                            controller: _model.textController,
+                                            focusNode: _model.textFieldFocusNode,
+                                            onChanged: (_) async {
+                                              safeSetState(() => _model.apiRequestCompleter = null);
+                                              await _model.waitForApiRequestCompleted(minWait: 500, maxWait: 1000);
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: 'Digite para pesquisar beacons...',
+                                              contentPadding: EdgeInsets.symmetric(
+                                                horizontal: 16,
+                                                vertical: 14,
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(context).alternate,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius: BorderRadius.circular(8.0),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(context).primary,
+                                                  width: 2.0,
+                                                ),
+                                                borderRadius: BorderRadius.circular(8.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: FlutterFlowTheme.of(context).error),
+                                                borderRadius: BorderRadius.circular(8.0),
+                                              ),
+                                              focusedErrorBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: FlutterFlowTheme.of(context).error),
+                                                borderRadius: BorderRadius.circular(8.0),
+                                              ),
+                                              filled: true,
+                                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                                            ),
+                                            style: TextStyle(fontSize: 16),
+                                            cursorColor: FlutterFlowTheme.of(context).primaryText,
+                                            validator: _model.textControllerValidator.asValidator(context),
+                                          ),
+                                          SizedBox(height: 24.0),
+                                        ],
+                                      ),
                                       // Máquinas
                                       _buildFilterSection(
                                         'Máquinas',
@@ -549,43 +518,56 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                 ),
                                 child: Row(
                                   children: [
+                                    // Main confirm button (takes most space)
                                     Expanded(
-                                      child: FFButtonWidget(
-                                        onPressed: () {
-                                          setState(() {
-                                            _model.clearAllFilters();
-                                          });
-                                        },
-                                        text: 'Limpar Filtros',
-                                        options: FFButtonOptions(
-                                          height: 48.0,
-                                          color: FlutterFlowTheme.of(context).alternate,
-                                          textStyle: FlutterFlowTheme.of(context).titleMedium.copyWith(
-                                            color: FlutterFlowTheme.of(context).primaryText,
-                                            letterSpacing: 0.0,
-                                          ),
-                                          elevation: 0.0,
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 12.0),
-                                    Expanded(
+                                      flex: 5,
                                       child: FFButtonWidget(
                                         onPressed: () {
                                           setState(() {
                                             _model.toggleFilterMenu();
                                           });
                                         },
-                                        text: 'Aplicar Filtros',
+                                        text: 'Confirmar Filtros',
                                         options: FFButtonOptions(
                                           height: 48.0,
                                           color: FlutterFlowTheme.of(context).primary,
                                           textStyle: FlutterFlowTheme.of(context).titleMedium.copyWith(
                                             color: Colors.white,
                                             letterSpacing: 0.0,
+                                            fontWeight: FontWeight.w600,
                                           ),
-                                          elevation: 0.0,
+                                          elevation: 2.0,
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.0),
+                                    // Clear filters button with trash icon (smaller)
+                                    Container(
+                                      height: 48.0,
+                                      width: 48.0,
+                                      child: FFButtonWidget(
+                                        onPressed: () {
+                                          setState(() {
+                                            _model.clearAllFilters();
+                                          });
+                                        },
+                                        text: '',
+                                        icon: Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.white,
+                                          size: 20.0,
+                                        ),
+                                        options: FFButtonOptions(
+                                          height: 48.0,
+                                          width: 48.0,
+                                          padding: EdgeInsets.zero,
+                                          color: FlutterFlowTheme.of(context).error,
+                                          textStyle: FlutterFlowTheme.of(context).titleMedium.copyWith(
+                                            color: Colors.white,
+                                            letterSpacing: 0.0,
+                                          ),
+                                          elevation: 2.0,
                                           borderRadius: BorderRadius.circular(8.0),
                                         ),
                                       ),
