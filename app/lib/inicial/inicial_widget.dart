@@ -1,9 +1,7 @@
-import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -348,6 +346,10 @@ class _InicialWidgetState extends State<InicialWidget>
                                                             AutofillHints.email
                                                           ],
                                                           obscureText: false,
+                                                          onFieldSubmitted: (value) async {
+                                                            await _model.performLogin(context);
+                                                            safeSetState(() {});
+                                                          },
                                                           decoration: InputDecoration(
                                                             labelText:
                                                               'Usuário',
@@ -446,6 +448,10 @@ class _InicialWidgetState extends State<InicialWidget>
                                                             AutofillHints.password
                                                           ],
                                                           obscureText: !_model.textFieldPasswordVisibility,
+                                                          onFieldSubmitted: (value) async {
+                                                            await _model.performLogin(context);
+                                                            safeSetState(() {});
+                                                          },
                                                           decoration:
                                                             InputDecoration(
                                                               labelText: 'Senha',
@@ -558,58 +564,7 @@ class _InicialWidgetState extends State<InicialWidget>
                                                           EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
                                                         child: FFButtonWidget(
                                                           onPressed: () async {
-                                                            final username = _model.textFieldUsernameTextController.text.trim();
-                                                            final password = _model.textFieldPasswordTextController.text;
-                                                            
-                                                            if (username == 'admin' && password == 'admin') {
-                                                              context.pushNamed(TabelaPagWidget.routeName);
-                                                              return;
-                                                            }
-
-                                                            _model.apiResultxi5 =
-                                                              await UserLoginCall.call(
-                                                                username: username,
-                                                                password: password,
-                                                              );
-
-                                                            if (_model.apiResultxi5?.statusCode == 200) {
-                                                              context.pushNamed(TabelaPagWidget.routeName);
-                                                            } else {
-                                                              String errorMessage;
-                                                              
-                                                              // Check for communication failure
-                                                              if (_model.apiResultxi5?.statusCode == -1 || 
-                                                                  _model.apiResultxi5?.exception != null ||
-                                                                  _model.apiResultxi5?.jsonBody == null) {
-                                                                errorMessage = 'Falha de comunicação';
-                                                              } else {
-                                                                // Extract error message from FastAPI response
-                                                                final apiError = getJsonField(
-                                                                  (_model.apiResultxi5?.jsonBody ?? ''),
-                                                                  r'''$.detail''',
-                                                                );
-                                                                
-                                                                if (apiError != null && apiError.toString().isNotEmpty) {
-                                                                  errorMessage = apiError.toString();
-                                                                } else {
-                                                                  errorMessage = 'Falha de comunicação';
-                                                                }
-                                                              }
-                                                              
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                SnackBar(
-                                                                  content: Text(
-                                                                    errorMessage,
-                                                                    style: TextStyle(
-                                                                      color: FlutterFlowTheme.of(context).primaryBackground,
-                                                                    ),
-                                                                  ),
-                                                                  duration: Duration(milliseconds: 3000),
-                                                                  backgroundColor: FlutterFlowTheme.of(context).error,
-                                                                ),
-                                                              );
-                                                            }
-
+                                                            await _model.performLogin(context);
                                                             safeSetState(() {});
                                                           },
                                                           text: 'Entrar',

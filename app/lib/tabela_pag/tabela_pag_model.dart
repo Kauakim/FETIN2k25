@@ -210,4 +210,9 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
       return true;
     }).toList();
   }
+
+  // Function to apply filters and close filter menu
+  void confirmFilters() {
+    showFilterMenu = false;
+  }
 }

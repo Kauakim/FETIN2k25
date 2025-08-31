@@ -5,6 +5,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/app_bottom_navigation.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'tabela_pag_model.dart';
 export 'tabela_pag_model.dart';
 
@@ -21,6 +22,7 @@ class TabelaPagWidget extends StatefulWidget {
 class _TabelaPagWidgetState extends State<TabelaPagWidget> {
   late TabelaPagModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final FocusNode _keyboardFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -32,18 +34,40 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
 
   @override
   void dispose() {
+    _keyboardFocusNode.dispose();
     _model.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        FocusManager.instance.primaryFocus?.unfocus();
+    return RawKeyboardListener(
+      focusNode: _keyboardFocusNode,
+      autofocus: true,
+      onKey: (RawKeyEvent event) {
+        // Só processa Enter se o menu de filtro estiver aberto E a barra de pesquisa não estiver focada
+        if (_model.showFilterMenu && 
+            event is RawKeyDownEvent && 
+            event.logicalKey == LogicalKeyboardKey.enter &&
+            !(_model.textFieldFocusNode?.hasFocus ?? false)) {
+          setState(() {
+            _model.confirmFilters();
+          });
+        }
       },
-      child: Scaffold(
+      child: GestureDetector(
+        onTap: () {
+          // Se o campo de pesquisa não estiver focado, remove foco de outros elementos
+          if (!(_model.textFieldFocusNode?.hasFocus ?? false)) {
+            FocusScope.of(context).unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
+            // Mantém o foco no listener global apenas se o menu estiver aberto
+            if (_model.showFilterMenu) {
+              _keyboardFocusNode.requestFocus();
+            }
+          }
+        },
+        child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: AppBar(
@@ -363,6 +387,11 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                               safeSetState(() => _model.apiRequestCompleter = null);
                                               await _model.waitForApiRequestCompleted(minWait: 500, maxWait: 1000);
                                             },
+                                            onFieldSubmitted: (_) {
+                                              setState(() {
+                                                _model.confirmFilters();
+                                              });
+                                            },
                                             decoration: InputDecoration(
                                               hintText: 'Digite para pesquisar beacons...',
                                               contentPadding: EdgeInsets.symmetric(
@@ -524,7 +553,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                       child: FFButtonWidget(
                                         onPressed: () {
                                           setState(() {
-                                            _model.toggleFilterMenu();
+                                            _model.confirmFilters();
                                           });
                                         },
                                         text: 'Confirmar Filtros',
@@ -586,6 +615,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
           }
         ),
       ),
+    ),
     );
   }
 
