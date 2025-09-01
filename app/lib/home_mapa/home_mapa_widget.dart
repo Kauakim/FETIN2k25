@@ -137,50 +137,44 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                 ),
                               ),
                             ),
-                            
-                            // Map title overlay - fixed position
-                            Positioned(
-                              top: 20,
-                              left: 20,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.0,
-                                  vertical: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.7),
-                                  borderRadius: BorderRadius.circular(4.0),
-                                ),
-                                child: Text(
-                                  'Planta da Fábrica',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            
-                            // Map Items (Beacons and Machines) - movable with viewport
-                            ..._model.mapItems.map((item) {
-                              // Calculate position based on screen coordinates
-                              final double screenWidth = constraints.maxWidth;
-                              final double screenHeight = constraints.maxHeight;
-                              
-                              // Convert map coordinates to screen coordinates with zoom and pan
-                              final double scaledX = ((item.x * _model.zoomLevel) + _model.mapOffset.dx + (screenWidth / 2) - (_model.mapWidth * _model.zoomLevel / 2));
-                              final double scaledY = ((item.y * _model.zoomLevel) + _model.mapOffset.dy + (screenHeight / 2) - (_model.mapHeight * _model.zoomLevel / 2));
-                              
-                              return Positioned(
-                                left: scaledX - 20,
-                                top: scaledY - 20,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedItem = selectedItem?.id == item.id ? null : item;
-                                    });
-                                  },
+                          
+                            // Map Items (Beacons and Machines) - loaded from API
+                            FutureBuilder<List<MapItem>>(
+                              future: _model.getAllMapItems(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Positioned(
+                                    top: 50,
+                                    left: 50,
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        FlutterFlowTheme.of(context).primary,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                
+                                final mapItems = snapshot.data!;
+                                
+                                return Stack(
+                                  children: mapItems.map((item) {
+                                    // Calculate position based on screen coordinates
+                                    final double screenWidth = constraints.maxWidth;
+                                    final double screenHeight = constraints.maxHeight;
+                                    
+                                    // Convert map coordinates to screen coordinates with zoom and pan
+                                    final double scaledX = ((item.x * _model.zoomLevel) + _model.mapOffset.dx + (screenWidth / 2) - (_model.mapWidth * _model.zoomLevel / 2));
+                                    final double scaledY = ((item.y * _model.zoomLevel) + _model.mapOffset.dy + (screenHeight / 2) - (_model.mapHeight * _model.zoomLevel / 2));
+                                    
+                                    return Positioned(
+                                      left: scaledX - 20,
+                                      top: scaledY - 20,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedItem = selectedItem?.id == item.id ? null : item;
+                                          });
+                                        },
                                   child: Container(
                                     width: 40,
                                     height: 40,
@@ -189,27 +183,30 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                       shape: BoxShape.circle,
                                       border: Border.all(
                                         color: selectedItem?.id == item.id 
-                                          ? Colors.black 
+                                          ? FlutterFlowTheme.of(context).primary
                                           : Colors.white,
                                         width: selectedItem?.id == item.id ? 3.0 : 2.0,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
                                           blurRadius: 4.0,
-                                          color: Colors.black.withOpacity(0.3),
+                                          color: Colors.black.withValues(alpha: 0.3),
                                           offset: Offset(0, 2),
                                         ),
                                       ],
                                     ),
-                                    child: Icon(
-                                      _model.getIconForType(item.type),
-                                      color: Colors.white,
-                                      size: 20,
+                                        child: Icon(
+                                          _model.getItemIcon(item.category),
+                                          color: Colors.white,
+                                          size: 22,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                }).toList(),
                               );
-                            }).toList(),
+                            },
+                          ),
                             
                             // Zoom level indicator
                             Positioned(
@@ -272,7 +269,7 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
-                                          _model.getIconForType(selectedItem!.type),
+                                          _model.getItemIcon(selectedItem!.category),
                                           color: Colors.white,
                                           size: 16,
                                         ),
@@ -287,14 +284,108 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                               selectedItem!.name,
                                               style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                                                 letterSpacing: 0.0,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            Text(
-                                              '${selectedItem!.type} - ${selectedItem!.status}',
-                                              style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                                                letterSpacing: 0.0,
-                                                color: FlutterFlowTheme.of(context).secondaryText,
+                                            SizedBox(height: 4.0),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Tipo: ',
+                                                  style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  selectedItem!.type,
+                                                  style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                    letterSpacing: 0.0,
+                                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            if (selectedItem!.linha != null)
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    'Linha: ',
+                                                    style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                      letterSpacing: 0.0,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    selectedItem!.linha!,
+                                                    style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                      letterSpacing: 0.0,
+                                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Status: ',
+                                                  style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 6.0,
+                                                    vertical: 2.0,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: _model.getItemColor(
+                                                      selectedItem!.category, 
+                                                      selectedItem!.status
+                                                    ).withValues(alpha: 0.1),
+                                                    borderRadius: BorderRadius.circular(4.0),
+                                                    border: Border.all(
+                                                      color: _model.getItemColor(
+                                                        selectedItem!.category, 
+                                                        selectedItem!.status
+                                                      ),
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    selectedItem!.status.toUpperCase(),
+                                                    style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                      letterSpacing: 0.0,
+                                                      fontSize: 10.0,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: _model.getItemColor(
+                                                        selectedItem!.category, 
+                                                        selectedItem!.status
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Posição: ',
+                                                  style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '(${selectedItem!.x.toInt()}, ${selectedItem!.y.toInt()})',
+                                                  style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                    letterSpacing: 0.0,
+                                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                                    fontFamily: 'monospace',
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
@@ -332,7 +423,7 @@ class GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.grey.withOpacity(0.2)
+      ..color = Colors.grey.withValues(alpha: 0.2)
       ..strokeWidth = 1.0;
 
     const gridSize = 50.0;

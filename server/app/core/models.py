@@ -300,8 +300,8 @@ def getTaskByUser(user):
     try:
         query = "SELECT * FROM tasks WHERE user = %s"
         cursor.execute(query, (user,))
-        task = cursor.fetchone()
-        return task if task else {}
+        tasks = cursor.fetchall()
+        return {task["id"]: task for task in tasks} if tasks else {}
     except mysql.connector.Error as e:
         print(f"Error fetching task by user: {e}")
         return {}

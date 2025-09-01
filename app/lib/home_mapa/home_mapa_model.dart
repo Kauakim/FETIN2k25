@@ -1,6 +1,8 @@
+import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'home_mapa_widget.dart' show HomeMapaWidget;
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   // Map control variables
@@ -25,102 +27,138 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   bool isAtTopLimit = false;
   bool isAtBottomLimit = false;
   
-  // Beacons and machines data with coordinates
-  List<MapItem> mapItems = [
-    // Máquinas
+  // API request completer for beacons
+  Completer<ApiCallResponse>? apiRequestCompleter;
+  
+  // Fixed machines data with coordinates
+  List<MapItem> fixedMachines = [
     MapItem(
       id: 'M001',
-      name: 'Estação de Carga 1',
-      type: 'Estacao de Carga',
+      name: 'Estacao de carga',
+      type: 'maquina',
       category: 'maquina',
       x: 100.0,
-      y: 150.0,
+      y: 300.0,
       status: 'ativo',
+      linha: 'Carregamento',
     ),
     MapItem(
       id: 'M002',
       name: 'Impressora 3D',
-      type: 'Impressora 3D',
+      type: 'maquina',
       category: 'maquina',
-      x: 300.0,
-      y: 200.0,
+      x: 150.0,
+      y: 150.0,
       status: 'ativo',
+      linha: 'Maker',
     ),
     MapItem(
       id: 'M003',
-      name: 'CNC Principal',
-      type: 'CNC',
+      name: 'Impressora',
+      type: 'maquina',
       category: 'maquina',
-      x: 500.0,
-      y: 180.0,
-      status: 'manutencao',
+      x: 250.0,
+      y: 150.0,
+      status: 'ativo',
+      linha: 'Maker',
     ),
     MapItem(
       id: 'M004',
-      name: 'Estação de Solda',
-      type: 'Estacao de Solda',
+      name: 'Maquina de corrosao',
+      type: 'maquina',
       category: 'maquina',
-      x: 200.0,
-      y: 350.0,
+      x: 400.0,
+      y: 200.0,
       status: 'ativo',
+      linha: 'PCB',
     ),
     MapItem(
       id: 'M005',
-      name: 'Máquina de Corte',
-      type: 'Maquina de Corte',
+      name: 'Estacao de solda',
+      type: 'maquina',
+      category: 'maquina',
+      x: 500.0,
+      y: 100.0,
+      status: 'ativo',
+      linha: 'PCB',
+    ),
+    MapItem(
+      id: 'M006',
+      name: 'CNC',
+      type: 'maquina',
+      category: 'maquina',
+      x: 350.0,
+      y: 350.0,
+      status: 'ativo',
+      linha: 'Corte',
+    ),
+    MapItem(
+      id: 'M007',
+      name: 'Maquina de corte',
+      type: 'maquina',
+      category: 'maquina',
+      x: 550.0,
+      y: 350.0,
+      status: 'ativo',
+      linha: 'Corte',
+    ),
+    MapItem(
+      id: 'M008',
+      name: 'Bancada de reparos e carga',
+      type: 'maquina',
       category: 'maquina',
       x: 600.0,
-      y: 300.0,
-      status: 'inativo',
-    ),
-    
-    // Beacons/Ferramentas
-    MapItem(
-      id: 'B001',
-      name: 'Multímetro Digital',
-      type: 'Multimetro',
-      category: 'beacon',
-      x: 150.0,
       y: 250.0,
-      status: 'disponivel',
-    ),
-    MapItem(
-      id: 'B002',
-      name: 'Kit de Reparos',
-      type: 'Kit Reparos',
-      category: 'beacon',
-      x: 400.0,
-      y: 120.0,
-      status: 'em_uso',
-    ),
-    MapItem(
-      id: 'B003',
-      name: 'Chapa de Alumínio',
-      type: 'Chapa Material',
-      category: 'beacon',
-      x: 550.0,
-      y: 400.0,
-      status: 'disponivel',
-    ),
-    MapItem(
-      id: 'B004',
-      name: 'Estanho',
-      type: 'Estanho',
-      category: 'beacon',
-      x: 250.0,
-      y: 380.0,
-      status: 'baixo_estoque',
-    ),
-    MapItem(
-      id: 'B005',
-      name: 'Filamento PLA',
-      type: 'Filamento',
-      category: 'beacon',
-      x: 320.0,
-      y: 220.0,
-      status: 'disponivel',
+      status: 'ativo',
+      linha: 'Manutencao',
     ),
   ];
+  
+  // Get all map items (fixed machines + dynamic beacons)
+  Future<List<MapItem>> getAllMapItems() async {
+    List<MapItem> allItems = List.from(fixedMachines);
+    
+    try {
+      final apiResponse = await BeaconsGetAllCall.call();
+      if (apiResponse.statusCode == 200) {
+        final beaconsMap = getJsonField(apiResponse.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
+        
+        for (var beaconData in beaconsMap.values) {
+          // Determine category based on beacon type
+          String category = _getCategoryFromBeaconType(beaconData['tipo'] ?? '');
+          
+          allItems.add(MapItem(
+            id: beaconData['id']?.toString() ?? '',
+            name: beaconData['beacon'] ?? '',
+            type: category,
+            category: category,
+            x: (beaconData['x']?.toDouble() ?? 0.0) * 50.0, // Scale coordinates
+            y: (beaconData['y']?.toDouble() ?? 0.0) * 50.0, // Scale coordinates
+            status: beaconData['status'] ?? 'disponivel',
+          ));
+        }
+      }
+    } catch (e) {
+      print('Error loading beacons: $e');
+    }
+    
+    return allItems;
+  }
+  
+  // Determine category from beacon type
+  String _getCategoryFromBeaconType(String tipo) {
+    tipo = tipo.toLowerCase();
+    if (tipo.contains('ferramenta') || tipo.contains('multimetro') || tipo.contains('kit')) {
+      return 'ferramenta';
+    } else if (tipo.contains('material') || tipo.contains('chapa') || tipo.contains('estanho') || 
+               tipo.contains('filamento') || tipo.contains('componentes')) {
+      return 'material';
+    } else if (tipo.contains('pessoa') || tipo.contains('operador')) {
+      return 'pessoa';
+    } else {
+      return 'material'; // Default
+    }
+  }
 
   @override
   void initState(BuildContext context) {}
@@ -135,60 +173,47 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
     return Offset(scaledX, scaledY);
   }
   
-  // Get icon for different types
-  IconData getIconForType(String type) {
-    switch (type.toLowerCase()) {
-      case 'estacao de carga':
-        return Icons.battery_charging_full;
-      case 'impressora 3d':
-        return Icons.view_in_ar;
-      case 'cnc':
-        return Icons.precision_manufacturing;
-      case 'estacao de solda':
-        return Icons.construction;
-      case 'maquina de corte':
-        return Icons.content_cut;
-      case 'multimetro':
-        return Icons.electrical_services;
-      case 'kit reparos':
-        return Icons.build;
-      case 'chapa material':
-        return Icons.rectangle;
-      case 'estanho':
-        return Icons.circle;
-      case 'filamento':
-        return Icons.cable;
-      default:
-        return Icons.device_unknown;
-    }
-  }
-  
   // Get color based on category and status
   Color getItemColor(String category, String status) {
-    if (category == 'maquina') {
-      switch (status.toLowerCase()) {
-        case 'ativo':
-          return Color(0xFF4CAF50); // Green
-        case 'inativo':
-          return Color(0xFF757575); // Grey
-        case 'manutencao':
-          return Color(0xFFF44336); // Red
-        default:
-          return Color(0xFF2196F3); // Blue
-      }
-    } else {
-      switch (status.toLowerCase()) {
-        case 'disponivel':
-          return Color(0xFF4CAF50); // Green
-        case 'em_uso':
-          return Color(0xFFFF9800); // Orange
-        case 'baixo_estoque':
-          return Color(0xFFF44336); // Red
-        case 'manutencao':
-          return Color(0xFF9C27B0); // Purple
-        default:
-          return Color(0xFF2196F3); // Blue
-      }
+    switch (status.toLowerCase()) {
+      case 'ativo':
+      case 'disponivel':
+        return Color(0xFF4CAF50); // Green
+      case 'inativo':
+      case 'indisponivel':
+        return Color(0xFF757575); // Grey
+      case 'manutencao':
+        return Color(0xFFF44336); // Red
+      case 'em_uso':
+      case 'em uso':
+        return Color(0xFFFF9800); // Orange
+      case 'baixo_estoque':
+      case 'descarregado':
+        return Color(0xFFE91E63); // Pink
+      case 'carregando':
+        return Color(0xFF2196F3); // Blue
+      case 'carregado':
+        return Color(0xFF00BCD4); // Cyan
+      case 'processado':
+        return Color(0xFF9C27B0); // Purple
+      default:
+        return Color(0xFF607D8B); // Blue Grey
+    }
+  }
+
+  // Get icon for different item categories (only 4 types)
+  IconData getItemIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'maquina':
+        return Icons.precision_manufacturing;
+      case 'ferramenta':
+        return Icons.build;
+      case 'pessoa':
+        return Icons.person;
+      case 'material':
+        return Icons.inventory_2;
+      default:
+        return Icons.radio_button_checked; // Fallback
     }
   }
   
@@ -266,10 +291,11 @@ class MapItem {
   final String id;
   final String name;
   final String type;
-  final String category; // 'maquina' ou 'beacon'
+  final String category; // 'maquina', 'ferramenta', 'material', 'pessoa'
   final double x;
   final double y;
   final String status;
+  final String? linha; // Para máquinas
   
   MapItem({
     required this.id,
@@ -279,5 +305,6 @@ class MapItem {
     required this.x,
     required this.y,
     required this.status,
+    this.linha,
   });
 }

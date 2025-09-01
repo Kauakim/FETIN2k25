@@ -215,9 +215,51 @@ class _TasksWidgetState extends State<TasksWidget> {
             
             // Tasks List
             Expanded(
-              child: Builder(
-                builder: (context) {
-                  final filteredTasks = _model.getFilteredTasks();
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _model.getFilteredTasks(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          FlutterFlowTheme.of(context).primary,
+                        ),
+                      ),
+                    );
+                  }
+                  
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64.0,
+                            color: FlutterFlowTheme.of(context).error,
+                          ),
+                          SizedBox(height: 16.0),
+                          Text(
+                            'Erro ao carregar tasks',
+                            style: FlutterFlowTheme.of(context).headlineSmall.copyWith(
+                              color: FlutterFlowTheme.of(context).error,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Tente novamente mais tarde',
+                            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  
+                  final filteredTasks = snapshot.data ?? [];
                   
                   if (filteredTasks.isEmpty) {
                     return Center(
@@ -420,13 +462,13 @@ class _TasksWidgetState extends State<TasksWidget> {
                   Row(
                     children: [
                       Icon(
-                        Icons.sensors,
+                        Icons.person_outline,
                         size: 16.0,
                         color: FlutterFlowTheme.of(context).primary,
                       ),
                       SizedBox(width: 4.0),
                       Text(
-                        task['beacon'] ?? '',
+                        task['assignedTo'] ?? '',
                         style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                           color: FlutterFlowTheme.of(context).primary,
                           letterSpacing: 0.0,

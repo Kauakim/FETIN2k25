@@ -45,6 +45,8 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
     }
     
     if (username == 'admin' && password == 'admin') {
+      FFAppState().loggedInUser = username;
+      FFAppState().loggedInUserPassword = password;
       context.pushNamed(TabelaPagWidget.routeName);
       return;
     }
@@ -55,6 +57,8 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
     );
 
     if (apiResultxi5?.statusCode == 200) {
+      FFAppState().loggedInUser = username;
+      FFAppState().loggedInUserPassword = password;
       context.pushNamed(TabelaPagWidget.routeName);
     } else {
       String errorMessage;

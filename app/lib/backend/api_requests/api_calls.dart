@@ -239,6 +239,82 @@ class InfoDeleteCall {
   }
 }
 
+class TasksGetAllCall {
+  static Future<ApiCallResponse> call() async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'TasksGetAll',
+      apiUrl: '${apiBaseUrl}/tasks/read/all/',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+    );
+  }
+}
+
+class TasksGetByUserCall {
+  static Future<ApiCallResponse> call({
+    required String username,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'TasksGetByUser',
+      apiUrl: '${apiBaseUrl}/tasks/read/$username/',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+    );
+  }
+}
+
+class TasksCreateCall {
+  static Future<ApiCallResponse> call({
+    required String taskName,
+    required String description,
+    required String assignedTo,
+    required String status,
+    required String priority,
+    required String dueDate,
+  }) async {
+    final ffApiRequestBody = '''
+      {
+        "task_name": "$taskName",
+        "description": "$description",
+        "assigned_to": "$assignedTo",
+        "status": "$status",
+        "priority": "$priority",
+        "due_date": "$dueDate"
+      }
+    ''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'TasksCreate',
+      apiUrl: '${apiBaseUrl}/tasks/create/',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+    );
+  }
+}
+
+class UserGetInfoCall {
+  static Future<ApiCallResponse> call({
+    required String username,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'UserGetInfo',
+      apiUrl: '${apiBaseUrl}/users/info/$username/',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+    );
+  }
+}
+
 class ApiPagingParams {
   int nextPageNumber = 0;
   int numItems = 0;
