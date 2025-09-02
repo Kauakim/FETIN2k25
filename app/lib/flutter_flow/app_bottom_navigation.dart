@@ -3,6 +3,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/tabela_pag/tabela_pag_widget.dart';
 import '/home_mapa/home_mapa_widget.dart';
 import '/tasks_pag/tasks_widget.dart';
+import '/task_manager/task_manager_widget.dart';
 import '/perfil_usuario/perfil_usuario_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -70,12 +71,22 @@ class AppBottomNavigation extends StatelessWidget {
               ),
               _buildNavItem(
                 context: context,
-                icon: Icons.person_outline,
-                selectedIcon: Icons.person,
-                label: 'Perfil',
+                icon: Icons.add_task_outlined,
+                selectedIcon: Icons.add_task,
+                label: 'Gerenciar',
                 index: 3,
                 isSelected: currentIndex == 3,
                 onTap: () => _navigateToPage(context, 3),
+                isMobile: isMobileDevice,
+              ),
+              _buildNavItem(
+                context: context,
+                icon: Icons.person_outline,
+                selectedIcon: Icons.person,
+                label: 'Perfil',
+                index: 4,
+                isSelected: currentIndex == 4,
+                onTap: () => _navigateToPage(context, 4),
                 isMobile: isMobileDevice,
               ),
             ],
@@ -154,6 +165,9 @@ class AppBottomNavigation extends StatelessWidget {
         context.pushNamed(TasksWidget.routeName);
         break;
       case 3:
+        context.pushNamed(TaskManagerWidget.routeName);
+        break;
+      case 4:
         context.pushNamed(PerfilUsuarioWidget.routeName);
         break;
     }

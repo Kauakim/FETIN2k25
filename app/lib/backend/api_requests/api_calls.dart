@@ -269,26 +269,67 @@ class TasksGetByUserCall {
 
 class TasksCreateCall {
   static Future<ApiCallResponse> call({
-    required String taskName,
-    required String description,
-    required String assignedTo,
+    required String mensagem,
+    required String destino,
+    required String tipoDestino,
+    required List<String> beacons,
+    required List<String> dependencias,
+    required String tipo,
     required String status,
-    required String priority,
-    required String dueDate,
   }) async {
     final ffApiRequestBody = '''
       {
-        "task_name": "$taskName",
-        "description": "$description",
-        "assigned_to": "$assignedTo",
-        "status": "$status",
-        "priority": "$priority",
-        "due_date": "$dueDate"
+        "mensagem": "$mensagem",
+        "destino": "$destino",
+        "tipoDestino": "$tipoDestino",
+        "beacons": [${beacons.map((e) => '"$e"').join(', ')}],
+        "dependencias": [${dependencias.map((e) => '"$e"').join(', ')}],
+        "tipo": "$tipo",
+        "status": "$status"
       }
     ''';
     return ApiManager.instance.makeApiCall(
       callName: 'TasksCreate',
       apiUrl: '${apiBaseUrl}/tasks/create/',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+    );
+  }
+}
+
+class TasksUpdateCall {
+  static Future<ApiCallResponse> call({
+    required int id,
+    required String user,
+    required String mensagem,
+    required String destino,
+    required String tipoDestino,
+    required List<String> beacons,
+    required List<String> dependencias,
+    required String tipo,
+    required String status,
+  }) async {
+    final ffApiRequestBody = '''
+      {
+        "id": $id,
+        "user": "$user",
+        "mensagem": "$mensagem",
+        "destino": "$destino",
+        "tipoDestino": "$tipoDestino",
+        "beacons": [${beacons.map((e) => '"$e"').join(', ')}],
+        "dependencias": [${dependencias.map((e) => '"$e"').join(', ')}],
+        "tipo": "$tipo",
+        "status": "$status"
+      }
+    ''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'TasksUpdate',
+      apiUrl: '${apiBaseUrl}/tasks/update/',
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
@@ -307,6 +348,19 @@ class UserGetInfoCall {
     return ApiManager.instance.makeApiCall(
       callName: 'UserGetInfo',
       apiUrl: '${apiBaseUrl}/users/info/$username/',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+    );
+  }
+}
+
+class TasksListCall {
+  static Future<ApiCallResponse> call() async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'TasksList',
+      apiUrl: '${apiBaseUrl}/tasks/read/all/',
       callType: ApiCallType.GET,
       headers: {},
       params: {},

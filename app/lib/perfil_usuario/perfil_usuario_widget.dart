@@ -62,7 +62,7 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
           centerTitle: false,
           elevation: 2.0,
         ),
-        bottomNavigationBar: AppBottomNavigation(currentIndex: 3),
+        bottomNavigationBar: AppBottomNavigation(currentIndex: 4),
         body: SafeArea(
           top: true,
           child: SingleChildScrollView(
