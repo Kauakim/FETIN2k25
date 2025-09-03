@@ -72,6 +72,26 @@ async def deleteUser(request: schemas.DeleteUserSchema):
     models.deleteUser(request.username)
     return {"message": "User deleted successfully", "status_code": status.HTTP_201_CREATED}
 
+@router.get("/users/get/all/")
+async def getAllUsers():
+    usersData = models.getUsersData()
+    if not usersData:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No users found"
+        )
+    
+    users_list = []
+    for username, user_info in usersData.items():
+        user_safe = {
+            "username": username,
+            "email": user_info.get("email", ""),
+            "role": user_info.get("role", "")
+        }
+        users_list.append(user_safe)
+    
+    return {"users": users_list, "status_code": status.HTTP_200_OK}
+
 #---------------------------------------------------------------------------------------------------------------------------
 
 @router.get("/beacons/get/all/", response_model=schemas.BeaconsResponseSchema)

@@ -2,7 +2,7 @@ import 'api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
 
-const String apiBaseUrl = 'http://192.168.0.111:5501';
+const String apiBaseUrl = 'http://192.168.0.109:5501';
 
 class UserLoginCall {
   static Future<ApiCallResponse> call({
@@ -341,13 +341,11 @@ class TasksUpdateCall {
   }
 }
 
-class UserGetInfoCall {
-  static Future<ApiCallResponse> call({
-    required String username,
-  }) async {
+class UsersGetAllCall {
+  static Future<ApiCallResponse> call() async {
     return ApiManager.instance.makeApiCall(
-      callName: 'UserGetInfo',
-      apiUrl: '${apiBaseUrl}/users/info/$username/',
+      callName: 'UsersGetAll',
+      apiUrl: '${apiBaseUrl}/users/get/all/',
       callType: ApiCallType.GET,
       headers: {},
       params: {},

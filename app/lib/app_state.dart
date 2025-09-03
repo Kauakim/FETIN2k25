@@ -50,4 +50,18 @@ class FFAppState extends ChangeNotifier {
     _userInfo = value;
     notifyListeners();
   }
+
+  /// Tipo do usuário logado (manager ou worker)
+  String _userType = 'worker';
+  String get userType => _userType;
+  set userType(String value) {
+    _userType = value;
+    notifyListeners();
+  }
+
+  /// Verifica se o usuário é manager
+  bool get isManager => _userType.toLowerCase() == 'manager';
+  
+  /// Verifica se o usuário é worker
+  bool get isWorker => _userType.toLowerCase() == 'worker';
 }
