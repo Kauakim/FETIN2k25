@@ -59,6 +59,10 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
     if (apiResultxi5?.statusCode == 200) {
       FFAppState().loggedInUser = username;
       FFAppState().loggedInUserPassword = password;
+      
+      // Load user type immediately after successful login
+      await _loadUserType(username);
+      
       context.pushNamed(TabelaPagWidget.routeName);
     } else {
       String errorMessage;
@@ -94,6 +98,39 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
           backgroundColor: FlutterFlowTheme.of(context).error,
         ),
       );
+    }
+  }
+
+  // Load user type from API
+  Future<void> _loadUserType(String username) async {
+    try {
+      final response = await UsersGetAllCall.call();
+      if (response.succeeded) {
+        final responseData = response.jsonBody;
+        final usersList = responseData['users'] as List<dynamic>?;
+        
+        if (usersList != null) {
+          final currentUser = usersList.firstWhere(
+            (user) => user['username'] == username,
+            orElse: () => null,
+          );
+          
+          if (currentUser != null) {
+            String userRole = currentUser['role']?.toString().toLowerCase() ?? 'worker';
+            FFAppState().userType = userRole == 'manager' ? 'manager' : 'worker';
+            print('User type set to: ${FFAppState().userType}');
+          } else {
+            FFAppState().userType = 'worker';
+          }
+        } else {
+          FFAppState().userType = 'worker';
+        }
+      } else {
+        FFAppState().userType = 'worker';
+      }
+    } catch (e) {
+      print('Error loading user type: $e');
+      FFAppState().userType = 'worker';
     }
   }
 
