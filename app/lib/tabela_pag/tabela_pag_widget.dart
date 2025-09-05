@@ -70,20 +70,6 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
         child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Tabela de Beacons',
-            style: FlutterFlowTheme.of(context).headlineMedium.copyWith(
-              color: Colors.white,
-              fontSize: 22.0,
-              letterSpacing: 0.0,
-            ),
-          ),
-          centerTitle: false,
-          elevation: 2.0,
-        ),
         bottomNavigationBar: AppBottomNavigation(currentIndex: 1),
         body: LayoutBuilder(
           builder: (context, constraints) {
@@ -95,229 +81,275 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                   top: true,
                   child: Column(
                     children: [
-                      // Filter Button Row
-                      Container(
-                        padding: EdgeInsets.only(
-                          top: isMobileDevice ? 8 : 16,
-                          left: isMobileDevice ? 8 : 32,
-                          right: isMobileDevice ? 8 : 32,
-                          bottom: isMobileDevice ? 8 : 16,
-                        ),
-                        child: Row(
-                          children: [
-                            Spacer(),
-                            FFButtonWidget(
-                              onPressed: () {
-                                setState(() {
-                                  _model.toggleFilterMenu();
-                                });
-                              },
-                              text: 'Filtro${_model.hasActiveFilters() ? ' (Ativo)' : ''}',
-                              options: FFButtonOptions(
-                                height: isMobileDevice ? 40.0 : 48.0,
-                                width: isMobileDevice ? null : 140.0,
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                  isMobileDevice ? 16.0 : 24.0, 
-                                  0.0, 
-                                  isMobileDevice ? 16.0 : 24.0, 
-                                  0.0
-                                ),
-                                color: _model.hasActiveFilters() 
-                                  ? FlutterFlowTheme.of(context).secondary 
-                                  : FlutterFlowTheme.of(context).primary,
-                                textStyle: FlutterFlowTheme.of(context).titleSmall.copyWith(
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
-                                  fontSize: isMobileDevice ? 14 : 16,
-                                ),
-                                elevation: isMobileDevice ? 0.0 : 2.0,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      SizedBox(height: 16.0),
                       
-                      // Header Row
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isMobileDevice ? 8.0 : 32.0,
-                          vertical: isMobileDevice ? 8.0 : 12.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryBackground,
-                          border: Border(
-                            bottom: BorderSide(
-                              color: FlutterFlowTheme.of(context).alternate,
-                              width: 1.0,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: isMobileDevice ? 2 : 3,
-                              child: Text(
-                                'Beacon', 
-                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: isMobileDevice ? 14 : 16,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: isMobileDevice ? 2 : 2,
-                              child: Text(
-                                'Tipo', 
-                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: isMobileDevice ? 14 : 16,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: isMobileDevice ? 2 : 2,
-                              child: Text(
-                                'Status', 
-                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: isMobileDevice ? 14 : 16,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: isMobileDevice ? 2 : 3,
-                              child: Text(
-                                'Coordenada', 
-                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: isMobileDevice ? 14 : 16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      // Data List (Expandable)
+                      // Table Container
                       Expanded(
                         child: Container(
                           margin: EdgeInsets.symmetric(
-                            horizontal: isMobileDevice ? 0 : 16,
+                            horizontal: isMobileDevice ? 16.0 : 32.0,
                           ),
-                          child: FutureBuilder<ApiCallResponse>(
-                            future: (_model.apiRequestCompleter ??= Completer<ApiCallResponse>()
-                              ..complete(BeaconsGetAllCall.call())).future,
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(FlutterFlowTheme.of(context).primary),
-                                  ),
-                                );
-                              }
-                              
-                              final beaconsMap = getJsonField(snapshot.data!.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
-                              final allBeacons = beaconsMap.values.toList();
-                              final filteredBeacons = _model.getFilteredBeacons(allBeacons);
-
-                              return ListView.builder(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: isMobileDevice ? 8.0 : 32.0,
-                                  vertical: isMobileDevice ? 4.0 : 8.0,
-                                ),
-                                itemCount: filteredBeacons.length,
-                                itemBuilder: (context, index) {
-                                  final beacon = filteredBeacons[index];
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(
-                                      vertical: isMobileDevice ? 2.0 : 4.0,
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: isMobileDevice ? 8.0 : 16.0,
-                                      vertical: isMobileDevice ? 12.0 : 16.0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      border: Border.all(
-                                        color: FlutterFlowTheme.of(context).alternate,
-                                        width: 0.5,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: isMobileDevice ? 2 : 3,
-                                          child: Text(
-                                            beacon['beacon'] ?? '', 
-                                            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                              fontSize: isMobileDevice ? 13 : 15,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        SizedBox(width: isMobileDevice ? 8.0 : 16.0),
-                                        Expanded(
-                                          flex: isMobileDevice ? 2 : 2,
-                                          child: Text(
-                                            beacon['tipo'] ?? '', 
-                                            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                              fontSize: isMobileDevice ? 13 : 15,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        SizedBox(width: isMobileDevice ? 8.0 : 16.0),
-                                        Expanded(
-                                          flex: isMobileDevice ? 2 : 2,
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: isMobileDevice ? 6.0 : 8.0,
-                                              vertical: isMobileDevice ? 2.0 : 4.0,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: _getStatusColor(beacon['status'] ?? '').withValues(alpha: 0.1),
-                                              borderRadius: BorderRadius.circular(4.0),
-                                              border: Border.all(
-                                                color: _getStatusColor(beacon['status'] ?? ''),
-                                                width: 1.0,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              beacon['status'] ?? '', 
-                                              style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                                                fontSize: isMobileDevice ? 11 : 13,
-                                                color: _getStatusColor(beacon['status'] ?? ''),
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: isMobileDevice ? 8.0 : 16.0),
-                                        Expanded(
-                                          flex: isMobileDevice ? 2 : 3,
-                                          child: Text(
-                                            '${beacon['x']}, ${beacon['y']}', 
-                                            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                              fontSize: isMobileDevice ? 13 : 15,
-                                              fontFamily: 'monospace',
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 4.0,
+                                color: Color(0x1A000000),
+                                offset: Offset(0.0, 2.0),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: FutureBuilder<ApiCallResponse>(
+                              future: (_model.apiRequestCompleter ??= Completer<ApiCallResponse>()
+                                ..complete(BeaconsGetAllCall.call())).future,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(FlutterFlowTheme.of(context).primary),
                                     ),
                                   );
-                                },
-                              );
-                            },
+                                }
+                                
+                                final beaconsMap = getJsonField(snapshot.data!.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
+                                final allBeacons = beaconsMap.values.toList();
+                                final filteredBeacons = _model.getFilteredBeacons(allBeacons);
+
+                                return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  itemCount: filteredBeacons.length + 1, // +1 para o header
+                                  itemBuilder: (context, index) {
+                                    if (index == 0) {
+                                      // Header row
+                                      return Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: isMobileDevice ? 16.0 : 24.0,
+                                          vertical: isMobileDevice ? 12.0 : 16.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.1),
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              color: Colors.white,
+                                              width: 2.0,
+                                            ),
+                                          ),
+                                        ),
+                                        child: IntrinsicHeight(
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: isMobileDevice ? 2 : 3,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                      right: BorderSide(
+                                                        color: Colors.white,
+                                                        width: 1.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    'Beacon',
+                                                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: isMobileDevice ? 14 : 16,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Expanded(
+                                                flex: isMobileDevice ? 2 : 2,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                      right: BorderSide(
+                                                        color: Colors.white,
+                                                        width: 1.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    'Tipo',
+                                                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: isMobileDevice ? 14 : 16,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Expanded(
+                                                flex: isMobileDevice ? 2 : 2,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                      right: BorderSide(
+                                                        color: Colors.white,
+                                                        width: 1.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    'Status',
+                                                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: isMobileDevice ? 14 : 16,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Expanded(
+                                                flex: isMobileDevice ? 2 : 3,
+                                                child: Text(
+                                                  'Coordenada',
+                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: isMobileDevice ? 14 : 16,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    
+                                    // Data rows
+                                    final beacon = filteredBeacons[index - 1];
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: isMobileDevice ? 16.0 : 24.0,
+                                        vertical: isMobileDevice ? 12.0 : 16.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: FlutterFlowTheme.of(context).alternate,
+                                            width: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 3,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white,
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  beacon['beacon'] ?? '',
+                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                    fontSize: isMobileDevice ? 13 : 15,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 8.0),
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 2,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white,
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  beacon['tipo'] ?? '',
+                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                    fontSize: isMobileDevice ? 13 : 15,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 8.0),
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 2,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white,
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: isMobileDevice ? 6.0 : 8.0,
+                                                    vertical: isMobileDevice ? 2.0 : 4.0,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: _getStatusColor(beacon['status'] ?? '').withValues(alpha: 0.1),
+                                                    borderRadius: BorderRadius.circular(4.0),
+                                                    border: Border.all(
+                                                      color: _getStatusColor(beacon['status'] ?? ''),
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    beacon['status'] ?? '',
+                                                    style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                      fontSize: isMobileDevice ? 11 : 13,
+                                                      color: _getStatusColor(beacon['status'] ?? ''),
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 8.0),
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 3,
+                                              child: Text(
+                                                '${beacon['x']}, ${beacon['y']}',
+                                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                  fontSize: isMobileDevice ? 13 : 15,
+                                                  fontFamily: 'monospace',
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
+                      
+                      SizedBox(height: 24.0),
                     ],
                   ),
                 ),
@@ -610,9 +642,37 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                       ),
                     ),
                   ),
+
+                // Floating Filter Button - Bottom Right
+                Positioned(
+                  bottom: 80.0, // Above bottom navigation
+                  right: 20.0,
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      setState(() {
+                        _model.toggleFilterMenu();
+                      });
+                    },
+                    icon: Icon(
+                      _model.showFilterMenu ? Icons.filter_list_off : Icons.filter_list,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      'Filtro${_model.hasActiveFilters() ? ' (Ativo)' : ''}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    backgroundColor: _model.hasActiveFilters() 
+                      ? FlutterFlowTheme.of(context).secondary 
+                      : FlutterFlowTheme.of(context).primary,
+                    elevation: 6.0,
+                  ),
+                ),
               ],
             );
-          }
+          },
         ),
       ),
     ),

@@ -119,8 +119,9 @@ class _NavBarPageState extends State<NavBarPage> {
   @override
   Widget build(BuildContext context) {
     final tabs = {
-      'HomeMapaTeste': HomeMapaTesteWidget(),
-      'TabelaPag': TabelaPagWidget()
+      'HomeMapaPag': HomeMapaWidget(),
+      'TabelaPag': TabelaPagWidget(),
+      'UserProfile': PerfilUsuarioWidget()
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
 
@@ -149,7 +150,7 @@ class _NavBarPageState extends State<NavBarPage> {
               FontAwesomeIcons.mapLocation,
               size: 24.0,
             ),
-            label: 'Home',
+            label: 'Mapa',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -161,7 +162,7 @@ class _NavBarPageState extends State<NavBarPage> {
               Icons.table_chart,
               size: 24.0,
             ),
-            label: 'Home',
+            label: 'Tabela',
             tooltip: '',
           ),
           BottomNavigationBarItem(

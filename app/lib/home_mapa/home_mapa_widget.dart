@@ -43,55 +43,11 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Mapa da Fábrica',
-            style: FlutterFlowTheme.of(context).headlineMedium.copyWith(
-              color: Colors.white,
-              fontSize: 22.0,
-              letterSpacing: 0.0,
-            ),
-          ),
-          actions: [
-            // Zoom controls
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _model.updateZoom(_model.zoomLevel + 0.2);
-                });
-              },
-              icon: Icon(Icons.zoom_in, color: Colors.white),
-              tooltip: 'Aumentar Zoom',
-            ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _model.updateZoom(_model.zoomLevel - 0.2);
-                });
-              },
-              icon: Icon(Icons.zoom_out, color: Colors.white),
-              tooltip: 'Diminuir Zoom',
-            ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _model.resetMap();
-                });
-              },
-              icon: Icon(Icons.center_focus_strong, color: Colors.white),
-              tooltip: 'Centralizar Mapa',
-            ),
-          ],
-          centerTitle: false,
-          elevation: 2.0,
-        ),
         bottomNavigationBar: AppBottomNavigation(currentIndex: 0),
-        body: Column(
+        body: Stack(
           children: [
             // Map Container
-            Expanded(
+            Positioned.fill(
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -408,6 +364,89 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                       ),
                     );
                   },
+                ),
+              ),
+            ),
+
+            // Zoom Controls - positioned in top right corner
+            Positioned(
+              top: 40.0,
+              right: 20.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 8.0,
+                      color: Color(0x33000000),
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Zoom In Button
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _model.updateZoom(_model.zoomLevel + 0.2);
+                        });
+                      },
+                      icon: Icon(
+                        Icons.zoom_in,
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                      tooltip: 'Aumentar Zoom',
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    
+                    // Center Map Button
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _model.resetMap();
+                        });
+                      },
+                      icon: Icon(
+                        Icons.center_focus_strong,
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                      tooltip: 'Centralizar Mapa',
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    
+                    // Zoom Out Button
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _model.updateZoom(_model.zoomLevel - 0.2);
+                        });
+                      },
+                      icon: Icon(
+                        Icons.zoom_out,
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                      tooltip: 'Diminuir Zoom',
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

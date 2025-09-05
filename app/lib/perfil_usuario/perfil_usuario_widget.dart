@@ -58,34 +58,6 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
-          automaticallyImplyLeading: false,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Perfil do Usuário',
-                style: FlutterFlowTheme.of(context).headlineMedium.copyWith(
-                  color: Colors.white,
-                  fontSize: 22.0,
-                  letterSpacing: 0.0,
-                ),
-              ),
-              if (!_model.isLoading)
-                Text(
-                  _model.isManager ? 'Gerente' : 'Funcionário',
-                  style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 12.0,
-                    letterSpacing: 0.0,
-                  ),
-                ),
-            ],
-          ),
-          centerTitle: false,
-          elevation: 2.0,
-        ),
         bottomNavigationBar: AppBottomNavigation(currentIndex: 4),
         body: SafeArea(
           top: true,

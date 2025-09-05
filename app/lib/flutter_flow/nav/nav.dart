@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/main.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
 
@@ -42,13 +41,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       name: InicialWidget.routeName,
       path: InicialWidget.routePath,
       builder: (context, params) => InicialWidget(),
-    ),
-    FFRoute(
-      name: HomeMapaTesteWidget.routeName,
-      path: HomeMapaTesteWidget.routePath,
-      builder: (context, params) => params.isEmpty
-          ? NavBarPage(initialPage: 'HomeMapaTeste')
-          : HomeMapaTesteWidget(),
     ),
     FFRoute(
       name: HomeMapaWidget.routeName,
