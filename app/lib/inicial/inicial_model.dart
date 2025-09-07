@@ -1,8 +1,6 @@
 import '/backend/api_requests/api_calls.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
-import 'inicial_widget.dart' show InicialWidget;
 import 'package:flutter/material.dart';
 
 class InicialModel extends FlutterFlowModel<InicialWidget> {
@@ -30,25 +28,19 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
   ApiCallResponse? apiResultxi5;
 
   // Login function to be called on Enter press or button click
-  Future<void> performLogin(BuildContext context) async {
+  Future<String?> performLogin(BuildContext context) async {
     final username = textFieldUsernameTextController?.text.trim() ?? '';
     final password = textFieldPasswordTextController?.text ?? '';
     
     if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Por favor, preencha todos os campos'),
-          backgroundColor: FlutterFlowTheme.of(context).error,
-        ),
-      );
-      return;
+      return 'Por favor, preencha todos os campos';
     }
     
     if (username == 'admin' && password == 'admin') {
       FFAppState().loggedInUser = username;
       FFAppState().loggedInUserPassword = password;
       context.pushNamed(TabelaPagWidget.routeName);
-      return;
+      return null;
     }
 
     apiResultxi5 = await UserLoginCall.call(
@@ -64,6 +56,7 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
       await _loadUserType(username);
       
       context.pushNamed(TabelaPagWidget.routeName);
+      return null;
     } else {
       String errorMessage;
       
@@ -86,18 +79,7 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
         }
       }
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            errorMessage,
-            style: TextStyle(
-              color: FlutterFlowTheme.of(context).primaryBackground,
-            ),
-          ),
-          duration: Duration(milliseconds: 3000),
-          backgroundColor: FlutterFlowTheme.of(context).error,
-        ),
-      );
+      return errorMessage;
     }
   }
 
