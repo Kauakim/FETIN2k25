@@ -64,8 +64,8 @@ class _InicialWidgetState extends State<InicialWidget> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     
-    final isShortScreen = screenHeight < 700;
-    final isVeryShortScreen = screenHeight < 600;
+    final isShortScreen = screenHeight < 750;
+    final isVeryShortScreen = screenHeight < 650;
 
     final logoSpacing = isVeryShortScreen ? 20.0 : (isShortScreen ? 40.0 : (isMobile ? 60.0 : 80.0));
     final titleSpacing = isVeryShortScreen ? 16.0 : (isShortScreen ? 24.0 : 32.0);
@@ -95,8 +95,8 @@ class _InicialWidgetState extends State<InicialWidget> {
                     child: Center(
                       child: Image.asset(
                         'assets/logo.png',
-                        width: isVeryShortScreen ? 280.0 : 400.0,
-                        height: isVeryShortScreen ? 160.0 : 280.0,
+                        width: isVeryShortScreen ? 240.0 : isShortScreen ? 420.0 : 480.0,
+                        height: isVeryShortScreen ? 160.0 : isShortScreen ? 280.0 : 320.0,
                         fit: BoxFit.contain,
                       ),
                     ),
