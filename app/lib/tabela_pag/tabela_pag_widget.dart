@@ -81,13 +81,13 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                   top: true,
                   child: Column(
                     children: [
-                      SizedBox(height: 16.0),
+                      SizedBox(height: 24.0),
                       
                       // Table Container
                       Expanded(
                         child: Container(
                           margin: EdgeInsets.symmetric(
-                            horizontal: isMobileDevice ? 16.0 : 32.0,
+                            horizontal: isMobileDevice ? 16.0 : 24.0,
                           ),
                           decoration: BoxDecoration(
                             color: FlutterFlowTheme.of(context).secondaryBackground,

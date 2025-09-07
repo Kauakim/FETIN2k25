@@ -66,48 +66,16 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Profile Picture Section
-                Container(
-                  width: 120.0,
-                  height: 120.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).alternate,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: FlutterFlowTheme.of(context).primary,
-                      width: 3.0,
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(60.0),
-                    child: Container(
-                      width: 120.0,
-                      height: 120.0,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).alternate,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.person,
-                        size: 60.0,
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                  ),
-                ),
-                
-                SizedBox(height: 32.0),
-                
                 // User Info Card
                 Builder(
                   builder: (context) {
                     if (_model.isLoading) {
                       return Container(
                         width: double.infinity,
-                        padding: EdgeInsets.all(24.0),
+                        padding: EdgeInsets.all(32.0),
                         decoration: BoxDecoration(
                           color: FlutterFlowTheme.of(context).secondaryBackground,
-                          borderRadius: BorderRadius.circular(16.0),
+                          borderRadius: BorderRadius.circular(20.0),
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 4.0,
@@ -128,15 +96,20 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
                     
                     return Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(24.0),
+                      padding: EdgeInsets.all(28.0),
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).secondaryBackground,
-                        borderRadius: BorderRadius.circular(16.0),
+                        borderRadius: BorderRadius.circular(20.0),
                         boxShadow: [
                           BoxShadow(
-                            blurRadius: 4.0,
-                            color: Color(0x33000000),
-                            offset: Offset(0.0, 2.0),
+                            blurRadius: 12.0,
+                            color: Color(0x15000000),
+                            offset: Offset(0.0, 4.0),
+                          ),
+                          BoxShadow(
+                            blurRadius: 24.0,
+                            color: Color(0x08000000),
+                            offset: Offset(0.0, 8.0),
                           ),
                         ],
                       ),
@@ -162,32 +135,73 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
                           // User Type Section
                           Container(
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 12.0,
-                            ),
+                            padding: EdgeInsets.all(16.0),
                             decoration: BoxDecoration(
-                              color: _model.isManager 
-                                ? FlutterFlowTheme.of(context).primary.withOpacity(0.1)
-                                : FlutterFlowTheme.of(context).secondary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8.0),
+                              gradient: LinearGradient(
+                                colors: [
+                                  (_model.isManager 
+                                    ? FlutterFlowTheme.of(context).primary
+                                    : FlutterFlowTheme.of(context).secondary).withOpacity(0.1),
+                                  (_model.isManager 
+                                    ? FlutterFlowTheme.of(context).primary
+                                    : FlutterFlowTheme.of(context).secondary).withOpacity(0.05),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12.0),
                               border: Border.all(
-                                color: _model.isManager 
+                                color: (_model.isManager 
                                   ? FlutterFlowTheme.of(context).primary
-                                  : FlutterFlowTheme.of(context).secondary,
+                                  : FlutterFlowTheme.of(context).secondary).withOpacity(0.3),
                                 width: 1.0,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 4.0,
+                                  color: (_model.isManager 
+                                    ? FlutterFlowTheme.of(context).primary
+                                    : FlutterFlowTheme.of(context).secondary).withOpacity(0.1),
+                                  offset: Offset(0.0, 2.0),
+                                ),
+                              ],
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  _model.isManager ? Icons.admin_panel_settings : Icons.work,
-                                  color: _model.isManager 
-                                    ? FlutterFlowTheme.of(context).primary
-                                    : FlutterFlowTheme.of(context).secondary,
-                                  size: 20.0,
+                                Container(
+                                  width: 36.0,
+                                  height: 36.0,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        _model.isManager 
+                                          ? FlutterFlowTheme.of(context).primary
+                                          : FlutterFlowTheme.of(context).secondary,
+                                        (_model.isManager 
+                                          ? FlutterFlowTheme.of(context).primary
+                                          : FlutterFlowTheme.of(context).secondary).withOpacity(0.8),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 4.0,
+                                        color: (_model.isManager 
+                                          ? FlutterFlowTheme.of(context).primary
+                                          : FlutterFlowTheme.of(context).secondary).withOpacity(0.3),
+                                        offset: Offset(0.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    _model.isManager ? Icons.admin_panel_settings : Icons.work,
+                                    color: Colors.white,
+                                    size: 20.0,
+                                  ),
                                 ),
-                                SizedBox(width: 12.0),
+                                SizedBox(width: 16.0),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -526,7 +540,7 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
       ),
     );
   }
-  
+
   Widget _buildUserForm() {
     final isEdit = _model.showEditForm;
     
@@ -549,7 +563,7 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          
+
           SizedBox(height: 16.0),
           
           // Username field
@@ -557,7 +571,7 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
             controller: _model.usernameController,
             focusNode: _model.usernameFocusNode,
             decoration: InputDecoration(
-              labelText: 'Nome de usuário',
+              labelText: 'Nome de usuário *',
               labelStyle: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                 color: FlutterFlowTheme.of(context).secondaryText,
               ),
@@ -588,7 +602,7 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
             focusNode: _model.passwordFocusNode,
             obscureText: true,
             decoration: InputDecoration(
-              labelText: isEdit ? 'Nova senha (deixe vazio para manter)' : 'Senha',
+              labelText: isEdit ? 'Nova senha (Deixe vazio para manter)' : 'Senha *',
               labelStyle: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                 color: FlutterFlowTheme.of(context).secondaryText,
               ),
@@ -618,7 +632,7 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
             controller: _model.emailController,
             focusNode: _model.emailFocusNode,
             decoration: InputDecoration(
-              labelText: 'Email',
+              labelText: 'Email *',
               labelStyle: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                 color: FlutterFlowTheme.of(context).secondaryText,
               ),
@@ -643,33 +657,88 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
           
           SizedBox(height: 16.0),
           
-          // Role field
-          TextFormField(
-            controller: _model.roleController,
-            focusNode: _model.roleFocusNode,
-            decoration: InputDecoration(
-              labelText: 'Função (manager ou worker)',
-              helperText: 'Digite "manager" ou "worker"',
-              labelStyle: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                color: FlutterFlowTheme.of(context).secondaryText,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).alternate,
-                  width: 1.0,
+          // Role field - Dropdown
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Função *',
+                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                  color: FlutterFlowTheme.of(context).secondaryText,
+                  fontSize: 16.0,
                 ),
-                borderRadius: BorderRadius.circular(8.0),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).primary,
-                  width: 2.0,
+              SizedBox(height: 8.0),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 12.0),
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: FlutterFlowTheme.of(context).alternate,
+                    width: 1.0,
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(8.0),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _model.roleController.text.isEmpty ? null : _model.roleController.text,
+                    hint: Text(
+                      isEdit ? 'Selecione para alterar' : 'Selecione uma função',
+                      style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                      ),
+                    ),
+                    isExpanded: true,
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                    ),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: 'manager',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.admin_panel_settings,
+                              color: FlutterFlowTheme.of(context).primary,
+                              size: 20.0,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Gerente',
+                              style: FlutterFlowTheme.of(context).bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem<String>(
+                        value: 'worker',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.work,
+                              color: FlutterFlowTheme.of(context).secondary,
+                              size: 20.0,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Funcionário',
+                              style: FlutterFlowTheme.of(context).bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _model.roleController.text = newValue ?? '';
+                      });
+                    },
+                  ),
+                ),
               ),
-              filled: true,
-              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-            ),
+            ],
           ),
           
           SizedBox(height: 20.0),
@@ -679,6 +748,56 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () async {
+                    // Validação dos campos
+                    final username = _model.usernameController.text.trim();
+                    final password = _model.passwordController.text.trim();
+                    final email = _model.emailController.text.trim();
+                    final role = _model.roleController.text.trim();
+                    
+                    String? errorMessage;
+                    
+                    if (isEdit) {
+                      // Modo edição: apenas senha pode ficar vazia
+                      if (username.isEmpty && password.isEmpty && email.isEmpty && role.isEmpty) {
+                        errorMessage = 'Preencha pelo menos um campo para atualizar!';
+                      }
+                    } else {
+                      // Modo criação: todos os campos obrigatórios
+                      if (username.isEmpty) {
+                        errorMessage = 'Nome de usuário é obrigatório!';
+                      } else if (password.isEmpty) {
+                        errorMessage = 'Senha é obrigatória!';
+                      } else if (email.isEmpty) {
+                        errorMessage = 'Email é obrigatório!';
+                      } else if (role.isEmpty) {
+                        errorMessage = 'Função é obrigatória!';
+                      }
+                    }
+                    
+                    if (errorMessage != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(
+                                Icons.warning,
+                                color: Colors.white,
+                                size: 20.0,
+                              ),
+                              SizedBox(width: 8.0),
+                              Expanded(child: Text(errorMessage)),
+                            ],
+                          ),
+                          backgroundColor: FlutterFlowTheme.of(context).error,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+                    
                     bool success = false;
                     
                     if (isEdit) {
@@ -706,12 +825,20 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: FlutterFlowTheme.of(context).primary,
                     foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    padding: EdgeInsets.symmetric(vertical: 18.0),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    elevation: 4.0,
+                    shadowColor: FlutterFlowTheme.of(context).primary.withOpacity(0.3),
+                  ),
+                  child: Text(
+                    isEdit ? 'Atualizar' : 'Criar',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.0,
                     ),
                   ),
-                  child: Text(isEdit ? 'Atualizar' : 'Criar'),
                 ),
               ),
               
@@ -841,46 +968,230 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
   void _showDeleteConfirmation(String username) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('Confirmar Exclusão'),
-          content: Text('Tem certeza que deseja excluir o usuário "$username"? Esta ação não pode ser desfeita.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          contentPadding: EdgeInsets.all(20.0),
+          content: Container(
+            width: 260.0, // Largura fixa menor
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icon
+                Container(
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                    color: FlutterFlowTheme.of(context).error.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  child: Icon(
+                    Icons.delete_outline,
+                    color: FlutterFlowTheme.of(context).error,
+                    size: 30.0,
+                  ),
+                ),
+
+                SizedBox(height: 12.0),
                 
-                final success = await _model.deleteUser(username);
+                // Title
+                Text(
+                  'Confirmar Exclusão',
+                  style: FlutterFlowTheme.of(context).headlineSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.0,
+                    fontSize: 20.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 
-                if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Usuário excluído com sucesso!'),
-                      backgroundColor: FlutterFlowTheme.of(context).primary,
+                SizedBox(height: 12.0),
+                
+                // Content
+                Text(
+                  'Excluir o usuário "$username"?\nEsta ação não pode ser desfeita.',
+                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    letterSpacing: 0.0,
+                    fontSize: 16.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                
+                SizedBox(height: 20.0),
+                
+                // Actions
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: FlutterFlowTheme.of(context).alternate,
+                          foregroundColor: FlutterFlowTheme.of(context).primaryText,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 12.0),
+                        ),
+                        child: Text(
+                          'Cancelar',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
                     ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Erro ao excluir usuário!'),
-                      backgroundColor: FlutterFlowTheme.of(context).error,
+                    
+                    SizedBox(width: 8.0),
+                    
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          // Store the navigator before any async operations
+                          final navigator = Navigator.of(dialogContext);
+                          final scaffoldMessenger = ScaffoldMessenger.of(context);
+                          final theme = FlutterFlowTheme.of(context);
+                          
+                          navigator.pop();
+                          
+                          // Show loading with a separate context
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext loadingContext) {
+                              return Center(
+                                child: Container(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  decoration: BoxDecoration(
+                                    color: theme.secondaryBackground,
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        theme.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                          
+                          try {
+                            final success = await _model.deleteUser(username);
+                            
+                            // Hide loading safely
+                            if (mounted && Navigator.canPop(context)) {
+                              Navigator.of(context).pop();
+                            }
+                            
+                            if (mounted) {
+                              if (success) {
+                                scaffoldMessenger.showSnackBar(
+                                  SnackBar(
+                                    content: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          color: Colors.white,
+                                          size: 18.0,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text('Usuário excluído com sucesso!'),
+                                      ],
+                                    ),
+                                    backgroundColor: theme.primary,
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                scaffoldMessenger.showSnackBar(
+                                  SnackBar(
+                                    content: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.error_outline,
+                                          color: Colors.white,
+                                          size: 18.0,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text('Erro ao excluir usuário!'),
+                                      ],
+                                    ),
+                                    backgroundColor: theme.error,
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                          } catch (e) {
+                            // Hide loading safely
+                            if (mounted && Navigator.canPop(context)) {
+                              Navigator.of(context).pop();
+                            }
+                            
+                            if (mounted) {
+                              scaffoldMessenger.showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        color: Colors.white,
+                                        size: 18.0,
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Expanded(child: Text('Erro inesperado: $e')),
+                                    ],
+                                  ),
+                                  backgroundColor: theme.error,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: FlutterFlowTheme.of(context).error,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          elevation: 0.0,
+                          padding: EdgeInsets.symmetric(vertical: 12.0),
+                        ),
+                        child: Text(
+                          'Excluir',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
                     ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: FlutterFlowTheme.of(context).error,
-                foregroundColor: Colors.white,
-              ),
-              child: Text('Excluir'),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );

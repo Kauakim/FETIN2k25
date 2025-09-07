@@ -36,7 +36,9 @@ async def signin(request: schemas.SigninResponseSchema):
 @router.post("/users/update/")
 async def updateUser(request: schemas.UpdateUserSchema):
     usersData = models.getUsersData()
-    if not request.oldUsername or not request.newUsername or not request.password or not request.email or not request.role:
+    
+    # Check required fields - password can be empty (means keep current)
+    if not request.oldUsername or not request.newUsername or not request.email or not request.role:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
@@ -52,7 +54,16 @@ async def updateUser(request: schemas.UpdateUserSchema):
             detail="Novo nome de usuário já existe"
         )
     
-    models.updateUser(request.oldUsername, request.newUsername, request.password, request.email, request.role)
+    # If password is empty, keep the current password
+    finalPassword = request.password
+    if not request.password:
+        currentUser = usersData[request.oldUsername]
+        finalPassword = currentUser.get('password', '')
+        print(f"Senha mantida para o usuário {request.oldUsername}")
+    else:
+        print(f"Atualizando senha para o usuário {request.oldUsername}")
+
+    models.updateUser(request.oldUsername, request.newUsername, finalPassword, request.email, request.role)
     return {"message": "Usuário atualizado com sucesso", "status_code": status.HTTP_201_CREATED}
 
 @router.post("/users/delete/")

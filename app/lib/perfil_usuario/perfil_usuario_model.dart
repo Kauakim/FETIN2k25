@@ -265,12 +265,31 @@ class PerfilUsuarioModel extends FlutterFlowModel<PerfilUsuarioWidget> {
   // Create user
   Future<bool> createUser() async {
     try {
+      // Validate required fields for creation
+      final username = usernameController.text.trim();
+      final password = passwordController.text.trim();
+      final email = emailController.text.trim();
+      final role = roleController.text.trim();
+      
+      if (username.isEmpty || password.isEmpty || email.isEmpty || role.isEmpty) {
+        print('Error: All fields are required for user creation');
+        return false;
+      }
+      
+      print('Creating user with:');
+      print('Username: $username');
+      print('Email: $email');
+      print('Role: $role');
+      
       final response = await UserSigninCall.call(
-        username: usernameController.text.trim(),
-        password: passwordController.text.trim(),
-        email: emailController.text.trim(),
-        role: roleController.text.trim(),
+        username: username,
+        password: password,
+        email: email,
+        role: role,
       );
+
+      print('Create response: ${response.statusCode}');
+      print('Create response body: ${response.jsonBody}');
 
       if (response.succeeded) {
         hideForms();
@@ -289,20 +308,45 @@ class PerfilUsuarioModel extends FlutterFlowModel<PerfilUsuarioWidget> {
     if (_editingUser == null) return false;
     
     try {
+      // Get form values
+      final username = usernameController.text.trim();
+      final password = passwordController.text.trim();
+      final email = emailController.text.trim();
+      final role = roleController.text.trim();
+      
+      // Use current user values for empty fields
+      final finalUsername = username.isEmpty ? _editingUser!['username'] : username;
+      final finalPassword = password.isEmpty ? '' : password;
+      final finalEmail = email.isEmpty ? _editingUser!['email'] : email;
+      final finalRole = role.isEmpty ? _editingUser!['role'] : role;
+  
+      print('Updating user with:');
+      print('Old username: ${_editingUser!['username']}');
+      print('Final username: $finalUsername');
+      print('Final password: $finalPassword');
+      print('Final email: $finalEmail');
+      print('Final role: $finalRole');
+      print('Password changed: ${password.isNotEmpty}');
+      
       final response = await UserUpdateCall.call(
         oldUsername: _editingUser!['username'],
-        newUsername: usernameController.text.trim(),
-        password: passwordController.text.trim(),
-        email: emailController.text.trim(),
-        role: roleController.text.trim(),
+        newUsername: finalUsername,
+        password: finalPassword,
+        email: finalEmail,
+        role: finalRole,
       );
+
+      print('Update response: ${response.statusCode}');
+      print('Update response body: ${response.jsonBody}');
 
       if (response.succeeded) {
         hideForms();
         await loadAllUsers(); // Reload users list
         return true;
+      } else {
+        print('Update failed with status: ${response.statusCode}');
+        return false;
       }
-      return false;
     } catch (e) {
       print('Error updating user: $e');
       return false;
@@ -312,13 +356,25 @@ class PerfilUsuarioModel extends FlutterFlowModel<PerfilUsuarioWidget> {
   // Delete user
   Future<bool> deleteUser(String username) async {
     try {
+      if (username.isEmpty) {
+        print('Error: Username is empty for delete');
+        return false;
+      }
+      
+      print('Deleting user: $username');
+      
       final response = await UserDeleteCall.call(username: username);
+      
+      print('Delete response: ${response.statusCode}');
+      print('Delete response body: ${response.jsonBody}');
 
       if (response.succeeded) {
         await loadAllUsers(); // Reload users list
         return true;
+      } else {
+        print('Delete failed with status: ${response.statusCode}');
+        return false;
       }
-      return false;
     } catch (e) {
       print('Error deleting user: $e');
       return false;
