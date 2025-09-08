@@ -1,27 +1,37 @@
 from . import models
 from datetime import datetime
 
-# TODO: DEFINIR A POSIÇÃO DAS MÁQUINAS A SEGUIR
-# Posição e linha das máquinas da fábrica
-maquinas = [
-    {"maquina": "Estacao de carga", "linha": "Carregamento", "x": 10, "y": 30},
-    {"maquina": "Impressora 3D", "linha": "Maker","x": 10, "y": 30},
-    {"maquina": "Impressora", "linha": "Maker", "x": 10, "y": 30},
-    {"maquina": "Maquina de corrosao", "linha": "PCB", "x": 10, "y": 20},
-    {"maquina": "Estacao de solda", "linha": "PCB", "x": 0, "y": 0},
-    {"maquina": "CNC", "linha": "Corte", "x": 10, "y": 10},
-    {"maquina": "Maquina de corte", "linha": "Corte", "x": 10, "y": 30},
-    {"maquina": "Bancada de reparos e carga", "linha": "Manutencao", "x": 10, "y": 30},
-]
+def getMaquinasFromDatabase():
+    all_beacons = models.getAllBeaconsData()
+    maquinas = []
+    
+    for beacon_id, beacon_data in all_beacons.items():
+        if beacon_data["tipo"] == "maquina":
+            maquina = {
+                "beacon": beacon_data["beacon"],
+                "status": beacon_data["status"],
+                "x": beacon_data["x"],
+                "y": beacon_data["y"]
+            }
+            maquinas.append(maquina)
+    
+    return maquinas
 
 def calcularDistancia(x1, y1, x2, y2):
     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
-def calculateBeaconsStatus(maquinas):
+def calculateBeaconsStatus():
+    maquinas = getMaquinasFromDatabase()
     lastBeacons = models.getLastBeaconsData(15)
     allBeacons = models.getLastBeaconsData(900)
+
+    estacao_carga = next((m for m in maquinas if m["beacon"] == "Estacao de carga"), None)
+    bancada_reparos = next((m for m in maquinas if m["beacon"] == "Bancada de reparos e carga"), None)
     
-    for beacon in lastBeacons:
+    for beacon_id, beacon in lastBeacons.items():
+        if beacon["tipo"] == "maquina":
+            continue
+            
         status = beacon["status"]
         x = beacon["x"]
         y = beacon["y"]
@@ -33,46 +43,48 @@ def calculateBeaconsStatus(maquinas):
             continue
 
         # Ferramenta ou produto precisando de reparos, carga ou outro tipo de atenção
-        if calcularDistancia(x, y, maquinas[7]["x"], maquinas[7]["y"]) < 2:
-            status == "indisponivel"
+        if bancada_reparos and calcularDistancia(x, y, bancada_reparos["x"], bancada_reparos["y"]) < 2:
+            status = "indisponivel"
         
         # Beacon em processo de carga
         if status == "descarregado":
-            if calcularDistancia(x, y, maquinas[0]["x"], maquinas[0]["y"]) < 2:
+            if estacao_carga and calcularDistancia(x, y, estacao_carga["x"], estacao_carga["y"]) < 2:
                 status = "carregando"
 
         # Beacon carregado ainda na estação de carga
         if status == "carregando":
-            beacon_history = [b for b in allBeacons if b["beacon"] == beacon["beacon"]]
+            beacon_history = [b for beacon, b in allBeacons.items() if b["beacon"] == beacon["beacon"]]
             if beacon_history and all(b["status"] == "carregando" for b in beacon_history):
                 status = "carregado"
         
         # Beacon carregado fora da estação de carga
         if status == "carregado":
-            if calcularDistancia(x, y, maquinas[1]["x"], maquinas[1]["y"]) > 2:
+            if estacao_carga and calcularDistancia(x, y, estacao_carga["x"], estacao_carga["y"]) > 2:
                 status = "disponivel"
 
         # Lote sendo processado em alguma maquina
         if beacon["tipo"] == "material":
             for maquina in maquinas:
-                if calcularDistancia(beacon[x], beacon[y], maquina["x"], maquinas["y"]) < 2:
+                if calcularDistancia(x, y, maquina["x"], maquina["y"]) < 2:
                     status = "processando"
-                    savedMaquina = maquina
+                    savedMaquina = maquina["beacon"]
+                    break
     
         # Lote processado e alteração das informações
         if status == "processando":
-            beacon_history = [b for b in allBeacons if b["beacon"] == beacon["beacon"]]
+            beacon_history = [b for beacon, b in allBeacons.items() if b["beacon"] == beacon["beacon"]]
             if beacon_history and all(b["status"] == "processando" for b in beacon_history):
                 status = "processado"
                 
                 infos = models.getInfoData()
+                updated = False
                 for info in infos:
                     if info["maquina"] == savedMaquina and info["data"] == datetime.now().strftime("%Y-%m-%d"):
                         models.updateInfo(info["maquina"], info["tasksConcluidas"] + 1, info["tasksCanceladas"], info["horasTrabalhadas"] + 0.25, info["data"])
                         updated = True
                         break
                 if not updated:
-                    models.createInfo(maquina, 1, 0, 0.25, datetime.now().strftime("%Y-%m-%d"))
+                    models.createInfo(savedMaquina, 1, 0, 0.25, datetime.now().strftime("%Y-%m-%d"))
                 
         models.updateBeaconStatus(beacon["utc"], beacon["beacon"], status)
         

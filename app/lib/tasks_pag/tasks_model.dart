@@ -245,11 +245,11 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     currentTask = null;
     isEditing = false;
     
-    mensagemController?.clear();
-    destinoController?.clear();
-    tipoDestinoController?.clear();
-    beaconsController?.clear();
-    dependenciasController?.clear();
+    if (mensagemController != null) mensagemController!.clear();
+    if (destinoController != null) destinoController!.clear();
+    if (tipoDestinoController != null) tipoDestinoController!.clear();
+    if (beaconsController != null) beaconsController!.clear();
+    if (dependenciasController != null) dependenciasController!.clear();
     selectedTipo = null;
     selectedStatus = 'Pendente';
   }

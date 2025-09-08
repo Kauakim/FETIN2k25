@@ -75,91 +75,6 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   bool filterCarregando = false;
   bool filterCarregado = false;
   
-  // Fixed machines data with coordinates
-  List<MapItem> fixedMachines = [
-    MapItem(
-      id: 'M001',
-      name: 'Estacao de carga',
-      type: 'maquina',
-      category: 'maquina',
-      x: 100.0,
-      y: 300.0,
-      status: 'ativo',
-      linha: 'Carregamento',
-    ),
-    MapItem(
-      id: 'M002',
-      name: 'Impressora 3D',
-      type: 'maquina',
-      category: 'maquina',
-      x: 150.0,
-      y: 150.0,
-      status: 'ativo',
-      linha: 'Maker',
-    ),
-    MapItem(
-      id: 'M003',
-      name: 'Impressora',
-      type: 'maquina',
-      category: 'maquina',
-      x: 250.0,
-      y: 150.0,
-      status: 'ativo',
-      linha: 'Maker',
-    ),
-    MapItem(
-      id: 'M004',
-      name: 'Maquina de corrosao',
-      type: 'maquina',
-      category: 'maquina',
-      x: 400.0,
-      y: 200.0,
-      status: 'ativo',
-      linha: 'PCB',
-    ),
-    MapItem(
-      id: 'M005',
-      name: 'Estacao de solda',
-      type: 'maquina',
-      category: 'maquina',
-      x: 500.0,
-      y: 100.0,
-      status: 'ativo',
-      linha: 'PCB',
-    ),
-    MapItem(
-      id: 'M006',
-      name: 'CNC',
-      type: 'maquina',
-      category: 'maquina',
-      x: 350.0,
-      y: 350.0,
-      status: 'ativo',
-      linha: 'Corte',
-    ),
-    MapItem(
-      id: 'M007',
-      name: 'Maquina de corte',
-      type: 'maquina',
-      category: 'maquina',
-      x: 550.0,
-      y: 350.0,
-      status: 'ativo',
-      linha: 'Corte',
-    ),
-    MapItem(
-      id: 'M008',
-      name: 'Bancada de reparos e carga',
-      type: 'maquina',
-      category: 'maquina',
-      x: 600.0,
-      y: 250.0,
-      status: 'ativo',
-      linha: 'Manutencao',
-    ),
-  ];
-  
-  // Get all map items (fixed machines + dynamic beacons) COM CACHE
   Future<List<MapItem>> getAllMapItems() async {
     // Verifica se tem cache válido
     if (_cachedMapItems != null && 
@@ -181,7 +96,7 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
     _isLoading = true;
     
     try {
-      List<MapItem> allItems = List.from(fixedMachines);
+      List<MapItem> allItems = [];
       
       final apiResponse = await BeaconsGetAllCall.call();
       if (apiResponse.statusCode == 200) {
@@ -214,7 +129,7 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
       if (_cachedMapItems != null) {
         return getFilteredMapItems(_cachedMapItems!);
       }
-      return getFilteredMapItems(List.from(fixedMachines));
+      return getFilteredMapItems([]);
     } finally {
       _isLoading = false;
     }
@@ -223,7 +138,9 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   // Determine category from beacon type
   String _getCategoryFromBeaconType(String tipo) {
     tipo = tipo.toLowerCase();
-    if (tipo.contains('ferramenta') || tipo.contains('multimetro') || tipo.contains('kit')) {
+    if (tipo.contains('maquina') || tipo == 'maquina') {
+      return 'maquina';
+    } else if (tipo.contains('ferramenta') || tipo.contains('multimetro') || tipo.contains('kit')) {
       return 'ferramenta';
     } else if (tipo.contains('material') || tipo.contains('chapa') || tipo.contains('estanho') || 
                tipo.contains('filamento') || tipo.contains('componentes')) {

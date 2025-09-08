@@ -64,10 +64,10 @@ class _InicialWidgetState extends State<InicialWidget> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     
-    final isShortScreen = screenHeight < 750;
-    final isVeryShortScreen = screenHeight < 650;
+    final isShortScreen = screenHeight < 800;
+    final isVeryShortScreen = screenHeight < 700;
 
-    final logoSpacing = isVeryShortScreen ? 20.0 : (isShortScreen ? 40.0 : (isMobile ? 60.0 : 80.0));
+    final logoSpacing = isVeryShortScreen ? 15.0 : (isShortScreen ? 20.0 : (isMobile ? 30.0 : 40.0));
     final titleSpacing = isVeryShortScreen ? 16.0 : (isShortScreen ? 24.0 : 32.0);
     final fieldsSpacing = isVeryShortScreen ? 8.0 : (isShortScreen ? 12.0 : 16.0);
     final buttonSpacing = isVeryShortScreen ? 16.0 : (isShortScreen ? 20.0 : 24.0);

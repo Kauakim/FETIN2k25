@@ -2,7 +2,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/app_bottom_navigation.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/app_bottom_navigation.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'tasks_model.dart';
@@ -52,7 +51,7 @@ class _TasksWidgetState extends State<TasksWidget> {
           children: [
             // Search and Filter Bar
             Container(
-              padding: EdgeInsets.all(isMobileDevice ? 12.0 : 16.0),
+              padding: EdgeInsets.all(isMobileDevice ? 16.0 : 20.0),
               decoration: BoxDecoration(
                 color: FlutterFlowTheme.of(context).secondaryBackground,
                 boxShadow: [
@@ -81,6 +80,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                             prefixIcon: Icon(
                               Icons.search,
                               color: FlutterFlowTheme.of(context).secondaryText,
+                              size: 24.0,
                             ),
                             suffixIcon: _model.searchController?.text.isNotEmpty == true
                               ? IconButton(
@@ -100,21 +100,21 @@ class _TasksWidgetState extends State<TasksWidget> {
                                 color: FlutterFlowTheme.of(context).alternate,
                                 width: 1.0,
                               ),
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: FlutterFlowTheme.of(context).primary,
                                 width: 2.0,
                               ),
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                             filled: true,
                             fillColor: FlutterFlowTheme.of(context).primaryBackground,
                           ),
                         ),
                       ),
-                      SizedBox(width: 12.0),
+                      SizedBox(width: 16.0),
                       IconButton(
                         onPressed: () {
                           setState(() {
@@ -123,21 +123,22 @@ class _TasksWidgetState extends State<TasksWidget> {
                         },
                         icon: Icon(
                           Icons.filter_list,
+                          size: 24.0,
                           color: _model.hasActiveFilters() 
                             ? FlutterFlowTheme.of(context).primary
-                            : FlutterFlowTheme.of(context).secondaryText,
+                            : FlutterFlowTheme.of(context).primaryText,
                         ),
                         style: IconButton.styleFrom(
                           backgroundColor: _model.hasActiveFilters()
                             ? FlutterFlowTheme.of(context).primary.withOpacity(0.1)
                             : FlutterFlowTheme.of(context).alternate,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
                         ),
                       ),
                       if (FFAppState().isManager) ...[
-                        SizedBox(width: 12.0),
+                        SizedBox(width: 16.0),
                         IconButton(
                           onPressed: () {
                             setState(() {
@@ -146,12 +147,13 @@ class _TasksWidgetState extends State<TasksWidget> {
                           },
                           icon: Icon(
                             _model.showCreateForm ? Icons.close : Icons.add,
-                            color: Colors.white,
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            size: 24.0,
                           ),
                           style: IconButton.styleFrom(
                             backgroundColor: FlutterFlowTheme.of(context).primary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
                         ),
@@ -161,13 +163,13 @@ class _TasksWidgetState extends State<TasksWidget> {
                   
                   // Filters Section
                   if (showFilters) ...[
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 20.0),
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).primaryBackground,
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(12.0),
                         border: Border.all(
                           color: FlutterFlowTheme.of(context).alternate,
                           width: 1.0,
@@ -180,7 +182,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Filtros por Status',
+                                'Filtrar por Status',
                                 style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.w600,
@@ -196,7 +198,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                   'Limpar',
                                   style: TextStyle(
                                     color: FlutterFlowTheme.of(context).primary,
-                                    fontSize: 14.0,
+                                    fontSize: 16.0,
                                   ),
                                 ),
                               ),
@@ -204,8 +206,8 @@ class _TasksWidgetState extends State<TasksWidget> {
                           ),
                           SizedBox(height: 12.0),
                           Wrap(
-                            spacing: 8.0,
-                            runSpacing: 8.0,
+                            spacing: 12.0,
+                            runSpacing: 12.0,
                             children: [
                               _buildFilterChip('Pendente', _model.filterPendente, 'pendente'),
                               _buildFilterChip('Em Andamento', _model.filterEmAndamento, 'emAndamento'),
@@ -222,16 +224,18 @@ class _TasksWidgetState extends State<TasksWidget> {
             ),
 
             if (_model.showCreateForm && FFAppState().isManager) ...[
-              SliverToBoxAdapter(
-                child: _buildCreateEditForm(isMobileDevice),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(16.0),
+                  child: _buildCreateEditForm(isMobileDevice),
+                ),
               ),
-            ],
-            
-            // Tasks List
-            Expanded(
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: _model.getFilteredTasks(),
-                builder: (context, snapshot) {
+            ] else ...[
+              // Tasks List
+              Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _model.getFilteredTasks(),
+                  builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
@@ -300,7 +304,8 @@ class _TasksWidgetState extends State<TasksWidget> {
                   );
                 },
               ),
-            ),
+              )
+            ],
           ],
         ),
       ),
@@ -393,16 +398,6 @@ class _TasksWidgetState extends State<TasksWidget> {
           
           SizedBox(height: 10.0),
           
-          // Destino Field
-          _buildTextField(
-            label: 'Destino *',
-            controller: _model.destinoController,
-            focusNode: _model.destinoFocusNode,
-            hintText: 'Ex: Estação de Carga 1',
-          ),
-          
-          SizedBox(height: 10.0),
-          
           // Tipo Destino Field
           _buildTextField(
             label: 'Tipo de Destino',
@@ -413,37 +408,12 @@ class _TasksWidgetState extends State<TasksWidget> {
           
           SizedBox(height: 10.0),
           
-          // Row with dropdowns
-          Row(
-            children: [
-              Expanded(
-                child: _buildDropdown(
-                  label: 'Tipo da Task *',
-                  value: _model.selectedTipo,
-                  items: _model.tipoOptions,
-                  onChanged: (value) {
-                    setState(() {
-                      _model.selectedTipo = value;
-                    });
-                  },
-                  hintText: 'Selecione o tipo',
-                ),
-              ),
-              SizedBox(width: 12.0),
-              Expanded(
-                child: _buildDropdown(
-                  label: 'Status *',
-                  value: _model.selectedStatus,
-                  items: _model.statusOptions,
-                  onChanged: (value) {
-                    setState(() {
-                      _model.selectedStatus = value;
-                    });
-                  },
-                  hintText: 'Selecione o status',
-                ),
-              ),
-            ],
+          // Destino Field
+          _buildTextField(
+            label: 'Destino *',
+            controller: _model.destinoController,
+            focusNode: _model.destinoFocusNode,
+            hintText: 'Ex: Estação de Carga 1',
           ),
           
           SizedBox(height: 10.0),

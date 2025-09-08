@@ -1,6 +1,6 @@
 import threading
 from .position import calculateBeaconsPositions, gateways
-from .infos import calculateBeaconsStatus, maquinas
+from .infos import calculateBeaconsStatus
 import time
 import logging
 
@@ -17,7 +17,7 @@ def run_position_loop():
 def run_status_loop():
     while True:
         try:
-            calculateBeaconsStatus(maquinas)
+            calculateBeaconsStatus()
             time.sleep(10)
         except Exception as e:
             logger.error(f"Status error: {e}")

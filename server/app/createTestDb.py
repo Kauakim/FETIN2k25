@@ -18,6 +18,14 @@ if input().upper() == "S":
     models.createBeacon(current_timestamp, "Estanho", "material", "disponivel", None, None, None, 20, 15.5)
     models.createBeacon(current_timestamp, "Componentes", "material", "disponivel", None, None, None, 20, 15)
     models.createBeacon(current_timestamp, "Filamento", "material", "disponivel", None, None, None, 20, 12)
+    models.createBeacon(current_timestamp, "Estacao de carga", "maquina", "disponivel", None, None, None, 10, 30)
+    models.createBeacon(current_timestamp, "Impressora 3D", "maquina", "disponivel", None, None, None, 10, 30)
+    models.createBeacon(current_timestamp, "Impressora", "maquina", "disponivel", None, None, None, 10, 30)
+    models.createBeacon(current_timestamp, "Maquina de corrosao", "maquina", "disponivel", None, None, None, 10, 20)
+    models.createBeacon(current_timestamp, "Estacao de solda", "maquina", "disponivel", None, None, None, 0, 0)
+    models.createBeacon(current_timestamp, "CNC", "maquina", "disponivel", None, None, None, 10, 10)
+    models.createBeacon(current_timestamp, "Maquina de corte", "maquina", "disponivel", None, None, None, 10, 30)
+    models.createBeacon(current_timestamp, "Bancada de reparos e carga", "maquina", "disponivel", None, None, None, 10, 30)
 
 print("Deseja criar as tasks base? (S/N)")
 if input().upper() == "S":
