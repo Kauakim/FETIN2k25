@@ -12,14 +12,14 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   Offset mapOffset = Offset.zero;
   
   // Map image dimensions (to be used as reference for coordinate system)
-  double mapWidth = 800.0;
-  double mapHeight = 600.0;
+  double mapWidth = 1600.0;  // Doubled from 800.0
+  double mapHeight = 1200.0; // Doubled from 600.0
   
-  // Pan limits (how far the map can be dragged in each direction)
-  double maxPanLeft = 200.0;   // Maximum distance to pan left
-  double maxPanRight = 200.0;  // Maximum distance to pan right
-  double maxPanUp = 150.0;     // Maximum distance to pan up
-  double maxPanDown = 150.0;   // Maximum distance to pan down
+  // Base pan limits (will be scaled by zoom level)
+  double maxPanLeft = 600.0;   // Increased base limit
+  double maxPanRight = 600.0;  // Increased base limit
+  double maxPanUp = 450.0;     // Increased base limit
+  double maxPanDown = 450.0;   // Increased base limit
   
   // Track if we're at pan limits (for visual feedback)
   bool isAtLeftLimit = false;
@@ -29,6 +29,49 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   
   // API request completer for beacons
   Completer<ApiCallResponse>? apiRequestCompleter;
+  
+  // Cache variables para reduzir requisições
+  List<MapItem>? _cachedMapItems;
+  DateTime? _lastFetchTime;
+  static const Duration _cacheTimeout = Duration(seconds: 30);
+  bool _isLoading = false;
+  
+  // Filter variables
+  bool showFilterMenu = false;
+  FocusNode? textFieldFocusNode;
+  TextEditingController? textController;
+  String? Function(BuildContext, String?)? textControllerValidator;
+  
+  // Machine filters
+  bool filterEstacaoCarga = false;
+  bool filterImpressora3d = false;
+  bool filterImpressora = false;
+  bool filterMaquinaCorrosao = false;
+  bool filterEstacaoSolda = false;
+  bool filterCNC = false;
+  bool filterMaquinaCorte = false;
+  bool filterBancadaReparos = false;
+  
+  // Beacon filters
+  bool filterMultimetro = false;
+  bool filterKitReparos = false;
+  bool filterChapaMaterial = false;
+  bool filterEstanho = false;
+  bool filterComponentes = false;
+  bool filterFilamento = false;
+  
+  // Type filters
+  bool filterMaterial = false;
+  bool filterFerramenta = false;
+  
+  // Status filters
+  bool filterEmUso = false;
+  bool filterDisponivel = false;
+  bool filterDescarregado = false;
+  bool filterProcessado = false;
+  bool filterIndisponivel = false;
+  bool filterCarregando = false;
+  bool filterCarregado = false;
   
   // Fixed machines data with coordinates
   List<MapItem> fixedMachines = [
@@ -114,11 +157,30 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
     ),
   ];
   
-  // Get all map items (fixed machines + dynamic beacons)
+  // Get all map items (fixed machines + dynamic beacons) COM CACHE
   Future<List<MapItem>> getAllMapItems() async {
-    List<MapItem> allItems = List.from(fixedMachines);
+    // Verifica se tem cache válido
+    if (_cachedMapItems != null && 
+        _lastFetchTime != null && 
+        DateTime.now().difference(_lastFetchTime!) < _cacheTimeout) {
+      return getFilteredMapItems(_cachedMapItems!);
+    }
+    
+    // Evita múltiplas chamadas simultâneas
+    if (_isLoading) {
+      while (_isLoading) {
+        await Future.delayed(Duration(milliseconds: 100));
+      }
+      if (_cachedMapItems != null) {
+        return getFilteredMapItems(_cachedMapItems!);
+      }
+    }
+    
+    _isLoading = true;
     
     try {
+      List<MapItem> allItems = List.from(fixedMachines);
+      
       final apiResponse = await BeaconsGetAllCall.call();
       if (apiResponse.statusCode == 200) {
         final beaconsMap = getJsonField(apiResponse.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
@@ -138,11 +200,22 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
           ));
         }
       }
+      
+      // Salva no cache
+      _cachedMapItems = allItems;
+      _lastFetchTime = DateTime.now();
+      
+      return getFilteredMapItems(allItems);
     } catch (e) {
       print('Error loading beacons: $e');
+      // Se tem cache, usa ele mesmo expirado
+      if (_cachedMapItems != null) {
+        return getFilteredMapItems(_cachedMapItems!);
+      }
+      return getFilteredMapItems(List.from(fixedMachines));
+    } finally {
+      _isLoading = false;
     }
-    
-    return allItems;
   }
   
   // Determine category from beacon type
@@ -161,10 +234,16 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   }
 
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    textController ??= TextEditingController();
+    textFieldFocusNode ??= FocusNode();
+  }
 
   @override
-  void dispose() {}
+  void dispose() {
+    textController?.dispose();
+    textFieldFocusNode?.dispose();
+  }
   
   // Get scaled coordinates based on zoom and offset
   Offset getScaledPosition(double x, double y, Size containerSize) {
@@ -284,6 +363,151 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
       'down': maxPanDown * zoomLevel,
       'zoomLevel': zoomLevel,
     };
+  }
+  
+  // Filter functions
+  void toggleFilterMenu() {
+    showFilterMenu = !showFilterMenu;
+  }
+
+  void clearAllFilters() {
+    // Machine filters
+    filterEstacaoCarga = false;
+    filterImpressora3d = false;
+    filterImpressora = false;
+    filterMaquinaCorrosao = false;
+    filterEstacaoSolda = false;
+    filterCNC = false;
+    filterMaquinaCorte = false;
+    filterBancadaReparos = false;
+    
+    // Beacon filters
+    filterMultimetro = false;
+    filterKitReparos = false;
+    filterChapaMaterial = false;
+    filterEstanho = false;
+    filterComponentes = false;
+    filterFilamento = false;
+    
+    // Type filters
+    filterMaterial = false;
+    filterFerramenta = false;
+    
+    // Status filters
+    filterEmUso = false;
+    filterDisponivel = false;
+    filterDescarregado = false;
+    filterProcessado = false;
+    filterIndisponivel = false;
+    filterCarregando = false;
+    filterCarregado = false;
+  }
+
+  bool hasActiveFilters() {
+    return filterEstacaoCarga || filterImpressora3d || filterImpressora || 
+           filterMaquinaCorrosao || filterEstacaoSolda || filterCNC || 
+           filterMaquinaCorte || filterBancadaReparos || filterMultimetro || 
+           filterKitReparos || filterChapaMaterial || filterEstanho || 
+           filterComponentes || filterFilamento || filterMaterial || 
+           filterFerramenta || filterEmUso || filterDisponivel || 
+           filterDescarregado || filterProcessado || filterIndisponivel || 
+           filterCarregando || filterCarregado;
+  }
+
+  // Funções de gerenciamento de cache
+  void clearCache() {
+    _cachedMapItems = null;
+    _lastFetchTime = null;
+  }
+  
+  bool get isCacheValid {
+    return _cachedMapItems != null && 
+           _lastFetchTime != null && 
+           DateTime.now().difference(_lastFetchTime!) < _cacheTimeout;
+  }
+
+  // Function to apply filters and close filter menu
+  void confirmFilters() {
+    showFilterMenu = false;
+  }
+  
+  // Function to filter map items based on active filters
+  List<MapItem> getFilteredMapItems(List<MapItem> allItems) {
+    if (!hasActiveFilters() && (textController?.text.isEmpty ?? true)) {
+      return allItems;
+    }
+
+    return allItems.where((item) {
+      // Text search filter
+      String searchText = textController?.text.toLowerCase() ?? '';
+      if (searchText.isNotEmpty) {
+        bool matchesText = item.name.toLowerCase().contains(searchText) ||
+                          item.type.toLowerCase().contains(searchText) ||
+                          item.category.toLowerCase().contains(searchText) ||
+                          item.status.toLowerCase().contains(searchText);
+        if (!matchesText) return false;
+      }
+
+      // Machine filters
+      if (filterEstacaoCarga || filterImpressora3d || filterImpressora || 
+          filterMaquinaCorrosao || filterEstacaoSolda || filterCNC || 
+          filterMaquinaCorte || filterBancadaReparos) {
+        
+        bool matchesMachine = false;
+        if (filterEstacaoCarga && item.name.toLowerCase().contains('estacao de carga')) matchesMachine = true;
+        if (filterImpressora3d && item.name.toLowerCase().contains('impressora 3d')) matchesMachine = true;
+        if (filterImpressora && item.name.toLowerCase().contains('impressora') && !item.name.toLowerCase().contains('3d')) matchesMachine = true;
+        if (filterMaquinaCorrosao && item.name.toLowerCase().contains('corrosao')) matchesMachine = true;
+        if (filterEstacaoSolda && item.name.toLowerCase().contains('solda')) matchesMachine = true;
+        if (filterCNC && item.name.toLowerCase().contains('cnc')) matchesMachine = true;
+        if (filterMaquinaCorte && item.name.toLowerCase().contains('corte')) matchesMachine = true;
+        if (filterBancadaReparos && item.name.toLowerCase().contains('bancada')) matchesMachine = true;
+        
+        if (!matchesMachine) return false;
+      }
+
+      // Beacon filters
+      if (filterMultimetro || filterKitReparos || filterChapaMaterial || 
+          filterEstanho || filterComponentes || filterFilamento) {
+        
+        bool matchesBeacon = false;
+        if (filterMultimetro && item.name.toLowerCase().contains('multimetro')) matchesBeacon = true;
+        if (filterKitReparos && item.name.toLowerCase().contains('kit')) matchesBeacon = true;
+        if (filterChapaMaterial && item.name.toLowerCase().contains('chapa')) matchesBeacon = true;
+        if (filterEstanho && item.name.toLowerCase().contains('estanho')) matchesBeacon = true;
+        if (filterComponentes && item.name.toLowerCase().contains('componente')) matchesBeacon = true;
+        if (filterFilamento && item.name.toLowerCase().contains('filamento')) matchesBeacon = true;
+        
+        if (!matchesBeacon) return false;
+      }
+
+      // Type filters
+      if (filterMaterial || filterFerramenta) {
+        bool matchesType = false;
+        if (filterMaterial && item.category.toLowerCase().contains('material')) matchesType = true;
+        if (filterFerramenta && item.category.toLowerCase().contains('ferramenta')) matchesType = true;
+        
+        if (!matchesType) return false;
+      }
+
+      // Status filters
+      if (filterEmUso || filterDisponivel || filterDescarregado || 
+          filterProcessado || filterIndisponivel || filterCarregando || filterCarregado) {
+        
+        bool matchesStatus = false;
+        if (filterEmUso && item.status.toLowerCase().contains('uso')) matchesStatus = true;
+        if (filterDisponivel && item.status.toLowerCase().contains('disponivel')) matchesStatus = true;
+        if (filterDescarregado && item.status.toLowerCase().contains('descarregado')) matchesStatus = true;
+        if (filterProcessado && item.status.toLowerCase().contains('processado')) matchesStatus = true;
+        if (filterIndisponivel && item.status.toLowerCase().contains('indisponivel')) matchesStatus = true;
+        if (filterCarregando && item.status.toLowerCase().contains('carregando')) matchesStatus = true;
+        if (filterCarregado && item.status.toLowerCase().contains('carregado')) matchesStatus = true;
+        
+        if (!matchesStatus) return false;
+      }
+
+      return true;
+    }).toList();
   }
 }
 
