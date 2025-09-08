@@ -22,6 +22,7 @@ class HomeMapaWidget extends StatefulWidget {
 class _HomeMapaWidgetState extends State<HomeMapaWidget> {
   late HomeMapaModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final FocusNode _keyboardFocusNode = FocusNode();
   MapItem? selectedItem;
   
   // Future para controlar quando recarregar os dados
@@ -62,6 +63,7 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
 
   @override
   void dispose() {
+    _keyboardFocusNode.dispose();
     _refreshTimer?.cancel();
     _model.dispose();
     super.dispose();
@@ -69,12 +71,34 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        FocusManager.instance.primaryFocus?.unfocus();
+    return RawKeyboardListener(
+      focusNode: _keyboardFocusNode,
+      autofocus: true,
+      onKey: (RawKeyEvent event) {
+        // Só processa Enter se o menu de filtro estiver aberto E a barra de pesquisa não estiver focada
+        if (_model.showFilterMenu && 
+            event is RawKeyDownEvent && 
+            event.logicalKey == LogicalKeyboardKey.enter &&
+            !(_model.textFieldFocusNode?.hasFocus ?? false)) {
+          setState(() {
+            _model.confirmFilters();
+            _loadMapItems();
+          });
+        }
       },
-      child: Scaffold(
+      child: GestureDetector(
+        onTap: () {
+          // Se o campo de pesquisa não estiver focado, remove foco de outros elementos
+          if (!(_model.textFieldFocusNode?.hasFocus ?? false)) {
+            FocusScope.of(context).unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
+            // Mantém o foco no listener global apenas se o menu estiver aberto
+            if (_model.showFilterMenu) {
+              _keyboardFocusNode.requestFocus();
+            }
+          }
+        },
+        child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         bottomNavigationBar: AppBottomNavigation(currentIndex: 0),
@@ -599,22 +623,7 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
             // Full Screen Filter Menu Overlay
             if (_model.showFilterMenu)
               Positioned.fill(
-                child: FocusableActionDetector(
-                  shortcuts: {
-                    LogicalKeySet(LogicalKeyboardKey.escape): DismissIntent(),
-                  },
-                  actions: {
-                    DismissIntent: CallbackAction<DismissIntent>(
-                      onInvoke: (intent) {
-                        setState(() {
-                          _model.showFilterMenu = false;
-                        });
-                        return null;
-                      },
-                    ),
-                  },
-                  autofocus: true,
-                  child: Container(
+                child: Container(
                   color: Colors.black.withValues(alpha: 0.5),
                   child: SafeArea(
                     child: Container(
@@ -652,7 +661,7 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                           // Scrollable filter content
                           Expanded(
                             child: SingleChildScrollView(
-                              padding: EdgeInsets.all(20.0),
+                              padding: EdgeInsets.all(24.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -673,11 +682,13 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                         controller: _model.textController,
                                         focusNode: _model.textFieldFocusNode,
                                         onChanged: (_) async {
+                                          // Força atualização do mapa com debounce
                                           setState(() {});
                                         },
                                         onFieldSubmitted: (_) {
                                           setState(() {
                                             _model.confirmFilters();
+                                            _loadMapItems();
                                           });
                                         },
                                         decoration: InputDecoration(
@@ -787,6 +798,12 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                       _buildFilterChip('Ferramenta', _model.filterFerramenta, (value) {
                                         setState(() => _model.filterFerramenta = value);
                                       }),
+                                      _buildFilterChip('Maquina', _model.filterMaquina, (value) {
+                                        setState(() => _model.filterMaquina = value);
+                                      }),
+                                      _buildFilterChip('Funcionário', _model.filterFuncionario, (value) {
+                                        setState(() => _model.filterFuncionario = value);
+                                      })
                                     ],
                                   ),
                                   
@@ -857,13 +874,14 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                         color: Colors.white,
                                         letterSpacing: 0.0,
                                         fontWeight: FontWeight.w600,
+                                        fontSize: 18.0,
                                       ),
                                       elevation: 2.0,
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 12.0),
+                                SizedBox(width: 16.0),
                                 // Clear filters button with trash icon (smaller)
                                 Container(
                                   height: 48.0,
@@ -880,16 +898,17 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                     icon: Icon(
                                       Icons.delete_outline,
                                       color: Colors.white,
-                                      size: 20.0,
+                                      size: 26.0,
                                     ),
                                     options: FFButtonOptions(
                                       height: 48.0,
                                       width: 48.0,
+                                      padding: EdgeInsets.fromLTRB(7.0, 2.0, 0.0, 2.0),
+                                      iconPadding: EdgeInsets.zero,
                                       color: FlutterFlowTheme.of(context).error,
                                       textStyle: FlutterFlowTheme.of(context).titleMedium.copyWith(
                                         color: Colors.white,
                                         letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w600,
                                       ),
                                       elevation: 2.0,
                                       borderRadius: BorderRadius.circular(8.0),
@@ -904,9 +923,9 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                     ),
                   ),
                 ),
-                ),
               ),
           ],
+        ),
         ),
       ),
     );
@@ -945,17 +964,17 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
       selectedColor: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.2),
       checkmarkColor: FlutterFlowTheme.of(context).primary,
       backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-      side: BorderSide(
-        color: isSelected 
-          ? FlutterFlowTheme.of(context).primary
-          : FlutterFlowTheme.of(context).alternate,
-        width: 1.0,
-      ),
       labelStyle: TextStyle(
         color: isSelected 
-          ? FlutterFlowTheme.of(context).primary
+          ? FlutterFlowTheme.of(context).primary 
           : FlutterFlowTheme.of(context).primaryText,
-        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        fontSize: 12.0,
+      ),
+      side: BorderSide(
+        color: isSelected 
+          ? FlutterFlowTheme.of(context).primary 
+          : FlutterFlowTheme.of(context).alternate,
+        width: 1.0,
       ),
     );
   }

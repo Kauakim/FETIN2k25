@@ -386,6 +386,34 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                           color: FlutterFlowTheme.of(context).secondaryBackground,
                           child: Column(
                             children: [
+                              // Header with close button
+                              Container(
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      blurRadius: 4.0,
+                                      color: Color(0x33000000),
+                                      offset: Offset(0.0, 2.0),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Filtros',
+                                      style: FlutterFlowTheme.of(context).headlineMedium.copyWith(
+                                        color: Colors.white,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              
                               // Scrollable filter content
                               Expanded(
                                 child: SingleChildScrollView(

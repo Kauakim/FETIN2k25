@@ -63,7 +63,9 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   // Type filters
   bool filterMaterial = false;
   bool filterFerramenta = false;
-  
+  bool filterMaquina = false;
+  bool filterFuncionario = false;
+
   // Status filters
   bool filterEmUso = false;
   bool filterDisponivel = false;
@@ -392,6 +394,8 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
     // Type filters
     filterMaterial = false;
     filterFerramenta = false;
+    filterMaquina = false;
+    filterFuncionario = false;
     
     // Status filters
     filterEmUso = false;
@@ -409,9 +413,9 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
            filterMaquinaCorte || filterBancadaReparos || filterMultimetro || 
            filterKitReparos || filterChapaMaterial || filterEstanho || 
            filterComponentes || filterFilamento || filterMaterial || 
-           filterFerramenta || filterEmUso || filterDisponivel || 
-           filterDescarregado || filterProcessado || filterIndisponivel || 
-           filterCarregando || filterCarregado;
+           filterFerramenta || filterMaquina || filterFuncionario || 
+           filterEmUso || filterDisponivel || filterDescarregado || 
+           filterProcessado || filterIndisponivel || filterCarregando || filterCarregado;
   }
 
   // Funções de gerenciamento de cache
@@ -482,11 +486,13 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
       }
 
       // Type filters
-      if (filterMaterial || filterFerramenta) {
+      if (filterMaterial || filterFerramenta || filterMaquina || filterFuncionario) {
         bool matchesType = false;
         if (filterMaterial && item.category.toLowerCase().contains('material')) matchesType = true;
         if (filterFerramenta && item.category.toLowerCase().contains('ferramenta')) matchesType = true;
-        
+        if (filterMaquina && item.category.toLowerCase().contains('maquina')) matchesType = true;
+        if (filterFuncionario && item.category.toLowerCase().contains('funcionario')) matchesType = true;
+
         if (!matchesType) return false;
       }
 
@@ -515,7 +521,7 @@ class MapItem {
   final String id;
   final String name;
   final String type;
-  final String category; // 'maquina', 'ferramenta', 'material', 'pessoa'
+  final String category; // 'maquina', 'ferramenta', 'material', 'funcionario'
   final double x;
   final double y;
   final String status;
