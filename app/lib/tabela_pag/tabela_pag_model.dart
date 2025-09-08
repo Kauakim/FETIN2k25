@@ -54,6 +54,7 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
   // Type filters
   bool filterMaterial = false;
   bool filterFerramenta = false;
+  bool filterMaquina = false;
   
   // Status filters
   bool filterEmUso = false;
@@ -116,6 +117,7 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
     // Type filters
     filterMaterial = false;
     filterFerramenta = false;
+    filterMaquina = false;
     
     // Status filters
     filterEmUso = false;
@@ -133,7 +135,7 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
            filterMaquinaCorte || filterBancadaReparos || filterMultimetro || 
            filterKitReparos || filterChapaMaterial || filterEstanho || 
            filterComponentes || filterFilamento || filterMaterial || 
-           filterFerramenta || filterEmUso || filterDisponivel || 
+           filterFerramenta || filterMaquina || filterEmUso || filterDisponivel || 
            filterDescarregado || filterProcessado || filterIndisponivel || 
            filterCarregando || filterCarregado;
   }
@@ -180,12 +182,13 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
       }
 
       // Type filters
-      if (filterMaterial || filterFerramenta) {
+      if (filterMaterial || filterFerramenta || filterMaquina) {
         bool typeMatch = false;
         String tipo = (beacon['tipo'] ?? '').toString().toLowerCase();
         
         if (filterMaterial && tipo.contains('material')) typeMatch = true;
         if (filterFerramenta && tipo.contains('ferramenta')) typeMatch = true;
+        if (filterMaquina && tipo.contains('maquina')) typeMatch = true;
         
         if (!typeMatch) return false;
       }

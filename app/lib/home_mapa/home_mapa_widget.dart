@@ -199,16 +199,16 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                             
                             // Zoom level indicator
                             Positioned(
-                              bottom: 20,
-                              right: 20,
+                              top: 20,
+                              right: 145,
                               child: Container(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 12.0,
-                                  vertical: 8.0,
+                                  horizontal: 14.0,
+                                  vertical: 10.0,
                                 ),
                                 decoration: BoxDecoration(
                                   color: FlutterFlowTheme.of(context).secondaryBackground,
-                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderRadius: BorderRadius.circular(12.0),
                                   boxShadow: [
                                     BoxShadow(
                                       blurRadius: 4.0,
@@ -221,6 +221,7 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                   '${(_model.zoomLevel * 100).toInt()}%',
                                   style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                                     fontWeight: FontWeight.w600,
+                                    fontSize: 16.0,
                                   ),
                                 ),
                               ),
@@ -229,9 +230,9 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                             // Selected item info overlay
                             if (selectedItem != null)
                               Positioned(
-                                bottom: 80,
-                                left: 20,
-                                right: 20,
+                                bottom: 25,
+                                left: 25,
+                                right: 25,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -400,18 +401,18 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                             // Close button for the card
                             if (selectedItem != null)
                               Positioned(
-                                bottom: 270,
-                                right: 15,
+                                bottom: 177,
+                                right: 37,
                                 child: Container(
-                                  width: 48,
-                                  height: 28,
+                                  width: 60,
+                                  height: 30,
                                   decoration: BoxDecoration(
                                     color: FlutterFlowTheme.of(context).secondaryBackground,
-                                    borderRadius: BorderRadius.circular(14.0),
+                                    borderRadius: BorderRadius.circular(10.0),
                                     boxShadow: [
                                       BoxShadow(
-                                        blurRadius: 8.0,
-                                        color: Color(0x26000000),
+                                        blurRadius: 5.0,
+                                        color: Color.fromARGB(40, 70, 70, 70),
                                         offset: Offset(0, 4),
                                       ),
                                     ],
@@ -424,12 +425,12 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                                           selectedItem = null;
                                         });
                                       },
-                                      borderRadius: BorderRadius.circular(14.0),
+                                      borderRadius: BorderRadius.circular(10.0),
                                       child: Center(
                                         child: Icon(
                                           Icons.close,
-                                          size: 18,
-                                          color: FlutterFlowTheme.of(context).secondaryText,
+                                          size: 25,
+                                          color: Color.fromARGB(255, 255, 35, 35),
                                         ),
                                       ),
                                     ),

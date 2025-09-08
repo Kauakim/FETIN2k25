@@ -130,7 +130,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                           vertical: isMobileDevice ? 12.0 : 16.0,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.1),
+                                          color: FlutterFlowTheme.of(context).primary,
                                           border: Border(
                                             bottom: BorderSide(
                                               color: Colors.white,
@@ -138,88 +138,93 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                             ),
                                           ),
                                         ),
-                                        child: IntrinsicHeight(
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: isMobileDevice ? 2 : 3,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    border: Border(
-                                                      right: BorderSide(
-                                                        color: Colors.white,
-                                                        width: 1.0,
-                                                      ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 3,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white,
+                                                      width: 1.0,
                                                     ),
-                                                  ),
-                                                  child: Text(
-                                                    'Beacon',
-                                                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: isMobileDevice ? 14 : 16,
-                                                    ),
-                                                    textAlign: TextAlign.center,
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(width: 8.0),
-                                              Expanded(
-                                                flex: isMobileDevice ? 2 : 2,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    border: Border(
-                                                      right: BorderSide(
-                                                        color: Colors.white,
-                                                        width: 1.0,
-                                                      ),
-                                                    ),
+                                                padding: EdgeInsets.only(right: 8.0),
+                                                child: Text(
+                                                  'Beacon',
+                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: isMobileDevice ? 14 : 16,
+                                                    color: Colors.white,
                                                   ),
-                                                  child: Text(
-                                                    'Tipo',
-                                                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: isMobileDevice ? 14 : 16,
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
+                                                  textAlign: TextAlign.center,
                                                 ),
                                               ),
-                                              SizedBox(width: 8.0),
-                                              Expanded(
-                                                flex: isMobileDevice ? 2 : 2,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    border: Border(
-                                                      right: BorderSide(
-                                                        color: Colors.white,
-                                                        width: 1.0,
-                                                      ),
+                                            ),
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 2,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white,
+                                                      width: 1.0,
                                                     ),
-                                                  ),
-                                                  child: Text(
-                                                    'Status',
-                                                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: isMobileDevice ? 14 : 16,
-                                                    ),
-                                                    textAlign: TextAlign.center,
                                                   ),
                                                 ),
+                                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                                child: Text(
+                                                  'Tipo',
+                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: isMobileDevice ? 14 : 16,
+                                                    color: Colors.white,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
                                               ),
-                                              SizedBox(width: 8.0),
-                                              Expanded(
-                                                flex: isMobileDevice ? 2 : 3,
+                                            ),
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 2,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white,
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                                child: Text(
+                                                  'Status',
+                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: isMobileDevice ? 14 : 16,
+                                                    color: Colors.white,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: isMobileDevice ? 2 : 3,
+                                              child: Container(
+                                                padding: EdgeInsets.only(left: 8.0),
                                                 child: Text(
                                                   'Coordenada',
                                                   style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: isMobileDevice ? 14 : 16,
+                                                    color: Colors.white,
                                                   ),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       );
                                     }
@@ -239,109 +244,126 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                           ),
                                         ),
                                       ),
-                                      child: IntrinsicHeight(
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              flex: isMobileDevice ? 2 : 3,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    right: BorderSide(
-                                                      color: Colors.white,
-                                                      width: 1.0,
-                                                    ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: isMobileDevice ? 2 : 3,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  right: BorderSide(
+                                                    color: FlutterFlowTheme.of(context).alternate,
+                                                    width: 1.0,
                                                   ),
-                                                ),
-                                                child: Text(
-                                                  beacon['beacon'] ?? '',
-                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                                    fontSize: isMobileDevice ? 13 : 15,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(width: 8.0),
-                                            Expanded(
-                                              flex: isMobileDevice ? 2 : 2,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    right: BorderSide(
-                                                      color: Colors.white,
-                                                      width: 1.0,
-                                                    ),
-                                                  ),
+                                              padding: EdgeInsets.only(right: 8.0),
+                                              child: Text(
+                                                beacon['beacon'] ?? '',
+                                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                  fontSize: isMobileDevice ? 13 : 15,
+                                                  fontWeight: FontWeight.w500,
                                                 ),
-                                                child: Text(
-                                                  beacon['tipo'] ?? '',
-                                                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                                    fontSize: isMobileDevice ? 13 : 15,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            SizedBox(width: 8.0),
-                                            Expanded(
-                                              flex: isMobileDevice ? 2 : 2,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    right: BorderSide(
-                                                      color: Colors.white,
-                                                      width: 1.0,
-                                                    ),
+                                          ),
+                                          Expanded(
+                                            flex: isMobileDevice ? 2 : 2,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  right: BorderSide(
+                                                    color: FlutterFlowTheme.of(context).alternate,
+                                                    width: 1.0,
                                                   ),
                                                 ),
+                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                              child: Text(
+                                                () {
+                                                  String tipo = beacon['tipo'] ?? '';
+                                                  return tipo.isNotEmpty 
+                                                    ? tipo[0].toUpperCase() + tipo.substring(1)
+                                                    : tipo;
+                                                }(),
+                                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                                  fontSize: isMobileDevice ? 13 : 15,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: isMobileDevice ? 2 : 2,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  right: BorderSide(
+                                                    color: FlutterFlowTheme.of(context).alternate,
+                                                    width: 1.0,
+                                                  ),
+                                                ),
+                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                              child: Container(
+                                                alignment: Alignment.center,
                                                 child: Container(
+                                                  width: isMobileDevice ? 80.0 : 125.0,
+                                                  height: isMobileDevice ? 24.0 : 28.0,
                                                   padding: EdgeInsets.symmetric(
-                                                    horizontal: isMobileDevice ? 6.0 : 8.0,
+                                                    horizontal: isMobileDevice ? 4.0 : 6.0,
                                                     vertical: isMobileDevice ? 2.0 : 4.0,
                                                   ),
                                                   decoration: BoxDecoration(
                                                     color: _getStatusColor(beacon['status'] ?? '').withValues(alpha: 0.1),
-                                                    borderRadius: BorderRadius.circular(4.0),
+                                                    borderRadius: BorderRadius.circular(7.0),
                                                     border: Border.all(
                                                       color: _getStatusColor(beacon['status'] ?? ''),
                                                       width: 1.0,
                                                     ),
                                                   ),
                                                   child: Text(
-                                                    beacon['status'] ?? '',
+                                                    () {
+                                                      String status = beacon['status'] ?? '';
+                                                      return status.isNotEmpty 
+                                                        ? status[0].toUpperCase() + status.substring(1)
+                                                        : status;
+                                                    }(),
                                                     style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                                                       fontSize: isMobileDevice ? 11 : 13,
                                                       color: _getStatusColor(beacon['status'] ?? ''),
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                     overflow: TextOverflow.ellipsis,
                                                     textAlign: TextAlign.center,
+                                                    maxLines: 1,
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(width: 8.0),
-                                            Expanded(
-                                              flex: isMobileDevice ? 2 : 3,
+                                          ),
+                                          Expanded(
+                                            flex: isMobileDevice ? 2 : 3,
+                                            child: Container(
+                                              padding: EdgeInsets.only(left: 8.0),
                                               child: Text(
                                                 '${beacon['x']}, ${beacon['y']}',
                                                 style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                                                  fontSize: isMobileDevice ? 13 : 15,
+                                                  fontSize: isMobileDevice ? 12 : 16,
                                                   fontFamily: 'monospace',
                                                 ),
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  },
+                                      );
+                                    },
                                 );
                               },
                             ),
@@ -364,38 +386,10 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                           color: FlutterFlowTheme.of(context).secondaryBackground,
                           child: Column(
                             children: [
-                              // Header with close button
-                              Container(
-                                padding: EdgeInsets.all(16.0),
-                                decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context).primary,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 4.0,
-                                      color: Color(0x33000000),
-                                      offset: Offset(0.0, 2.0),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Filtros',
-                                      style: FlutterFlowTheme.of(context).headlineMedium.copyWith(
-                                        color: Colors.white,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              
                               // Scrollable filter content
                               Expanded(
                                 child: SingleChildScrollView(
-                                  padding: EdgeInsets.all(20.0),
+                                  padding: EdgeInsets.all(24.0),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -528,6 +522,9 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                           _buildFilterChip('Ferramenta', _model.filterFerramenta, (value) {
                                             setState(() => _model.filterFerramenta = value);
                                           }),
+                                          _buildFilterChip('Maquina', _model.filterMaquina, (value) {
+                                            setState(() => _model.filterMaquina = value);
+                                          }),
                                         ],
                                       ),
                                       
@@ -596,13 +593,14 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                             color: Colors.white,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.w600,
+                                            fontSize: 18.0,
                                           ),
                                           elevation: 2.0,
                                           borderRadius: BorderRadius.circular(8.0),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 12.0),
+                                    SizedBox(width: 16.0),
                                     // Clear filters button with trash icon (smaller)
                                     Container(
                                       height: 48.0,
@@ -617,12 +615,13 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                         icon: Icon(
                                           Icons.delete_outline,
                                           color: Colors.white,
-                                          size: 20.0,
+                                          size: 26.0,
                                         ),
                                         options: FFButtonOptions(
                                           height: 48.0,
                                           width: 48.0,
-                                          padding: EdgeInsets.zero,
+                                          padding: EdgeInsets.fromLTRB(7.0, 2.0, 0.0, 2.0),
+                                          iconPadding: EdgeInsets.zero,
                                           color: FlutterFlowTheme.of(context).error,
                                           textStyle: FlutterFlowTheme.of(context).titleMedium.copyWith(
                                             color: Colors.white,
@@ -643,33 +642,37 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                     ),
                   ),
 
-                // Floating Filter Button - Bottom Right
-                Positioned(
-                  bottom: 80.0, // Above bottom navigation
-                  right: 20.0,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      setState(() {
-                        _model.toggleFilterMenu();
-                      });
-                    },
-                    icon: Icon(
-                      _model.showFilterMenu ? Icons.filter_list_off : Icons.filter_list,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      'Filtro${_model.hasActiveFilters() ? ' (Ativo)' : ''}',
-                      style: TextStyle(
+                // Floating Filter Button - Bottom Right (only show when filter menu is not open)
+                if (!_model.showFilterMenu)
+                  Positioned(
+                    bottom: 26.0,
+                    right: 25.0,
+                    child: FloatingActionButton.extended(
+                      onPressed: () {
+                        setState(() {
+                          _model.toggleFilterMenu();
+                        });
+                      },
+                      icon: Icon(
+                        Icons.filter_list,
                         color: Colors.white,
-                        fontWeight: FontWeight.w500,
+                      ),
+                      label: Text(
+                        'Filtro${_model.hasActiveFilters() ? ' (Ativo)' : ''}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      backgroundColor: _model.hasActiveFilters() 
+                        ? FlutterFlowTheme.of(context).secondary 
+                        : FlutterFlowTheme.of(context).primary,
+                      elevation: 6.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
                       ),
                     ),
-                    backgroundColor: _model.hasActiveFilters() 
-                      ? FlutterFlowTheme.of(context).secondary 
-                      : FlutterFlowTheme.of(context).primary,
-                    elevation: 6.0,
                   ),
-                ),
               ],
             );
           },
