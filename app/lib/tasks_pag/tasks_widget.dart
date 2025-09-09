@@ -56,6 +56,7 @@ class _TasksWidgetState extends State<TasksWidget> {
         FocusScope.of(context).unfocus();
         FocusManager.instance.primaryFocus?.unfocus();
       },
+      behavior: HitTestBehavior.translucent,
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -128,45 +129,55 @@ class _TasksWidgetState extends State<TasksWidget> {
                         ),
                       ),
                       SizedBox(width: 16.0),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            showFilters = !showFilters;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.filter_list,
-                          size: 24.0,
-                          color: _model.hasActiveFilters() 
-                            ? FlutterFlowTheme.of(context).primary
-                            : FlutterFlowTheme.of(context).primaryText,
-                        ),
-                        style: IconButton.styleFrom(
-                          backgroundColor: _model.hasActiveFilters()
-                            ? FlutterFlowTheme.of(context).primary.withOpacity(0.1)
-                            : FlutterFlowTheme.of(context).alternate,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                      Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              showFilters = !showFilters;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.filter_list,
+                            size: 24.0,
+                            color: _model.hasActiveFilters() 
+                              ? FlutterFlowTheme.of(context).primary
+                              : FlutterFlowTheme.of(context).primaryText,
+                          ),
+                          style: IconButton.styleFrom(
+                            backgroundColor: _model.hasActiveFilters()
+                              ? FlutterFlowTheme.of(context).primary.withOpacity(0.1)
+                              : FlutterFlowTheme.of(context).alternate,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            minimumSize: Size(48, 48),
                           ),
                         ),
                       ),
                       if (FFAppState().isManager) ...[
                         SizedBox(width: 16.0),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _model.toggleCreateForm();
-                            });
-                          },
-                          icon: Icon(
-                            _model.showCreateForm ? Icons.close : Icons.add,
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            size: 24.0,
-                          ),
-                          style: IconButton.styleFrom(
-                            backgroundColor: FlutterFlowTheme.of(context).primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
+                        Material(
+                          color: Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _model.toggleCreateForm();
+                              });
+                            },
+                            icon: Icon(
+                              _model.showCreateForm ? Icons.close : Icons.add,
+                              color: Colors.white,
+                              size: 24.0,
+                            ),
+                            style: IconButton.styleFrom(
+                              backgroundColor: FlutterFlowTheme.of(context).primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              minimumSize: Size(48, 48),
                             ),
                           ),
                         ),
@@ -294,23 +305,40 @@ class _TasksWidgetState extends State<TasksWidget> {
                   
                   if (filteredTasks.isEmpty) {
                     return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.assignment_outlined,
-                            size: 64.0,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                          ),
-                          SizedBox(height: 16.0),
-                          Text(
-                            'Nenhuma task encontrada com base nos filtros aplicados',
-                            style: FlutterFlowTheme.of(context).headlineSmall.copyWith(
+                      child: Padding(
+                        padding: EdgeInsets.all(isMobileDevice ? 24.0 : 32.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.assignment_outlined,
+                              size: isMobileDevice ? 48.0 : 64.0,
                               color: FlutterFlowTheme.of(context).secondaryText,
-                              letterSpacing: 0.0,
                             ),
-                          )
-                        ],
+                            SizedBox(height: isMobileDevice ? 12.0 : 16.0),
+                            Text(
+                              'Nenhuma task encontrada',
+                              style: FlutterFlowTheme.of(context).titleMedium.copyWith(
+                                color: FlutterFlowTheme.of(context).primaryText,
+                                fontSize: isMobileDevice ? 16.0 : 20.0,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.0,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              'com base nos filtros aplicados',
+                              style: FlutterFlowTheme.of(context).titleMedium.copyWith(
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                fontSize: isMobileDevice ? 16.0 : 20.0,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.0,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }
@@ -596,146 +624,283 @@ class _TasksWidgetState extends State<TasksWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with title and priority
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
+              // Header with title and type
+              if (isMobile) ...[
+                // Mobile layout - stacked
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       task['descricao'] ?? task['titulo'] ?? '',
                       style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w600,
+                        fontSize: 16.0,
                       ),
-                    ),
-                  ),
-                  SizedBox(width: 12.0),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: _model.getPriorityColor(task['tipo'] ?? '').withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4.0),
-                      border: Border.all(
-                        color: _model.getPriorityColor(task['tipo'] ?? ''),
-                        width: 1.0,
-                      ),
-                    ),
-                    child: Text(
-                      task['tipo'] ?? '',
-                      style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                        color: _model.getPriorityColor(task['tipo'] ?? ''),
-                        fontSize: 11.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              
-              SizedBox(height: 8.0),
-              
-              // Description
-              Text(
-                task['descricao'] ?? '',
-                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  letterSpacing: 0.0,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              
-              SizedBox(height: 12.0),
-              
-              // Status and location row
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: _model.getStatusColor(task['status'] ?? '').withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4.0),
-                      border: Border.all(
-                        color: _model.getStatusColor(task['status'] ?? ''),
-                        width: 1.0,
-                      ),
-                    ),
-                    child: Text(
-                      task['status'] ?? '',
-                      style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                        color: _model.getStatusColor(task['status'] ?? ''),
-                        fontSize: 11.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12.0),
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 16.0,
-                    color: FlutterFlowTheme.of(context).secondaryText,
-                  ),
-                  SizedBox(width: 4.0),
-                  Expanded(
-                    child: Text(
-                      task['destino'] ?? task['localizacao'] ?? '',
-                      style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        letterSpacing: 0.0,
-                      ),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
-              ),
-              
-              SizedBox(height: 8.0),
-              
-              // Footer with beacon and deadline
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.person_outline,
-                        size: 16.0,
-                        color: FlutterFlowTheme.of(context).primary,
-                      ),
-                      SizedBox(width: 4.0),
-                      Text(
-                        task['user'] ?? '',
-                        style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                          color: FlutterFlowTheme.of(context).primary,
+                    SizedBox(height: 8.0),
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                          decoration: BoxDecoration(
+                            color: _model.getPriorityColor(task['tipo'] ?? '').withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6.0),
+                            border: Border.all(
+                              color: _model.getPriorityColor(task['tipo'] ?? ''),
+                              width: 1.0,
+                            ),
+                          ),
+                          child: Text(
+                            task['tipo'] ?? '',
+                            style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                              color: _model.getPriorityColor(task['tipo'] ?? ''),
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                          decoration: BoxDecoration(
+                            color: _model.getStatusColor(task['status'] ?? '').withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6.0),
+                            border: Border.all(
+                              color: _model.getStatusColor(task['status'] ?? ''),
+                              width: 1.0,
+                            ),
+                          ),
+                          child: Text(
+                            task['status'] ?? '',
+                            style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                              color: _model.getStatusColor(task['status'] ?? ''),
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ] else ...[
+                // Desktop layout - side by side
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        task['descricao'] ?? task['titulo'] ?? '',
+                        style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                           letterSpacing: 0.0,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.schedule,
-                        size: 16.0,
-                        color: FlutterFlowTheme.of(context).secondaryText,
+                    ),
+                    SizedBox(width: 12.0),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                      decoration: BoxDecoration(
+                        color: _model.getPriorityColor(task['tipo'] ?? '').withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4.0),
+                        border: Border.all(
+                          color: _model.getPriorityColor(task['tipo'] ?? ''),
+                          width: 1.0,
+                        ),
                       ),
-                      SizedBox(width: 4.0),
-                      Text(
-                        task['dataLimite'] ?? '',
+                      child: Text(
+                        task['tipo'] ?? '',
+                        style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                          color: _model.getPriorityColor(task['tipo'] ?? ''),
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              
+              SizedBox(height: isMobile ? 12.0 : 8.0),
+              
+              // Location and user info
+              if (isMobile) ...[
+                // Mobile: Stack vertically
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (task['destino']?.toString().isNotEmpty == true) ...[
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: 16.0,
+                            color: FlutterFlowTheme.of(context).primary,
+                          ),
+                          SizedBox(width: 6.0),
+                          Expanded(
+                            child: Text(
+                              task['destino'] ?? task['localizacao'] ?? '',
+                              style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                color: FlutterFlowTheme.of(context).primaryText,
+                                letterSpacing: 0.0,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.0),
+                    ],
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person_outline,
+                          size: 16.0,
+                          color: FlutterFlowTheme.of(context).primary,
+                        ),
+                        SizedBox(width: 6.0),
+                        Expanded(
+                          child: Text(
+                            task['user'] ?? '',
+                            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                              color: FlutterFlowTheme.of(context).primary,
+                              letterSpacing: 0.0,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        if (task['dataLimite']?.toString().isNotEmpty == true) ...[
+                          Icon(
+                            Icons.schedule,
+                            size: 16.0,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                          ),
+                          SizedBox(width: 4.0),
+                          Text(
+                            task['dataLimite'] ?? '',
+                            style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              letterSpacing: 0.0,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ] else ...[
+                // Desktop: Keep original layout
+                // Description
+                Text(
+                  task['descricao'] ?? '',
+                  style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    letterSpacing: 0.0,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                
+                SizedBox(height: 12.0),
+                
+                // Status and location row
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                      decoration: BoxDecoration(
+                        color: _model.getStatusColor(task['status'] ?? '').withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4.0),
+                        border: Border.all(
+                          color: _model.getStatusColor(task['status'] ?? ''),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Text(
+                        task['status'] ?? '',
+                        style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                          color: _model.getStatusColor(task['status'] ?? ''),
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.0),
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 16.0,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                    ),
+                    SizedBox(width: 4.0),
+                    Expanded(
+                      child: Text(
+                        task['destino'] ?? task['localizacao'] ?? '',
                         style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                           color: FlutterFlowTheme.of(context).secondaryText,
                           letterSpacing: 0.0,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                
+                SizedBox(height: 8.0),
+                
+                // Footer with beacon and deadline
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person_outline,
+                          size: 16.0,
+                          color: FlutterFlowTheme.of(context).primary,
+                        ),
+                        SizedBox(width: 4.0),
+                        Text(
+                          task['user'] ?? '',
+                          style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                            color: FlutterFlowTheme.of(context).primary,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.schedule,
+                          size: 16.0,
+                          color: FlutterFlowTheme.of(context).secondaryText,
+                        ),
+                        SizedBox(width: 4.0),
+                        Text(
+                          task['dataLimite'] ?? '',
+                          style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            letterSpacing: 0.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
               
               // Manager actions
               if (FFAppState().isManager) ...[
-                SizedBox(height: 12.0),
+                SizedBox(height: isMobile ? 16.0 : 12.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -751,7 +916,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                       ),
                       style: IconButton.styleFrom(
                         backgroundColor: FlutterFlowTheme.of(context).primary.withOpacity(0.1),
-                        minimumSize: Size(32.0, 32.0),
+                        minimumSize: Size(isMobile ? 36.0 : 32.0, isMobile ? 36.0 : 32.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6.0),
                         ),
@@ -769,7 +934,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                       ),
                       style: IconButton.styleFrom(
                         backgroundColor: Colors.red.withOpacity(0.1),
-                        minimumSize: Size(32.0, 32.0),
+                        minimumSize: Size(isMobile ? 36.0 : 32.0, isMobile ? 36.0 : 32.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6.0),
                         ),
