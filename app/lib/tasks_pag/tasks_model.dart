@@ -34,9 +34,28 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   TextEditingController? dependenciasController;
   FocusNode? dependenciasFocusNode;
   
+  // New controllers for coordinates
+  TextEditingController? destinoXController;
+  FocusNode? destinoXFocusNode;
+  
+  TextEditingController? destinoYController;
+  FocusNode? destinoYFocusNode;
+  
   // Dropdown values
   String? selectedTipo;
   String? selectedStatus;
+  String? selectedTipoDestino;
+  String? selectedDestino;
+  List<String> selectedBeacons = []; // Changed to list for multiple selection
+  
+  // Options lists (will be populated from API)
+  List<String> maquinasOptions = [];
+  List<String> funcionariosOptions = [];
+  List<String> beaconsOptions = [];
+  
+  // Loading state
+  bool isLoadingOptions = false;
+  bool optionsLoaded = false;
   
   // Current task being edited
   Map<String, dynamic>? currentTask;
@@ -97,6 +116,74 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     return [];
   }
 
+  // Load options for dropdowns from API
+  Future<void> loadDropdownOptions([VoidCallback? onComplete]) async {
+    if (isLoadingOptions) return;
+    
+    isLoadingOptions = true;
+    print('Starting to load dropdown options...');
+    
+    try {
+      // Load beacons
+      print('Loading beacons...');
+      final beaconsResponse = await BeaconsGetAllCall.call();
+      print('Beacons response status: ${beaconsResponse.statusCode}');
+      
+      if (beaconsResponse.statusCode == 200) {
+        final beaconsMap = getJsonField(beaconsResponse.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
+        print('Beacons map size: ${beaconsMap.length}');
+        
+        List<String> ferramentasEMateriais = [];
+        List<String> machines = [];
+        List<String> funcionarios = [];
+        
+        for (var beaconData in beaconsMap.values) {
+          final beaconName = beaconData['beacon'] ?? '';
+          final beaconType = beaconData['tipo'] ?? '';
+          
+          print('Processing beacon: $beaconName, type: $beaconType');
+          
+          if (beaconName.isNotEmpty) {
+            // If it's a machine, add to machines list
+            if (beaconType.toLowerCase() == 'maquina') {
+              machines.add(beaconName);
+              print('Added machine: $beaconName');
+            }
+            // If it's a funcionario, add to funcionarios list
+            else if (beaconType.toLowerCase() == 'funcionario') {
+              funcionarios.add(beaconName);
+              print('Added funcionario: $beaconName');
+            }
+            // If it's a ferramenta or material, add to beacons list
+            else if (beaconType.toLowerCase() == 'ferramenta' || beaconType.toLowerCase() == 'material') {
+              ferramentasEMateriais.add(beaconName);
+              print('Added ferramenta/material: $beaconName');
+            }
+          }
+        }
+        
+        beaconsOptions = ferramentasEMateriais;
+        maquinasOptions = machines;
+        funcionariosOptions = funcionarios;
+        print('Total ferramentas/materiais loaded: ${ferramentasEMateriais.length}');
+        print('Total machines loaded: ${machines.length}');
+        print('Total funcionarios loaded: ${funcionarios.length}');
+      }
+      
+      optionsLoaded = true;
+      print('Dropdown options loading completed successfully!');
+      
+      // Call the completion callback if provided
+      if (onComplete != null) {
+        onComplete();
+      }
+    } catch (e) {
+      print('Error loading dropdown options: $e');
+    } finally {
+      isLoadingOptions = false;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getAllTasks() async {
     try {
       final response = await TasksListCall.call();
@@ -152,6 +239,18 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     
     dependenciasController = TextEditingController();
     dependenciasFocusNode = FocusNode();
+    
+    // Initialize new controllers
+    destinoXController = TextEditingController();
+    destinoXFocusNode = FocusNode();
+    
+    destinoYController = TextEditingController();
+    destinoYFocusNode = FocusNode();
+    
+    // Load dropdown options asynchronously
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadDropdownOptions();
+    });
   }
 
   @override
@@ -169,6 +268,10 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     beaconsFocusNode?.dispose();
     dependenciasController?.dispose();
     dependenciasFocusNode?.dispose();
+    destinoXController?.dispose();
+    destinoXFocusNode?.dispose();
+    destinoYController?.dispose();
+    destinoYFocusNode?.dispose();
   }
   
   Future<List<Map<String, dynamic>>> getFilteredTasks() async {
@@ -238,6 +341,13 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     dependenciasController?.text = _listToString(rawData['dependencias']);
     selectedTipo = rawData['tipo'] ?? 'Geral';
     selectedStatus = rawData['status'] ?? 'Pendente';
+    
+    // Load beacons list if available
+    if (rawData['beacons'] is List) {
+      selectedBeacons = List<String>.from(rawData['beacons']);
+    } else {
+      selectedBeacons = [];
+    }
   }
   
   // Clear form for new task
@@ -250,8 +360,14 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     if (tipoDestinoController != null) tipoDestinoController!.clear();
     if (beaconsController != null) beaconsController!.clear();
     if (dependenciasController != null) dependenciasController!.clear();
+    if (destinoXController != null) destinoXController!.clear();
+    if (destinoYController != null) destinoYController!.clear();
+    
     selectedTipo = null;
     selectedStatus = 'Pendente';
+    selectedTipoDestino = null;
+    selectedDestino = null;
+    selectedBeacons = []; // Clear the list
   }
   
   // Toggle create form visibility
@@ -333,14 +449,25 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     return text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
 
+  // Get destination value based on type
+  String _getDestinoValue() {
+    if (selectedTipoDestino == 'Coordenada') {
+      final x = destinoXController?.text ?? '';
+      final y = destinoYController?.text ?? '';
+      return '$x,$y';
+    } else {
+      return selectedDestino ?? '';
+    }
+  }
+
   // Create new task
   Future<bool> createTask(BuildContext context) async {
     try {
       final response = await TasksCreateCall.call(
         mensagem: mensagemController?.text ?? '',
-        destino: destinoController?.text ?? '',
-        tipoDestino: tipoDestinoController?.text ?? '',
-        beacons: _stringToList(beaconsController?.text ?? ''),
+        destino: _getDestinoValue(),
+        tipoDestino: selectedTipoDestino ?? '',
+        beacons: selectedBeacons, // Send the list directly
         dependencias: _stringToList(dependenciasController?.text ?? ''),
         tipo: selectedTipo ?? 'Geral',
         status: selectedStatus ?? 'Pendente',
@@ -374,9 +501,9 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
         id: int.tryParse(currentTask!['id'].toString()) ?? 0,
         user: FFAppState().loggedInUser,
         mensagem: mensagemController?.text ?? '',
-        destino: destinoController?.text ?? '',
-        tipoDestino: tipoDestinoController?.text ?? '',
-        beacons: _stringToList(beaconsController?.text ?? ''),
+        destino: _getDestinoValue(),
+        tipoDestino: selectedTipoDestino ?? '',
+        beacons: selectedBeacons, // Send the list directly
         dependencias: _stringToList(dependenciasController?.text ?? ''),
         tipo: selectedTipo ?? 'Geral',
         status: selectedStatus ?? 'Pendente',
@@ -436,9 +563,20 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   
   // Validate form
   bool validateForm() {
-    return (mensagemController?.text.isNotEmpty ?? false) &&
-           (destinoController?.text.isNotEmpty ?? false) &&
-           (selectedTipo?.isNotEmpty ?? false) &&
-           (selectedStatus?.isNotEmpty ?? false);
+    bool hasMessage = mensagemController?.text.isNotEmpty ?? false;
+    bool hasTipoDestino = selectedTipoDestino?.isNotEmpty ?? false;
+    bool hasValidDestino = false;
+    bool hasTipo = selectedTipo?.isNotEmpty ?? false;
+    bool hasStatus = selectedStatus?.isNotEmpty ?? false;
+    
+    // Check destination based on type
+    if (selectedTipoDestino == 'Coordenada') {
+      hasValidDestino = (destinoXController?.text.isNotEmpty ?? false) && 
+                       (destinoYController?.text.isNotEmpty ?? false);
+    } else {
+      hasValidDestino = selectedDestino?.isNotEmpty ?? false;
+    }
+    
+    return hasMessage && hasTipoDestino && hasValidDestino && hasTipo && hasStatus;
   }
 }

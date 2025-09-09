@@ -26,6 +26,19 @@ class _TasksWidgetState extends State<TasksWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => TasksModel());
+    
+    // Load dropdown options and update UI when ready
+    _loadDropdownOptionsWithStateUpdate();
+  }
+  
+  void _loadDropdownOptionsWithStateUpdate() async {
+    await _model.loadDropdownOptions(() {
+      if (mounted) {
+        setState(() {
+          // Trigger UI rebuild when options are loaded
+        });
+      }
+    });
   }
 
   @override
@@ -186,20 +199,28 @@ class _TasksWidgetState extends State<TasksWidget> {
                                 style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.w600,
+                                  fontSize: 16.0,
                                 ),
                               ),
-                              TextButton(
+                              FFButtonWidget(
                                 onPressed: () {
                                   setState(() {
                                     _model.clearAllFilters();
                                   });
                                 },
-                                child: Text(
-                                  'Limpar',
-                                  style: TextStyle(
-                                    color: FlutterFlowTheme.of(context).primary,
-                                    fontSize: 16.0,
+                                text: 'Limpar',
+                                options: FFButtonOptions(
+                                  height: 32.0,
+                                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                  iconPadding: EdgeInsets.zero,
+                                  color: FlutterFlowTheme.of(context).error,
+                                  textStyle: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w500,
                                   ),
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  elevation: 2.0,
                                 ),
                               ),
                             ],
@@ -328,7 +349,7 @@ class _TasksWidgetState extends State<TasksWidget> {
         color: isSelected 
           ? FlutterFlowTheme.of(context).primary 
           : FlutterFlowTheme.of(context).primaryText,
-        fontSize: 12.0,
+        fontSize: 14.0,
       ),
       side: BorderSide(
         color: isSelected 
@@ -341,8 +362,8 @@ class _TasksWidgetState extends State<TasksWidget> {
 
   Widget _buildCreateEditForm(bool isMobile) {
     return Container(
-      margin: EdgeInsets.all(isMobile ? 8.0 : 12.0),
-      padding: EdgeInsets.all(isMobile ? 12.0 : 16.0),
+      margin: EdgeInsets.all(isMobile ? 12.0 : 16.0),
+      padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
         borderRadius: BorderRadius.circular(12.0),
@@ -365,20 +386,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                   _model.isEditing ? 'Editar Task' : 'Nova Task',
                   style: FlutterFlowTheme.of(context).headlineSmall.copyWith(
                     fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    _model.toggleCreateForm();
-                  });
-                },
-                icon: Icon(Icons.close),
-                style: IconButton.styleFrom(
-                  backgroundColor: FlutterFlowTheme.of(context).alternate,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    fontSize: 24.0,
                   ),
                 ),
               ),
@@ -398,105 +406,166 @@ class _TasksWidgetState extends State<TasksWidget> {
           
           SizedBox(height: 10.0),
           
-          // Tipo Destino Field
-          _buildTextField(
-            label: 'Tipo de Destino',
-            controller: _model.tipoDestinoController,
-            focusNode: _model.tipoDestinoFocusNode,
-            hintText: 'Ex: Local, Departamento, Setor',
+          // Tipo Destino Dropdown
+          _buildDropdownField(
+            label: 'Tipo de Destino *',
+            value: _model.selectedTipoDestino,
+            items: ['Maquina', 'Pessoa', 'Coordenada'],
+            hintText: 'Selecione o tipo de destino',
+            onChanged: (value) {
+              setState(() {
+                _model.selectedTipoDestino = value;
+                _model.selectedDestino = null; // Reset destino quando tipo muda
+                _model.destinoXController?.clear();
+                _model.destinoYController?.clear();
+              });
+            },
           ),
           
           SizedBox(height: 10.0),
           
-          // Destino Field
-          _buildTextField(
-            label: 'Destino *',
-            controller: _model.destinoController,
-            focusNode: _model.destinoFocusNode,
-            hintText: 'Ex: Estação de Carga 1',
-          ),
-          
-          SizedBox(height: 10.0),
-          
-          // Beacons Field
-          _buildTextField(
-            label: 'Beacons',
-            controller: _model.beaconsController,
-            focusNode: _model.beaconsFocusNode,
-            hintText: 'Ex: B001, B002, B003 (separados por vírgula)',
-          ),
-          
-          SizedBox(height: 10.0),
-          
-          // Dependências Field
-          _buildTextField(
-            label: 'Dependências',
-            controller: _model.dependenciasController,
-            focusNode: _model.dependenciasFocusNode,
-            hintText: 'IDs das tasks que devem ser concluídas antes',
-          ),
-          
-          SizedBox(height: 16.0),
-          
-          // Action Buttons
-          Row(
-            children: [
-              Expanded(
-                child: FFButtonWidget(
-                  onPressed: () {
-                    _model.clearForm();
-                    setState(() {});
-                  },
-                  text: 'Limpar',
-                  options: FFButtonOptions(
-                    height: 40.0,
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    iconPadding: EdgeInsets.zero,
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                    textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                    borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).alternate,
-                      width: 1.0,
+          // Destino Field (conditional based on tipo destino)
+          if (_model.selectedTipoDestino == 'Maquina')
+            _buildDropdownField(
+              label: 'Máquina *',
+              value: _model.selectedDestino,
+              items: _model.maquinasOptions,
+              hintText: 'Selecione a máquina',
+              onChanged: (value) {
+                setState(() {
+                  _model.selectedDestino = value;
+                });
+              },
+            )
+          else if (_model.selectedTipoDestino == 'Pessoa')
+            _buildDropdownField(
+              label: 'Funcionário *',
+              value: _model.selectedDestino,
+              items: _model.funcionariosOptions,
+              hintText: 'Selecione o funcionário',
+              onChanged: (value) {
+                setState(() {
+                  _model.selectedDestino = value;
+                });
+              },
+            )
+          else if (_model.selectedTipoDestino == 'Coordenada')
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        label: 'Coordenada X *',
+                        controller: _model.destinoXController,
+                        focusNode: _model.destinoXFocusNode,
+                        hintText: 'Ex: 10.5',
+                        keyboardType: TextInputType.number,
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    SizedBox(width: 12.0),
+                    Expanded(
+                      child: _buildTextField(
+                        label: 'Coordenada Y *',
+                        controller: _model.destinoYController,
+                        focusNode: _model.destinoYFocusNode,
+                        hintText: 'Ex: 20.3',
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          
+          SizedBox(height: 10.0),
+          
+          // Beacons Multi-Select
+          _buildMultiSelectField(
+            label: 'Ferramentas e Materiais',
+            selectedItems: _model.selectedBeacons,
+            items: _model.beaconsOptions,
+            hintText: 'Selecione ferramentas e materiais (opcional)',
+            onChanged: (selectedItems) {
+              setState(() {
+                _model.selectedBeacons = selectedItems;
+              });
+            },
+          ),
+          
+          SizedBox(height: 24.0),
+          
+          // Action Buttons (siguiendo el patrón de tabela/mapa)
+          Container(
+            child: Row(
+              children: [
+                // Main action button (takes most space)
+                Expanded(
+                  flex: 5,
+                  child: FFButtonWidget(
+                    onPressed: _model.validateForm() ? () async {
+                      bool success = false;
+                      if (_model.isEditing) {
+                        success = await _model.updateTask(context);
+                      } else {
+                        success = await _model.createTask(context);
+                      }
+                      
+                      if (success) {
+                        setState(() {
+                          _model.toggleCreateForm();
+                        });
+                      }
+                    } : null,
+                    text: _model.isEditing ? 'Atualizar Task' : 'Criar Task',
+                    options: FFButtonOptions(
+                      height: 48.0,
+                      color: FlutterFlowTheme.of(context).primary,
+                      textStyle: FlutterFlowTheme.of(context).titleMedium.copyWith(
+                        color: Colors.white,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18.0,
+                      ),
+                      elevation: 2.0,
+                      borderRadius: BorderRadius.circular(8.0),
+                      disabledTextColor: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              
-              SizedBox(width: 12.0),
-              
-              Expanded(
-                flex: 2,
-                child: FFButtonWidget(
-                  onPressed: _model.validateForm() ? () async {
-                    bool success = false;
-                    if (_model.isEditing) {
-                      success = await _model.updateTask(context);
-                    } else {
-                      success = await _model.createTask(context);
-                    }
-                    
-                    if (success) {
-                      setState(() {
-                        _model.toggleCreateForm();
-                      });
-                    }
-                  } : null,
-                  text: _model.isEditing ? 'Atualizar Task' : 'Criar Task',
-                  options: FFButtonOptions(
-                    height: 40.0,
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    iconPadding: EdgeInsets.zero,
-                    color: FlutterFlowTheme.of(context).primary,
-                    textStyle: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                SizedBox(width: 16.0),
+                // Clear form button with trash icon (smaller)
+                Container(
+                  height: 48.0,
+                  width: 48.0,
+                  child: FFButtonWidget(
+                    onPressed: () {
+                      _model.clearForm();
+                      setState(() {});
+                    },
+                    text: '',
+                    icon: Icon(
+                      Icons.delete_outline,
                       color: Colors.white,
-                      fontWeight: FontWeight.w500,
+                      size: 26.0,
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    options: FFButtonOptions(
+                      height: 48.0,
+                      width: 48.0,
+                      padding: EdgeInsets.fromLTRB(7.0, 2.0, 0.0, 2.0),
+                      iconPadding: EdgeInsets.zero,
+                      color: FlutterFlowTheme.of(context).error,
+                      textStyle: FlutterFlowTheme.of(context).titleMedium.copyWith(
+                        color: Colors.white,
+                        letterSpacing: 0.0,
+                      ),
+                      elevation: 2.0,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -722,6 +791,7 @@ class _TasksWidgetState extends State<TasksWidget> {
     required FocusNode? focusNode,
     required String hintText,
     int maxLines = 1,
+    TextInputType? keyboardType,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -740,6 +810,7 @@ class _TasksWidgetState extends State<TasksWidget> {
           controller: controller,
           focusNode: focusNode,
           maxLines: maxLines,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: FlutterFlowTheme.of(context).bodyMedium.copyWith(
@@ -771,14 +842,17 @@ class _TasksWidgetState extends State<TasksWidget> {
       ],
     );
   }
-  
-  Widget _buildDropdown({
+
+  Widget _buildDropdownField({
     required String label,
     required String? value,
     required List<String> items,
-    required Function(String?) onChanged,
     required String hintText,
+    required Function(String?) onChanged,
   }) {
+    // Debug print to see what options are available
+    print('Building dropdown for $label with ${items.length} items: $items');
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -802,43 +876,64 @@ class _TasksWidgetState extends State<TasksWidget> {
               width: 1.0,
             ),
           ),
-          child: DropdownButton<String>(
-            value: value,
-            hint: Padding(
-              padding: EdgeInsets.only(left: 12.0),
-              child: Text(
-                hintText,
-                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  letterSpacing: 0.0,
+          child: _model.isLoadingOptions
+            ? Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 16.0,
+                      height: 16.0,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          FlutterFlowTheme.of(context).primary,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'Carregando opções...',
+                      style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        letterSpacing: 0.0,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            isExpanded: true,
-            underline: SizedBox(),
-            icon: Padding(
-              padding: EdgeInsets.only(right: 12.0),
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                color: FlutterFlowTheme.of(context).secondaryText,
-              ),
-            ),
-            items: items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 12.0),
-                  child: Text(
-                    item,
-                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
-                      letterSpacing: 0.0,
+              )
+            : DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: value,
+                  hint: Padding(
+                    padding: EdgeInsets.only(left: 12.0),
+                    child: Text(
+                      _getDropdownHintText(label, items),
+                      style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                        color: items.isEmpty 
+                          ? FlutterFlowTheme.of(context).error
+                          : FlutterFlowTheme.of(context).secondaryText,
+                        letterSpacing: 0.0,
+                      ),
                     ),
                   ),
+                  isExpanded: true,
+                  icon: Padding(
+                    padding: EdgeInsets.only(right: 12.0),
+                    child: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                    ),
+                  ),
+                  items: _getDropdownItems(label, items),
+                  onChanged: (selectedValue) {
+                    // Don't allow selection of placeholder messages
+                    if (selectedValue != null && !selectedValue.startsWith('Sem ')) {
+                      onChanged(selectedValue);
+                    }
+                  },
                 ),
-              );
-            }).toList(),
-            onChanged: onChanged,
-          ),
+              ),
         ),
       ],
     );
@@ -887,5 +982,453 @@ class _TasksWidgetState extends State<TasksWidget> {
         );
       },
     );
+  }
+
+  Widget _buildMultiSelectField({
+    required String label,
+    required List<String> selectedItems,
+    required List<String> items,
+    required String hintText,
+    required Function(List<String>) onChanged,
+  }) {
+    // Debug print to see what options are available
+    print('Building multi-select for $label with ${items.length} items: $items');
+    print('Currently selected: $selectedItems');
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+            color: FlutterFlowTheme.of(context).secondaryText,
+            fontSize: 14.0,
+            letterSpacing: 0.0,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 6.0),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: FlutterFlowTheme.of(context).primaryBackground,
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 1.0,
+            ),
+          ),
+          child: _model.isLoadingOptions
+            ? Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 16.0,
+                      height: 16.0,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          FlutterFlowTheme.of(context).primary,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'Carregando opções...',
+                      style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        letterSpacing: 0.0,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8.0),
+                  onTap: () => _showImprovedMultiSelectDialog(
+                    title: label,
+                    items: items,
+                    selectedItems: selectedItems,
+                    onSelectionChanged: onChanged,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: selectedItems.isEmpty
+                            ? Text(
+                                _getMultiSelectHintText(label, items),
+                                style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                  color: items.isEmpty 
+                                    ? FlutterFlowTheme.of(context).error
+                                    : FlutterFlowTheme.of(context).secondaryText,
+                                  letterSpacing: 0.0,
+                                  fontStyle: items.isEmpty ? FontStyle.italic : FontStyle.normal,
+                                ),
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Wrap(
+                                    spacing: 6.0,
+                                    runSpacing: 6.0,
+                                    children: selectedItems.take(3).map((item) {
+                                      return Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context).primary,
+                                          borderRadius: BorderRadius.circular(16.0),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              item,
+                                              style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                                color: Colors.white,
+                                                letterSpacing: 0.0,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            SizedBox(width: 4.0),
+                                            InkWell(
+                                              onTap: () {
+                                                List<String> newSelection = List.from(selectedItems);
+                                                newSelection.remove(item);
+                                                onChanged(newSelection);
+                                              },
+                                              child: Icon(
+                                                Icons.close,
+                                                size: 16.0,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                  if (selectedItems.length > 3)
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 6.0),
+                                      child: Text(
+                                        '+${selectedItems.length - 3} mais...',
+                                        style: FlutterFlowTheme.of(context).bodySmall.copyWith(
+                                          color: FlutterFlowTheme.of(context).primary,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                        ),
+                        SizedBox(width: 8.0),
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: FlutterFlowTheme.of(context).secondaryText,
+                          size: 24.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+        ),
+      ],
+    );
+  }
+
+  void _showImprovedMultiSelectDialog({
+    required String title,
+    required List<String> items,
+    required List<String> selectedItems,
+    required Function(List<String>) onSelectionChanged,
+  }) {
+    List<String> tempSelection = List.from(selectedItems);
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              title: Row(
+                children: [
+                  Icon(
+                    Icons.build_outlined,
+                    color: FlutterFlowTheme.of(context).primary,
+                    size: 24.0,
+                  ),
+                  SizedBox(width: 8.0),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: FlutterFlowTheme.of(context).titleMedium.copyWith(
+                        color: FlutterFlowTheme.of(context).primaryText,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              content: Container(
+                width: double.maxFinite,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                ),
+                child: items.isEmpty 
+                  ? Container(
+                      padding: EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            size: 48.0,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                          ),
+                          SizedBox(height: 16.0),
+                          Text(
+                            'Sem ferramentas e materiais disponíveis no momento.',
+                            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              fontSize: 16.0,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: items.length,
+                            separatorBuilder: (context, index) => Divider(
+                              height: 1.0,
+                              color: FlutterFlowTheme.of(context).alternate,
+                            ),
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              final isSelected = tempSelection.contains(item);
+                              
+                              return Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    setDialogState(() {
+                                      if (isSelected) {
+                                        tempSelection.remove(item);
+                                      } else {
+                                        tempSelection.add(item);
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 20.0,
+                                          height: 20.0,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: isSelected 
+                                                ? FlutterFlowTheme.of(context).primary
+                                                : FlutterFlowTheme.of(context).alternate,
+                                              width: 2.0,
+                                            ),
+                                            color: isSelected 
+                                              ? FlutterFlowTheme.of(context).primary
+                                              : Colors.transparent,
+                                          ),
+                                          child: isSelected
+                                            ? Icon(
+                                                Icons.check,
+                                                size: 14.0,
+                                                color: Colors.white,
+                                              )
+                                            : null,
+                                        ),
+                                        SizedBox(width: 12.0),
+                                        Expanded(
+                                          child: Text(
+                                            item,
+                                            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                                              color: isSelected 
+                                                ? FlutterFlowTheme.of(context).primaryText
+                                                : FlutterFlowTheme.of(context).secondaryText,
+                                              fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  ),
+                  child: Text(
+                    'Cancelar',
+                    style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+                if (items.isNotEmpty) ...[
+                  if (tempSelection.isNotEmpty)
+                    TextButton(
+                      onPressed: () {
+                        setDialogState(() {
+                          tempSelection.clear();
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      ),
+                      child: Text(
+                        'Limpar',
+                        style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                          color: FlutterFlowTheme.of(context).error,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ElevatedButton(
+                    onPressed: () {
+                      onSelectionChanged(tempSelection);
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: FlutterFlowTheme.of(context).primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  String _getDropdownHintText(String label, List<String> items) {
+    if (items.isEmpty) {
+      if (label.contains('Máquina')) {
+        return 'Sem máquinas no momento';
+      } else if (label.contains('Funcionário')) {
+        return 'Sem funcionários no momento';
+      } else if (label.contains('Beacon')) {
+        return 'Sem beacons no momento';
+      } else {
+        return 'Sem opções no momento';
+      }
+    }
+    
+    // Return original hint text based on label
+    if (label.contains('Máquina')) {
+      return 'Selecione a máquina';
+    } else if (label.contains('Funcionário')) {
+      return 'Selecione o funcionário';
+    } else if (label.contains('Beacon')) {
+      return 'Selecione o beacon (opcional)';
+    } else {
+      return 'Selecione uma opção';
+    }
+  }
+
+  List<DropdownMenuItem<String>> _getDropdownItems(String label, List<String> items) {
+    if (items.isEmpty) {
+      String emptyMessage;
+      if (label.contains('Máquina')) {
+        emptyMessage = 'Sem máquinas no momento';
+      } else if (label.contains('Funcionário')) {
+        emptyMessage = 'Sem funcionários no momento';
+      } else if (label.contains('Beacon')) {
+        emptyMessage = 'Sem beacons no momento';
+      } else {
+        emptyMessage = 'Sem opções no momento';
+      }
+      
+      return [
+        DropdownMenuItem<String>(
+          value: emptyMessage,
+          enabled: false,
+          child: Padding(
+            padding: EdgeInsets.only(left: 12.0),
+            child: Text(
+              emptyMessage,
+              style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+                color: FlutterFlowTheme.of(context).error,
+                letterSpacing: 0.0,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ),
+      ];
+    }
+    
+    return items.map((String item) {
+      return DropdownMenuItem<String>(
+        value: item,
+        child: Padding(
+          padding: EdgeInsets.only(left: 12.0),
+          child: Text(
+            item,
+            style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+              letterSpacing: 0.0,
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  String _getMultiSelectHintText(String label, List<String> items) {
+    if (items.isEmpty) {
+      return 'Sem ferramentas e materiais no momento';
+    }
+    return 'Selecione ferramentas e materiais (opcional)';
   }
 }
