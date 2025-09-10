@@ -631,7 +631,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      task['descricao'] ?? task['titulo'] ?? '',
+                      task['descricao'] ?? task['mensagem'] ?? 'Sem descrição',
                       style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w600,
@@ -693,7 +693,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                   children: [
                     Expanded(
                       child: Text(
-                        task['descricao'] ?? task['titulo'] ?? '',
+                        task['descricao'] ?? task['mensagem'] ?? 'Sem descrição',
                         style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                           letterSpacing: 0.0,
                           fontWeight: FontWeight.w600,
@@ -743,7 +743,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                           SizedBox(width: 6.0),
                           Expanded(
                             child: Text(
-                              task['destino'] ?? task['localizacao'] ?? '',
+                              task['destino'] ?? 'Sem destino',
                               style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                                 color: FlutterFlowTheme.of(context).primaryText,
                                 letterSpacing: 0.0,
@@ -767,7 +767,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                         SizedBox(width: 6.0),
                         Expanded(
                           child: Text(
-                            task['user'] ?? '',
+                            task['user'] ?? 'Não atribuído',
                             style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                               color: FlutterFlowTheme.of(context).primary,
                               letterSpacing: 0.0,
@@ -776,22 +776,6 @@ class _TasksWidgetState extends State<TasksWidget> {
                             ),
                           ),
                         ),
-                        if (task['dataLimite']?.toString().isNotEmpty == true) ...[
-                          Icon(
-                            Icons.schedule,
-                            size: 16.0,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                          ),
-                          SizedBox(width: 4.0),
-                          Text(
-                            task['dataLimite'] ?? '',
-                            style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              letterSpacing: 0.0,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ],
@@ -800,7 +784,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                 // Desktop: Keep original layout
                 // Description
                 Text(
-                  task['descricao'] ?? '',
+                  task['descricao'] ?? task['mensagem'] ?? 'Sem descrição',
                   style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                     color: FlutterFlowTheme.of(context).secondaryText,
                     letterSpacing: 0.0,
@@ -842,7 +826,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                     SizedBox(width: 4.0),
                     Expanded(
                       child: Text(
-                        task['destino'] ?? task['localizacao'] ?? '',
+                        task['destino'] ?? 'Sem destino',
                         style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                           color: FlutterFlowTheme.of(context).secondaryText,
                           letterSpacing: 0.0,
@@ -868,28 +852,11 @@ class _TasksWidgetState extends State<TasksWidget> {
                         ),
                         SizedBox(width: 4.0),
                         Text(
-                          task['user'] ?? '',
+                          task['user'] ?? 'Não atribuído',
                           style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                             color: FlutterFlowTheme.of(context).primary,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.schedule,
-                          size: 16.0,
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                        ),
-                        SizedBox(width: 4.0),
-                        Text(
-                          task['dataLimite'] ?? '',
-                          style: FlutterFlowTheme.of(context).bodySmall.copyWith(
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            letterSpacing: 0.0,
                           ),
                         ),
                       ],

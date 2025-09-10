@@ -273,7 +273,6 @@ class TasksCreateCall {
     required String destino,
     required String tipoDestino,
     required List<String> beacons,
-    required List<String> dependencias,
     required String tipo,
     required String status,
   }) async {
@@ -283,7 +282,6 @@ class TasksCreateCall {
         "destino": "$destino",
         "tipoDestino": "$tipoDestino",
         "beacons": [${beacons.map((e) => '"$e"').join(', ')}],
-        "dependencias": [${dependencias.map((e) => '"$e"').join(', ')}],
         "tipo": "$tipo",
         "status": "$status"
       }
@@ -310,7 +308,6 @@ class TasksUpdateCall {
     required String destino,
     required String tipoDestino,
     required List<String> beacons,
-    required List<String> dependencias,
     required String tipo,
     required String status,
   }) async {
@@ -322,7 +319,6 @@ class TasksUpdateCall {
         "destino": "$destino",
         "tipoDestino": "$tipoDestino",
         "beacons": [${beacons.map((e) => '"$e"').join(', ')}],
-        "dependencias": [${dependencias.map((e) => '"$e"').join(', ')}],
         "tipo": "$tipo",
         "status": "$status"
       }

@@ -31,9 +31,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   TextEditingController? beaconsController;
   FocusNode? beaconsFocusNode;
   
-  TextEditingController? dependenciasController;
-  FocusNode? dependenciasFocusNode;
-  
   // New controllers for coordinates
   TextEditingController? destinoXController;
   FocusNode? destinoXFocusNode;
@@ -46,7 +43,7 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   String? selectedStatus;
   String? selectedTipoDestino;
   String? selectedDestino;
-  List<String> selectedBeacons = []; // Changed to list for multiple selection
+  List<String> selectedBeacons = [];
   
   // Options lists (will be populated from API)
   List<String> maquinasOptions = [];
@@ -104,7 +101,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
             'destino': task['destino'] ?? '',
             'tipoDestino': task['tipoDestino'] ?? '',
             'beacons': task['beacons'] ?? [],
-            'dependencias': task['dependencias'] ?? [],
             'user': task['user'] ?? loggedInUser
           });
         }
@@ -201,7 +197,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
             'destino': taskData['destino'] ?? '',
             'tipoDestino': taskData['tipoDestino'] ?? '',
             'beacons': taskData['beacons'] ?? [],
-            'dependencias': taskData['dependencias'] ?? [],
             'user': taskData['user'] ?? '',
             // Raw data for editing
             'rawData': taskData,
@@ -237,9 +232,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     beaconsController = TextEditingController();
     beaconsFocusNode = FocusNode();
     
-    dependenciasController = TextEditingController();
-    dependenciasFocusNode = FocusNode();
-    
     // Initialize new controllers
     destinoXController = TextEditingController();
     destinoXFocusNode = FocusNode();
@@ -266,8 +258,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     tipoDestinoFocusNode?.dispose();
     beaconsController?.dispose();
     beaconsFocusNode?.dispose();
-    dependenciasController?.dispose();
-    dependenciasFocusNode?.dispose();
     destinoXController?.dispose();
     destinoXFocusNode?.dispose();
     destinoYController?.dispose();
@@ -338,7 +328,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     destinoController?.text = rawData['destino'] ?? task['localizacao'] ?? '';
     tipoDestinoController?.text = rawData['tipoDestino'] ?? '';
     beaconsController?.text = _listToString(rawData['beacons']);
-    dependenciasController?.text = _listToString(rawData['dependencias']);
     selectedTipo = rawData['tipo'] ?? 'Geral';
     selectedStatus = rawData['status'] ?? 'Pendente';
     
@@ -359,7 +348,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     if (destinoController != null) destinoController!.clear();
     if (tipoDestinoController != null) tipoDestinoController!.clear();
     if (beaconsController != null) beaconsController!.clear();
-    if (dependenciasController != null) dependenciasController!.clear();
     if (destinoXController != null) destinoXController!.clear();
     if (destinoYController != null) destinoYController!.clear();
     
@@ -421,13 +409,17 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     }
   }
   
-  Color getPriorityColor(String prioridade) {
-    switch (prioridade.toLowerCase()) {
-      case 'alta':
+  Color getPriorityColor(String tipo) {
+    switch (tipo.toLowerCase()) {
+      case 'urgente':
         return Color(0xFFF44336); // Red
-      case 'média':
+      case 'manutencao':
         return Color(0xFFFF9800); // Orange
-      case 'baixa':
+      case 'fabricacao':
+        return Color(0xFF2196F3); // Blue
+      case 'transporte':
+        return Color(0xFF9C27B0); // Purple
+      case 'geral':
         return Color(0xFF4CAF50); // Green
       default:
         return Color(0xFF757575); // Grey
@@ -441,12 +433,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
       return list.join(', ');
     }
     return list.toString();
-  }
-  
-  // Helper to convert string to list
-  List<String> _stringToList(String text) {
-    if (text.isEmpty) return [];
-    return text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
 
   // Get destination value based on type
@@ -468,7 +454,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
         destino: _getDestinoValue(),
         tipoDestino: selectedTipoDestino ?? '',
         beacons: selectedBeacons, // Send the list directly
-        dependencias: _stringToList(dependenciasController?.text ?? ''),
         tipo: selectedTipo ?? 'Geral',
         status: selectedStatus ?? 'Pendente',
       );
@@ -504,7 +489,6 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
         destino: _getDestinoValue(),
         tipoDestino: selectedTipoDestino ?? '',
         beacons: selectedBeacons, // Send the list directly
-        dependencias: _stringToList(dependenciasController?.text ?? ''),
         tipo: selectedTipo ?? 'Geral',
         status: selectedStatus ?? 'Pendente',
       );
