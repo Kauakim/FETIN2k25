@@ -3,6 +3,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/tabela_pag/tabela_pag_widget.dart';
 import '/home_mapa/home_mapa_widget.dart';
 import '/tasks_pag/tasks_widget.dart';
+import '/relatorios_pag/relatorios_widget.dart';
 import '/perfil_usuario/perfil_usuario_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -68,14 +69,26 @@ class AppBottomNavigation extends StatelessWidget {
                 onTap: () => _navigateToPage(context, 2),
                 isMobile: isMobileDevice,
               ),
+              // Show Reports only for managers
+              if (FFAppState().isManager) 
+                _buildNavItem(
+                  context: context,
+                  icon: Icons.analytics_outlined,
+                  selectedIcon: Icons.analytics,
+                  label: 'Relatórios',
+                  index: 3,
+                  isSelected: currentIndex == 3,
+                  onTap: () => _navigateToPage(context, 3),
+                  isMobile: isMobileDevice,
+                ),
               _buildNavItem(
                 context: context,
                 icon: Icons.person_outline,
                 selectedIcon: Icons.person,
                 label: 'Perfil',
-                index: 3,
-                isSelected: currentIndex == 3,
-                onTap: () => _navigateToPage(context, 3),
+                index: FFAppState().isManager ? 4 : 3,
+                isSelected: currentIndex == (FFAppState().isManager ? 4 : 3),
+                onTap: () => _navigateToPage(context, FFAppState().isManager ? 4 : 3),
                 isMobile: isMobileDevice,
               ),
             ],
@@ -154,6 +167,13 @@ class AppBottomNavigation extends StatelessWidget {
         context.pushNamed(TasksWidget.routeName);
         break;
       case 3:
+        if (FFAppState().isManager) {
+          context.pushNamed(RelatoriosWidget.routeName);
+        } else {
+          context.pushNamed(PerfilUsuarioWidget.routeName);
+        }
+        break;
+      case 4:
         context.pushNamed(PerfilUsuarioWidget.routeName);
         break;
     }

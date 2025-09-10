@@ -58,6 +58,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       builder: (context, params) => TasksWidget(),
     ),
     FFRoute(
+      name: RelatoriosWidget.routeName,
+      path: RelatoriosWidget.routePath,
+      builder: (context, params) => RelatoriosWidget(),
+    ),
+    FFRoute(
       name: PerfilUsuarioWidget.routeName,
       path: PerfilUsuarioWidget.routePath,
       builder: (context, params) => PerfilUsuarioWidget(),

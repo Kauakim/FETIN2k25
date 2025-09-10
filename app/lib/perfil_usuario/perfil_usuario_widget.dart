@@ -58,7 +58,7 @@ class _PerfilUsuarioWidgetState extends State<PerfilUsuarioWidget> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        bottomNavigationBar: AppBottomNavigation(currentIndex: 4),
+        bottomNavigationBar: AppBottomNavigation(currentIndex: FFAppState().isManager ? 4 : 3),
         body: SafeArea(
           top: true,
           child: SingleChildScrollView(

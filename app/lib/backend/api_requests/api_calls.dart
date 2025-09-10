@@ -367,6 +367,21 @@ class TasksListCall {
   }
 }
 
+class InfoGetAllCall {
+  static Future<ApiCallResponse> call() async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'InfoGetAll',
+      apiUrl: '${apiBaseUrl}/info/',
+      callType: ApiCallType.GET,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      params: {},
+      returnBody: true,
+    );
+  }
+}
+
 class ApiPagingParams {
   int nextPageNumber = 0;
   int numItems = 0;
