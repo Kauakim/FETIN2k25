@@ -216,24 +216,24 @@ async def getUserTasks(user: str):
 
 @router.post("/tasks/create/")
 async def createTask(request: schemas.TaskCreateRequest):
-    if not request.mensagem or not request.destino or not request.tipoDestino or not request.beacons or not request.dependencias or not request.tipo or not request.status:
+    if not request.mensagem or not request.destino or not request.tipoDestino or not request.beacons or not request.tipo or not request.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
     
-    task = models.createTask(request.mensagem, request.destino, request.tipoDestino, request.beacons, request.dependencias, request.tipo, request.status)
+    task = models.createTask(request.mensagem, request.destino, request.tipoDestino, request.beacons, request.tipo, request.status)
     return {"message": "Tarefa criada com sucesso", "task_id": request.id, "status_code": status.HTTP_201_CREATED}
 
 @router.post("/tasks/update/")
 async def updateTask(request: schemas.TaskUpdateRequest):
-    if not request.user or not request.mensagem or not request.destino or not request.tipoDestino or not request.beacons or not request.dependencias or not request.tipo or not request.status:
+    if not request.user or not request.mensagem or not request.destino or not request.tipoDestino or not request.beacons or not request.tipo or not request.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
     
-    task = models.updateTask(request.id, request.user, request.mensagem, request.destino, request.tipoDestino, request.beacons, request.dependencias, request.tipo, request.status)
+    task = models.updateTask(request.id, request.user, request.mensagem, request.destino, request.tipoDestino, request.beacons, request.tipo, request.status)
     return {"message": "Tarefa atualizada com sucesso", "task_id": request.id, "status_code": status.HTTP_201_CREATED}
 
 @router.post("/tasks/status/")
@@ -246,20 +246,6 @@ async def updateTaskStatus(request: schemas.TaskUpdateStatusRequest):
     
     task = models.updateTaskStatus(request.id, request.status)
     return {"message": "Status da tarefa atualizado com sucesso", "task_id": request.id, "status_code": status.HTTP_200_OK}
-
-@router.post("/tasks/cancel/")
-async def cancelTask(request: schemas.TaskCancelRequest):
-    if not request.id or not request.status or not request.cancelamento:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Campos obrigatórios ausentes"
-        )
-    
-    task = models.cancelTask(request.id, request.status, request.cancelamento)
-    if not task:
-        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
-    
-    return {"message": "Tarefa cancelada com sucesso", "task_id": request.id, "status_code": status.HTTP_200_OK}
 
 @router.post("/tasks/delete/")
 async def deleteTask(request: schemas.TaskDeleteRequest):

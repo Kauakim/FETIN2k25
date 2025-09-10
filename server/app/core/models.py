@@ -326,14 +326,14 @@ def getTaskById(id):
         cursor.close()
         connection.close()
 
-def createTask(mensagem, destino, tipoDestino, beacons, dependencias, tipo, status):
+def createTask(mensagem, destino, tipoDestino, beacons, tipo, status):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
-        query = "INSERT INTO tasks (mensagem, destino, tipoDestino, beacons, dependencias, tipo, status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        values = (mensagem, destino, tipoDestino, beacons, dependencias, tipo, status)
+        query = "INSERT INTO tasks (mensagem, destino, tipoDestino, beacons, tipo, status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (mensagem, destino, tipoDestino, beacons, tipo, status)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -364,23 +364,6 @@ def updateTask(id, user, mensagem, destino, tipoDestino, beacons, dependencias, 
         cursor.close()
         connection.close()
 
-def cancelTask(id, status, mensagemCancelamento):
-    connection = connectToDatabase()
-    if connection is None:
-        return
-    cursor = connection.cursor()
-    try:
-        query = "UPDATE tasks SET status = %s, cancelamento = %s WHERE id = %s"
-        values = (status, mensagemCancelamento, id)
-        cursor.execute(query, values)
-        connection.commit()
-    except mysql.connector.Error as e:
-        print(f"Error cancelling task: {e}")
-        connection.rollback()
-    finally:
-        cursor.close()
-        connection.close()
-
 def updateTaskStatus(id, status):
     connection = connectToDatabase()
     if connection is None:
@@ -393,6 +376,23 @@ def updateTaskStatus(id, status):
         connection.commit()
     except mysql.connector.Error as e:
         print(f"Error cancelling task: {e}")
+        connection.rollback()
+    finally:
+        cursor.close()
+        connection.close()
+
+def updateTaskUser(id, user):
+    connection = connectToDatabase()
+    if connection is None:
+        return
+    cursor = connection.cursor()
+    try:
+        query = "UPDATE tasks SET user = %s WHERE id = %s"
+        values = (user, id)
+        cursor.execute(query, values)
+        connection.commit()
+    except mysql.connector.Error as e:
+        print(f"Error updating task user: {e}")
         connection.rollback()
     finally:
         cursor.close()
