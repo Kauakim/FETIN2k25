@@ -281,9 +281,24 @@ def getTasksData():
         return {}
     cursor = connection.cursor(dictionary=True)
     try:
+        import json
         query = "SELECT * FROM tasks"
         cursor.execute(query)
         tasks = cursor.fetchall()
+        # Decode JSON beacons field and handle null user
+        for task in tasks:
+            if task["beacons"]:
+                try:
+                    task["beacons"] = json.loads(task["beacons"])
+                except:
+                    task["beacons"] = []
+            else:
+                task["beacons"] = []
+            
+            # Ensure user is never None
+            if task["user"] is None:
+                task["user"] = ""
+                
         return {task["id"]: task for task in tasks}
     except mysql.connector.Error as e:
         print(f"Error fetching tasks data: {e}")
@@ -298,9 +313,24 @@ def getTaskByUser(user):
         return {}
     cursor = connection.cursor(dictionary=True)
     try:
+        import json
         query = "SELECT * FROM tasks WHERE user = %s"
         cursor.execute(query, (user,))
         tasks = cursor.fetchall()
+        # Decode JSON beacons field and handle null user
+        for task in tasks:
+            if task["beacons"]:
+                try:
+                    task["beacons"] = json.loads(task["beacons"])
+                except:
+                    task["beacons"] = []
+            else:
+                task["beacons"] = []
+            
+            # Ensure user is never None
+            if task["user"] is None:
+                task["user"] = ""
+                
         return {task["id"]: task for task in tasks} if tasks else {}
     except mysql.connector.Error as e:
         print(f"Error fetching task by user: {e}")
@@ -315,9 +345,22 @@ def getTaskById(id):
         return {}
     cursor = connection.cursor(dictionary=True)
     try:
+        import json
         query = "SELECT * FROM tasks WHERE id = %s"
         cursor.execute(query, (id,))
         task = cursor.fetchone()
+        if task and task["beacons"]:
+            try:
+                task["beacons"] = json.loads(task["beacons"])
+            except:
+                task["beacons"] = []
+        elif task:
+            task["beacons"] = []
+            
+        # Ensure user is never None
+        if task and task["user"] is None:
+            task["user"] = ""
+            
         return task if task else {}
     except mysql.connector.Error as e:
         print(f"Error fetching task by ID: {e}")
@@ -332,8 +375,10 @@ def createTask(mensagem, destino, tipoDestino, beacons, tipo, status):
         return
     cursor = connection.cursor()
     try:
-        query = "INSERT INTO tasks (mensagem, destino, tipoDestino, beacons, tipo, status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        values = (mensagem, destino, tipoDestino, beacons, tipo, status)
+        import json
+        beacons_json = json.dumps(beacons) if beacons else '[]'
+        query = "INSERT INTO tasks (mensagem, destino, tipoDestino, beacons, tipo, status) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (mensagem, destino, tipoDestino, beacons_json, tipo, status)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
@@ -343,18 +388,20 @@ def createTask(mensagem, destino, tipoDestino, beacons, tipo, status):
         cursor.close()
         connection.close()
 
-def updateTask(id, user, mensagem, destino, tipoDestino, beacons, dependencias, tipo, status):
+def updateTask(id, user, mensagem, destino, tipoDestino, beacons, tipo, status):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
+        import json
+        beacons_json = json.dumps(beacons) if beacons else '[]'
         query = """
         UPDATE tasks
-        SET user = %s, mensagem = %s, destino = %s, tipoDestino = %s, beacons = %s, dependencias = %s, tipo = %s, status = %s
+        SET user = %s, mensagem = %s, destino = %s, tipoDestino = %s, beacons = %s, tipo = %s, status = %s
         WHERE id = %s
         """
-        values = (user, mensagem, destino, tipoDestino, beacons, dependencias, tipo, status, id)
+        values = (user, mensagem, destino, tipoDestino, beacons_json, tipo, status, id)
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:

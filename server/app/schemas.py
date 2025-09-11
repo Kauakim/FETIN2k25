@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, Optional
 
 class LoginRequest(BaseModel):
     username: str
@@ -74,12 +74,11 @@ class BeaconDeleteRequest(BaseModel):
 
 class taskModel(BaseModel):
     id: int
-    user: str
+    user: Optional[str] = None
     mensagem: str
     destino: str
     tipoDestino: str
     beacons: list
-    dependencias: list
     tipo: str
     status: str
 
@@ -91,7 +90,6 @@ class TaskCreateRequest(BaseModel):
     destino: str
     tipoDestino: str
     beacons: list
-    dependencias: list
     tipo: str
     status: str
 
@@ -102,7 +100,6 @@ class TaskUpdateRequest(BaseModel):
     destino: str
     tipoDestino: str
     beacons: list
-    dependencias: list
     tipo: str
     status: str
 

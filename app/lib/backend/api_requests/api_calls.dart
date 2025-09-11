@@ -350,6 +350,29 @@ class UsersGetAllCall {
   }
 }
 
+class TasksDeleteCall {
+  static Future<ApiCallResponse> call({
+    required int id,
+  }) async {
+    final ffApiRequestBody = '''
+      {
+        "id": $id
+      }
+    ''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'TasksDelete',
+      apiUrl: '${apiBaseUrl}/tasks/delete/',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+    );
+  }
+}
+
 class TasksListCall {
   static Future<ApiCallResponse> call() async {
     return ApiManager.instance.makeApiCall(

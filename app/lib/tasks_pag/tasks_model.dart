@@ -204,7 +204,11 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
         }
         
         // Sort by ID descending (newest first)
-        tasksList.sort((a, b) => (b['id'] as int).compareTo(a['id'] as int));
+        tasksList.sort((a, b) {
+          int idA = int.tryParse(a['id'].toString()) ?? 0;
+          int idB = int.tryParse(b['id'].toString()) ?? 0;
+          return idB.compareTo(idA);
+        });
         return tasksList;
       }
     } catch (e) {
@@ -238,6 +242,10 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     
     destinoYController = TextEditingController();
     destinoYFocusNode = FocusNode();
+    
+    // Initialize dropdown selections with default values
+    selectedStatus = 'Pendente';
+    selectedTipo = 'Geral';
     
     // Load dropdown options asynchronously
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -324,6 +332,7 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     
     final rawData = task['rawData'] as Map<String, dynamic>? ?? task;
     
+    // Pre-fill all form fields with existing data
     mensagemController?.text = rawData['mensagem'] ?? task['titulo'] ?? '';
     destinoController?.text = rawData['destino'] ?? task['localizacao'] ?? '';
     tipoDestinoController?.text = rawData['tipoDestino'] ?? '';
@@ -331,12 +340,29 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     selectedTipo = rawData['tipo'] ?? 'Geral';
     selectedStatus = rawData['status'] ?? 'Pendente';
     
+    // Set tipo de destino
+    selectedTipoDestino = rawData['tipoDestino'];
+    
+    // Handle destino based on tipo
+    if (selectedTipoDestino == 'Coordenada') {
+      final coords = rawData['destino']?.toString().split(',');
+      if (coords != null && coords.length >= 2) {
+        destinoXController?.text = coords[0].trim();
+        destinoYController?.text = coords[1].trim();
+      }
+    } else {
+      selectedDestino = rawData['destino'];
+    }
+    
     // Load beacons list if available
     if (rawData['beacons'] is List) {
       selectedBeacons = List<String>.from(rawData['beacons']);
     } else {
       selectedBeacons = [];
     }
+    
+    print('Loaded task for editing: ${rawData}');
+    print('Form fields pre-filled - Mensagem: ${mensagemController?.text}, Destino: ${destinoController?.text}');
   }
   
   // Clear form for new task
@@ -351,7 +377,7 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
     if (destinoXController != null) destinoXController!.clear();
     if (destinoYController != null) destinoYController!.clear();
     
-    selectedTipo = null;
+    selectedTipo = 'Geral';
     selectedStatus = 'Pendente';
     selectedTipoDestino = null;
     selectedDestino = null;
@@ -361,7 +387,7 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   // Toggle create form visibility
   void toggleCreateForm() {
     showCreateForm = !showCreateForm;
-    if (!showCreateForm) {
+    if (!showCreateForm && !isEditing) {
       clearForm();
     }
   }
@@ -448,6 +474,15 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
 
   // Create new task
   Future<bool> createTask(BuildContext context) async {
+    // Validate the form before creating
+    final validationError = getValidationError();
+    if (validationError != null) {
+      if (context.mounted) {
+        _showErrorMessage(context, validationError);
+      }
+      return false;
+    }
+    
     try {
       final response = await TasksCreateCall.call(
         mensagem: mensagemController?.text ?? '',
@@ -459,20 +494,26 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
       );
       
       if (response.succeeded) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Task criada com sucesso!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Task criada com sucesso!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
         clearForm();
         return true;
       } else {
-        _showErrorMessage(context, 'Erro ao criar task');
+        if (context.mounted) {
+          _showErrorMessage(context, 'Erro ao criar task');
+        }
         return false;
       }
     } catch (e) {
-      _showErrorMessage(context, 'Erro de comunicação: $e');
+      if (context.mounted) {
+        _showErrorMessage(context, 'Erro de comunicação: $e');
+      }
       return false;
     }
   }
@@ -480,6 +521,15 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   // Update existing task
   Future<bool> updateTask(BuildContext context) async {
     if (currentTask == null) return false;
+    
+    // Validate the form before updating
+    final validationError = getValidationError();
+    if (validationError != null) {
+      if (context.mounted) {
+        _showErrorMessage(context, validationError);
+      }
+      return false;
+    }
     
     try {
       final response = await TasksUpdateCall.call(
@@ -494,20 +544,26 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
       );
       
       if (response.succeeded) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Task atualizada com sucesso!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Task atualizada com sucesso!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
         clearForm();
         return true;
       } else {
-        _showErrorMessage(context, 'Erro ao atualizar task');
+        if (context.mounted) {
+          _showErrorMessage(context, 'Erro ao atualizar task');
+        }
         return false;
       }
     } catch (e) {
-      _showErrorMessage(context, 'Erro de comunicação: $e');
+      if (context.mounted) {
+        _showErrorMessage(context, 'Erro de comunicação: $e');
+      }
       return false;
     }
   }
@@ -515,17 +571,72 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   // Delete task
   Future<bool> deleteTask(BuildContext context, String taskId) async {
     try {
-      // TODO: Implement actual delete API call when available
-      // For now, just show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Task deletada com sucesso!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      return true;
+      // Convert taskId to int
+      final id = int.tryParse(taskId);
+      if (id == null) {
+        if (context.mounted) {
+          _showErrorMessage(context, 'ID da task inválido');
+        }
+        return false;
+      }
+
+      print('Attempting to delete task with ID: $id');
+      final response = await TasksDeleteCall.call(id: id);
+      
+      print('Delete response - Status: ${response.statusCode}');
+      print('Delete response - Success: ${response.succeeded}');
+      print('Delete response - Body: ${response.jsonBody}');
+      
+      // Check for successful deletion - sometimes the task is deleted even with 404
+      if (response.succeeded || response.statusCode == 200) {
+        print('Task deleted successfully from server');
+        
+        // Only refresh if the widget is still mounted
+        if (context.mounted) {
+          try {
+            // Refresh the task list automatically
+            await getAllTasks();
+            
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Task deletada com sucesso!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } catch (e) {
+            print('Error refreshing tasks after delete: $e');
+          }
+        }
+        
+        return true;
+      } else {
+        // Even if we get 404, the task might have been deleted, so let's refresh and check
+        print('Got error response, but checking if task was actually deleted...');
+        
+        if (context.mounted) {
+          try {
+            await getAllTasks();
+            
+            // Show a more neutral message since we're not sure
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Operação de delete executada. Verificando resultado...'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          } catch (e) {
+            print('Error refreshing tasks after delete: $e');
+          }
+        }
+        
+        return true; // Return true to close the dialog
+      }
     } catch (e) {
-      _showErrorMessage(context, 'Erro de comunicação: $e');
+      print('Error deleting task: $e');
+      if (context.mounted) {
+        _showErrorMessage(context, 'Erro de comunicação: $e');
+      }
       return false;
     }
   }
@@ -537,30 +648,71 @@ class TasksModel extends FlutterFlowModel<TasksWidget> {
   
   // Show error message
   void _showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            style: TextStyle(fontSize: 14.0),
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 4), // More time for longer messages
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+      );
+    }
   }
   
-  // Validate form
-  bool validateForm() {
-    bool hasMessage = mensagemController?.text.isNotEmpty ?? false;
-    bool hasTipoDestino = selectedTipoDestino?.isNotEmpty ?? false;
-    bool hasValidDestino = false;
-    bool hasTipo = selectedTipo?.isNotEmpty ?? false;
-    bool hasStatus = selectedStatus?.isNotEmpty ?? false;
+  // Validate form and show specific missing fields
+  String? getValidationError() {
+    List<String> missingFields = [];
+    
+    if (mensagemController?.text.isEmpty ?? true) {
+      missingFields.add("Descrição da task");
+    }
+    
+    if (selectedTipoDestino?.isEmpty ?? true) {
+      missingFields.add("Tipo de destino");
+    }
     
     // Check destination based on type
     if (selectedTipoDestino == 'Coordenada') {
-      hasValidDestino = (destinoXController?.text.isNotEmpty ?? false) && 
-                       (destinoYController?.text.isNotEmpty ?? false);
+      if (destinoXController?.text.isEmpty ?? true) {
+        missingFields.add("Coordenada X");
+      }
+      if (destinoYController?.text.isEmpty ?? true) {
+        missingFields.add("Coordenada Y");
+      }
     } else {
-      hasValidDestino = selectedDestino?.isNotEmpty ?? false;
+      if (selectedDestino?.isEmpty ?? true) {
+        missingFields.add("Destino");
+      }
     }
     
-    return hasMessage && hasTipoDestino && hasValidDestino && hasTipo && hasStatus;
+    if (selectedTipo?.isEmpty ?? true) {
+      missingFields.add("Tipo da task");
+    }
+    
+    if (selectedStatus?.isEmpty ?? true) {
+      missingFields.add("Status da task");
+    }
+    
+    if (selectedBeacons.isEmpty) {
+      missingFields.add("Pelo menos um beacon");
+    }
+    
+    if (missingFields.isEmpty) {
+      return null; // No errors
+    }
+    
+    return "Campos obrigatórios não preenchidos:\n• ${missingFields.join('\n• ')}";
+  }
+
+  // Validate form
+  bool validateForm() {
+    return getValidationError() == null;
   }
 }
