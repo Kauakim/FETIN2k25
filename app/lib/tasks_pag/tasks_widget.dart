@@ -655,16 +655,16 @@ class _TasksWidgetState extends State<TasksWidget> {
         ],
         border: Border.all(
           color: _model.getStatusColor(task['status'] ?? '').withOpacity(0.3),
-          width: 1.5,
+          width: 2.0,
         ),
       ),
       child: InkWell(
         onTap: () {
           // TODO: Navigate to task details
         },
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(12.0),
         child: Padding(
-          padding: EdgeInsets.all(isMobile ? 20.0 : 24.0),
+          padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -681,7 +681,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                           style: FlutterFlowTheme.of(context).titleMedium.copyWith(
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w700,
-                            fontSize: isMobile ? 16.0 : 18.0,
+                            fontSize: isMobile ? 16.0 : 20.0,
                             color: FlutterFlowTheme.of(context).primaryText,
                           ),
                           maxLines: 2,
@@ -704,7 +704,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                 task['tipo'] ?? 'Geral',
                                 style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                                   color: _model.getPriorityColor(task['tipo'] ?? ''),
-                                  fontSize: 12.0,
+                                  fontSize: 14.0,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -714,7 +714,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                       ],
                     ),
                   ),
-                  SizedBox(width: 12.0),
+                  SizedBox(width: 16.0),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
                     decoration: BoxDecoration(
@@ -725,7 +725,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                       task['status'] ?? 'Pendente',
                       style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                         color: Colors.white,
-                        fontSize: 12.0,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -737,7 +737,7 @@ class _TasksWidgetState extends State<TasksWidget> {
               
               // Location and User info
               Container(
-                padding: EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: FlutterFlowTheme.of(context).primaryBackground,
                   borderRadius: BorderRadius.circular(12.0),
@@ -759,11 +759,11 @@ class _TasksWidgetState extends State<TasksWidget> {
                             ),
                             child: Icon(
                               Icons.location_on,
-                              size: 20.0,
+                              size: 24.0,
                               color: FlutterFlowTheme.of(context).primary,
                             ),
                           ),
-                          SizedBox(width: 12.0),
+                          SizedBox(width: 16.0),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -772,11 +772,11 @@ class _TasksWidgetState extends State<TasksWidget> {
                                   'Destino',
                                   style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                                     color: FlutterFlowTheme.of(context).secondaryText,
-                                    fontSize: 11.0,
+                                    fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                SizedBox(height: 2.0),
+                                SizedBox(height: 3.0),
                                 Text(
                                   task['destino'] ?? 'Sem destino',
                                   style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
@@ -804,11 +804,11 @@ class _TasksWidgetState extends State<TasksWidget> {
                           ),
                           child: Icon(
                             Icons.person,
-                            size: 20.0,
+                            size: 24.0,
                             color: FlutterFlowTheme.of(context).secondary,
                           ),
                         ),
-                        SizedBox(width: 12.0),
+                        SizedBox(width: 16.0),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -817,11 +817,11 @@ class _TasksWidgetState extends State<TasksWidget> {
                                 'Responsável',
                                 style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                                   color: FlutterFlowTheme.of(context).secondaryText,
-                                  fontSize: 11.0,
+                                  fontSize: 14.0,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              SizedBox(height: 2.0),
+                              SizedBox(height: 3.0),
                               Text(
                                 task['user'] ?? 'Não atribuído',
                                 style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
@@ -861,7 +861,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                         children: [
                           Icon(
                             Icons.sensors,
-                            size: 18.0,
+                            size: 24.0,
                             color: Colors.blue,
                           ),
                           SizedBox(width: 8.0),
@@ -869,13 +869,13 @@ class _TasksWidgetState extends State<TasksWidget> {
                             'Beacons Necessários',
                             style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
                               color: Colors.blue,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13.0,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8.0),
+                      SizedBox(height: 12.0),
                       Wrap(
                         spacing: 6.0,
                         runSpacing: 6.0,
@@ -889,7 +889,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                             beacon,
                             style: FlutterFlowTheme.of(context).bodySmall.copyWith(
                               color: Colors.white,
-                              fontSize: 11.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -902,11 +902,10 @@ class _TasksWidgetState extends State<TasksWidget> {
               
               // Manager actions
               if (FFAppState().isManager) ...[
-                SizedBox(height: 16.0),
                 Container(
                   height: 1.0,
                   color: FlutterFlowTheme.of(context).alternate,
-                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  margin: EdgeInsets.symmetric(vertical: 20.0),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -923,7 +922,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                         },
                         icon: Icon(
                           Icons.edit_rounded,
-                          size: 20.0,
+                          size: 24.0,
                           color: FlutterFlowTheme.of(context).primary,
                         ),
                         style: IconButton.styleFrom(
@@ -934,7 +933,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.0),
+                    SizedBox(width: 16.0),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.red.withOpacity(0.1),
@@ -946,7 +945,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                         },
                         icon: Icon(
                           Icons.delete_rounded,
-                          size: 20.0,
+                          size: 24.0,
                           color: Colors.red,
                         ),
                         style: IconButton.styleFrom(
