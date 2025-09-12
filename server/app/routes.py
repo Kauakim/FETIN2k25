@@ -1,90 +1,114 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Request
 from . import schemas
 from .core import models
+from .core.rate_limiter import limiter
+from .core.auth import verify_password, validate_password_strength
 
 router = APIRouter()
 
 @router.post("/users/login/")
-async def login(request: schemas.LoginRequest):
-    usersData = models.getUsersData()
-    user = usersData.get(request.username)
+@limiter.limit("10/minute")
+async def login(request: Request, login_data: schemas.LoginRequest):
+    user = models.authenticateUser(login_data.username, login_data.password)
     
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuário não encontrado"
-        )
-    if user["password"] != request.password:
-        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Senha inválida"
+            detail="Credenciais inválidas"
         )
-    
     return {"message": "Login realizado com sucesso", "status_code": status.HTTP_200_OK}
 
 @router.post("/users/signin/")
-async def signin(request: schemas.SigninResponseSchema):
-    if request.username in models.getUsersData():
+@limiter.limit("10/minute")
+async def signin(request: Request, signin_data: schemas.SigninResponseSchema):
+    if signin_data.username in models.getUsersData():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Nome de usuário já existe"
         )
     
-    models.createUser(request.username, request.password, request.email, request.role)
+    is_valid, message = validate_password_strength(signin_data.password)
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=message
+        )
+    models.createUser(signin_data.username, signin_data.password, signin_data.email, signin_data.role)
     return {"message": "Usuário criado com sucesso", "status_code": status.HTTP_201_CREATED}
 
+@router.get("/users/")
+@limiter.limit("60/minute")
+async def get_users(request: Request):
+    users_data = models.getUsersData()
+    safe_users = {}
+    for username, user_info in users_data.items():
+        safe_users[username] = {
+            "username": user_info["username"],
+            "email": user_info["email"],
+            "role": user_info["role"]
+        }
+    return {"users": safe_users}
+
 @router.post("/users/update/")
-async def updateUser(request: schemas.UpdateUserSchema):
+@limiter.limit("20/minute")
+async def updateUser(request: Request, update_data: schemas.UpdateUserSchema):
     usersData = models.getUsersData()
     
     # Check required fields - password can be empty (means keep current)
-    if not request.oldUsername or not request.newUsername or not request.email or not request.role:
+    if not update_data.oldUsername or not update_data.newUsername or not update_data.email or not update_data.role:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
-    if request.oldUsername not in usersData:
+    if update_data.oldUsername not in usersData:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Usuário não encontrado"
         )
-    if request.newUsername in usersData and request.newUsername != request.oldUsername:
+    if update_data.newUsername in usersData and update_data.newUsername != update_data.oldUsername:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Novo nome de usuário já existe"
         )
     
-    # If password is empty, keep the current password
-    finalPassword = request.password
-    if not request.password:
-        currentUser = usersData[request.oldUsername]
-        finalPassword = currentUser.get('password', '')
-        print(f"Senha mantida para o usuário {request.oldUsername}")
+    # If password is provided, validate strength
+    finalPassword = update_data.password
+    if update_data.password:
+        is_valid, message = validate_password_strength(update_data.password)
+        if not is_valid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=message
+            )
     else:
-        print(f"Atualizando senha para o usuário {request.oldUsername}")
+        # Keep current password
+        currentUser = usersData[update_data.oldUsername]
+        finalPassword = currentUser.get('password', '')
 
-    models.updateUser(request.oldUsername, request.newUsername, finalPassword, request.email, request.role)
-    return {"message": "Usuário atualizado com sucesso", "status_code": status.HTTP_201_CREATED}
+    models.updateUser(update_data.oldUsername, update_data.newUsername, finalPassword, update_data.email, update_data.role)
+    return {"message": "Usuário atualizado com sucesso", "status_code": status.HTTP_200_OK}
 
 @router.post("/users/delete/")
-async def deleteUser(request: schemas.DeleteUserSchema):
+@limiter.limit("20/minute")
+async def deleteUser(request: Request, delete_data: schemas.DeleteUserSchema):
     usersData = models.getUsersData()
-    if not request.username:
+    if not delete_data.username:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Campos obrigatórios ausentes"
+            detail="Username é obrigatório"
         )
-    if request.username not in usersData:
+    if delete_data.username not in usersData:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Usuário não encontrado"
         )
     
-    models.deleteUser(request.username)
-    return {"message": "Usuário deletado com sucesso", "status_code": status.HTTP_201_CREATED}
+    models.deleteUser(delete_data.username)
+    return {"message": "Usuário deletado com sucesso", "status_code": status.HTTP_200_OK}
 
 @router.get("/users/get/all/")
-async def getAllUsers():
+@limiter.limit("60/minute")
+async def getAllUsers(request: Request):
     usersData = models.getUsersData()
     if not usersData:
         raise HTTPException(
@@ -106,68 +130,75 @@ async def getAllUsers():
 #---------------------------------------------------------------------------------------------------------------------------
 
 @router.get("/beacons/get/all/", response_model=schemas.BeaconsResponseSchema)
-async def getAllBeacons():
+@limiter.limit("60/minute")
+async def getAllBeacons(request: Request):
     beaconsData = models.getAllBeaconsData()
     if not beaconsData:
         raise HTTPException(status_code=404, detail="Nenhum beacon encontrado")
     return {"Beacons": beaconsData}
 
 @router.get("/beacons/get/{seconds}/", response_model=schemas.BeaconsResponseSchema)
-async def getLastBeacons(seconds: int):
+@limiter.limit("60/minute")
+async def getLastBeacons(request: Request, seconds: int):
     beaconsData = models.getLastBeaconsData(seconds)
     if not beaconsData:
         raise HTTPException(status_code=404, detail="Nenhum beacon encontrado")
     return {"Beacons": beaconsData}
 
 @router.post("/beacons/create/")
-async def createBeacon(request: schemas.BeaconCreateRequest):
-    if not request.beacon or not request.tipo or not request.status or not request.rssi1 or not request.rssi2 or not request.rssi3 or not request.x or not request.y or not request.utc:
+@limiter.limit("30/minute")
+async def createBeacon(request: Request, beacon_data: schemas.BeaconCreateRequest):
+    if not beacon_data.beacon or not beacon_data.tipo or not beacon_data.status or not beacon_data.rssi1 or not beacon_data.rssi2 or not beacon_data.rssi3 or not beacon_data.x or not beacon_data.y or not beacon_data.utc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
 
-    models.createBeacon(request.utc, request.beacon, request.tipo, request.status, request.rssi1, request.rssi2, request.rssi3, request.x, request.y)
+    models.createBeacon(beacon_data.utc, beacon_data.beacon, beacon_data.tipo, beacon_data.status, beacon_data.rssi1, beacon_data.rssi2, beacon_data.rssi3, beacon_data.x, beacon_data.y)
     return {"message": "Beacon criado com sucesso", "status_code": status.HTTP_200_OK}
 
 @router.post("/beacons/delete/")
-async def deleteBeacon(request: schemas.BeaconDeleteRequest):
-    if not request.beacon:
+@limiter.limit("20/minute")
+async def deleteBeacon(request: Request, delete_data: schemas.BeaconDeleteRequest):
+    if not delete_data.beacon:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
         
-    models.deleteBeacon(request.beacon)
+    models.deleteBeacon(delete_data.beacon)
     return {"message": "Beacon deletado com sucesso", "status_code": status.HTTP_200_OK}
 
 @router.post("/beacons/update/tipo/")
-async def updateBeaconRssi(request: schemas.BeaconUpdateTypeRequest):
-    if not request.beacon or not request.tipo or not request.utc:
+@limiter.limit("30/minute")
+async def updateBeaconRssi(request: Request, update_data: schemas.BeaconUpdateTypeRequest):
+    if not update_data.beacon or not update_data.tipo or not update_data.utc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
 
-    models.updateBeaconType(request.utc, request.beacon, request.tipo)
+    models.updateBeaconType(update_data.utc, update_data.beacon, update_data.tipo)
     return {"message": "Tipo do beacon atualizado com sucesso", "status_code": status.HTTP_200_OK}
 
 @router.post("/beacons/update/status/")
-async def updateBeaconStatus(request: schemas.BeaconUpdateStatusRequest):
-    if not request.beacon or not request.status or not request.utc:
+@limiter.limit("30/minute")
+async def updateBeaconStatus(request: Request, update_data: schemas.BeaconUpdateStatusRequest):
+    if not update_data.beacon or not update_data.status or not update_data.utc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
 
-    models.updateBeaconStatus(request.utc, request.beacon, request.status)
+    models.updateBeaconStatus(update_data.utc, update_data.beacon, update_data.status)
     return {"message": "Status do beacon atualizado com sucesso", "status_code": status.HTTP_200_OK}
 
 @router.post("/rssi/")
-async def RSSIRequest(request: schemas.GatewayRequest):
+@limiter.limit("120/minute")
+async def RSSIRequest(request: Request, rssi_data: schemas.GatewayRequest):
     beaconsData = models.getLastBeaconsData(10)
     
-    for item in request.Gateways.values():
+    for item in rssi_data.Gateways.values():
         beacon = item.beacon
         beaconStatus = item.status
         tipo = item.tipo
@@ -201,61 +232,67 @@ async def RSSIRequest(request: schemas.GatewayRequest):
 #---------------------------------------------------------------------------------------------------------------------------
 
 @router.get("/tasks/read/all/", response_model=schemas.TaskResponseSchema)
-async def getTasks():
+@limiter.limit("60/minute")
+async def getTasks(request: Request):
     tasksData = models.getTasksData()
     if not tasksData:
         raise HTTPException(status_code=404, detail="Nenhuma tarefa encontrada")
     return {"Tasks": tasksData}
 
 @router.get("/tasks/read/{user}/", response_model=schemas.TaskResponseSchema)
-async def getUserTasks(user: str):
+@limiter.limit("60/minute")
+async def getUserTasks(request: Request, user: str):
     tasksData = models.getTaskByUser(user)
     if not tasksData:
         raise HTTPException(status_code=404, detail="Nenhuma tarefa encontrada para este usuário")
     return {"Tasks": tasksData}
 
 @router.post("/tasks/create/")
-async def createTask(request: schemas.TaskCreateRequest):
-    if not request.mensagem or not request.destino or not request.tipoDestino or request.beacons is None or not request.tipo or not request.status:
+@limiter.limit("30/minute")
+async def createTask(request: Request, task_data: schemas.TaskCreateRequest):
+    if not task_data.mensagem or not task_data.destino or not task_data.tipoDestino or task_data.beacons is None or not task_data.tipo or not task_data.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
     
-    task = models.createTask(request.mensagem, request.destino, request.tipoDestino, request.beacons, request.tipo, request.status)
+    task = models.createTask(task_data.mensagem, task_data.destino, task_data.tipoDestino, task_data.beacons, task_data.tipo, task_data.status)
     return {"message": "Tarefa criada com sucesso", "status_code": status.HTTP_201_CREATED}
 
 @router.post("/tasks/update/")
-async def updateTask(request: schemas.TaskUpdateRequest):
-    if not request.user or not request.mensagem or not request.destino or not request.tipoDestino or request.beacons is None or not request.tipo or not request.status:
+@limiter.limit("30/minute")
+async def updateTask(request: Request, update_data: schemas.TaskUpdateRequest):
+    if not update_data.user or not update_data.mensagem or not update_data.destino or not update_data.tipoDestino or update_data.beacons is None or not update_data.tipo or not update_data.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
     
-    task = models.updateTask(request.id, request.user, request.mensagem, request.destino, request.tipoDestino, request.beacons, request.tipo, request.status)
-    return {"message": "Tarefa atualizada com sucesso", "task_id": request.id, "status_code": status.HTTP_201_CREATED}
+    task = models.updateTask(update_data.id, update_data.user, update_data.mensagem, update_data.destino, update_data.tipoDestino, update_data.beacons, update_data.tipo, update_data.status)
+    return {"message": "Tarefa atualizada com sucesso", "task_id": update_data.id, "status_code": status.HTTP_201_CREATED}
 
 @router.post("/tasks/status/")
-async def updateTaskStatus(request: schemas.TaskUpdateStatusRequest):
-    if not request.id or not request.status:
+@limiter.limit("60/minute")
+async def updateTaskStatus(request: Request, status_data: schemas.TaskUpdateStatusRequest):
+    if not status_data.id or not status_data.status:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
     
-    task = models.updateTaskStatus(request.id, request.status)
-    return {"message": "Status da tarefa atualizado com sucesso", "task_id": request.id, "status_code": status.HTTP_200_OK}
+    task = models.updateTaskStatus(status_data.id, status_data.status)
+    return {"message": "Status da tarefa atualizado com sucesso", "task_id": status_data.id, "status_code": status.HTTP_200_OK}
 
 @router.post("/tasks/delete/")
-async def deleteTask(request: schemas.TaskDeleteRequest):
-    if not request.id:
+@limiter.limit("20/minute")
+async def deleteTask(request: Request, delete_data: schemas.TaskDeleteRequest):
+    if not delete_data.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Campos obrigatórios ausentes"
         )
     
-    models.deleteTask(request.id)
+    models.deleteTask(delete_data.id)
     
     return {"message": "Tarefa deletada com sucesso", "task_id": request.id, "status_code": status.HTTP_200_OK}
 

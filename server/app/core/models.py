@@ -1,10 +1,21 @@
 import mysql.connector
+import os
+from dotenv import load_dotenv
+from .auth import hash_password, verify_password
+import json
+
+load_dotenv()
 
 DB_CONFIG = {
-    "host": "127.0.0.1",
-    "user": "root",
-    "password": "kaua6170",
-    "database": "fetindb"
+    "host": os.getenv("DATABASE_HOST", "127.0.0.1"),
+    "user": os.getenv("DATABASE_USER", "root"),
+    "password": os.getenv("DATABASE_PASSWORD"),
+    "database": os.getenv("DATABASE_NAME", "fetindb"),
+    "port": int(os.getenv("DATABASE_PORT", "3306")),
+    "autocommit": False,
+    "pool_name": "mypool",
+    "pool_size": 5,
+    "pool_reset_session": True
 }
 
 def connectToDatabase():
@@ -39,13 +50,39 @@ def createUser(username, password, email, role):
         return
     cursor = connection.cursor()
     try:
+        # Hash da senha antes de armazenar
+        hashed_password = hash_password(password)
         query = "INSERT INTO users (username, password, email, role) VALUES (%s, %s, %s, %s)"
-        values = (username, password, email, role)
+        values = (username, hashed_password, email, role)
         cursor.execute(query, values)
         connection.commit()
+        print(f"Usuário {username} criado com sucesso")
     except mysql.connector.Error as e:
         print(f"Error creating user: {e}")
         connection.rollback()
+    finally:
+        cursor.close()
+        connection.close()
+
+def authenticateUser(username, password):
+    """Autentica usuário verificando senha hasheada"""
+    connection = connectToDatabase()
+    if connection is None:
+        return None
+    cursor = connection.cursor(dictionary=True)
+    try:
+        query = "SELECT username, password, email, role FROM users WHERE username = %s"
+        cursor.execute(query, (username,))
+        user = cursor.fetchone()
+        
+        if user and verify_password(password, user["password"]):
+            # Remove a senha do retorno por segurança
+            user.pop("password", None)
+            return user
+        return None
+    except mysql.connector.Error as e:
+        print(f"Error authenticating user: {e}")
+        return None
     finally:
         cursor.close()
         connection.close()
@@ -56,14 +93,16 @@ def updateUser(oldUsername, newUsername, password, email, role):
         return
     cursor = connection.cursor()
     try:
+        hashed_password = hash_password(password)
         query = """
         UPDATE users 
-        SET username= %s, password = %s, email = %s, role = %s
+        SET username = %s, password = %s, email = %s, role = %s
         WHERE username = %s
         """
-        values = (newUsername, password, email, role, oldUsername)
+        values = (newUsername, hashed_password, email, role, oldUsername)
         cursor.execute(query, values)
         connection.commit()
+        print(f"Usuário {oldUsername} atualizado com sucesso")
     except mysql.connector.Error as e:
         print(f"Error updating user: {e}")
         connection.rollback()
@@ -405,24 +444,25 @@ def updateTask(id, user, mensagem, destino, tipoDestino, beacons, tipo, status):
         cursor.execute(query, values)
         connection.commit()
     except mysql.connector.Error as e:
-        print(f"Error updating task status: {e}")
+        print(f"Error updating task: {e}")
         connection.rollback()
     finally:
         cursor.close()
         connection.close()
 
-def updateTaskStatus(id, status):
+def updateTaskStatus(task_id, status):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
         query = "UPDATE tasks SET status = %s WHERE id = %s"
-        values = (status, id)
+        values = (status, task_id)
         cursor.execute(query, values)
         connection.commit()
+        return cursor.rowcount > 0
     except mysql.connector.Error as e:
-        print(f"Error cancelling task: {e}")
+        print(f"Error updating task status: {e}")
         connection.rollback()
     finally:
         cursor.close()
@@ -445,15 +485,16 @@ def updateTaskUser(id, user):
         cursor.close()
         connection.close()
 
-def deleteTask(id):
+def deleteTask(task_id):
     connection = connectToDatabase()
     if connection is None:
         return
     cursor = connection.cursor()
     try:
         query = "DELETE FROM tasks WHERE id = %s"
-        cursor.execute(query, (id,))
+        cursor.execute(query, (task_id,))
         connection.commit()
+        return cursor.rowcount > 0
     except mysql.connector.Error as e:
         print(f"Error deleting task: {e}")
         connection.rollback()
