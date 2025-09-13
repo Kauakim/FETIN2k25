@@ -209,11 +209,6 @@ async def RSSIRequest(request: Request, rssi_data: schemas.GatewayRequest):
         if beacon not in beaconsData:
             models.createBeacon(utc, beacon, tipo, beaconStatus, None, None, None, None, None)
 
-        if rssi < 0 or rssi > 10000:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Valor RSSI inválido"
-            )
         if gateway < 1 or gateway > 3:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -226,6 +221,8 @@ async def RSSIRequest(request: Request, rssi_data: schemas.GatewayRequest):
             models.updateBeaconRssi(beacon, None, rssi, None)
         elif (gateway == 3):
             models.updateBeaconRssi(beacon, None, None, rssi)
+
+    print(f"Beacon {beacon}, Rssi: {rssi}, gateway {gateway}, utc {utc}")
 
     return {"message": "RSSI atualizado com sucesso", "status_code": status.HTTP_200_OK}
 
