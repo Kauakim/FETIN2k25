@@ -1,5 +1,6 @@
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/security_validators.dart';
 import '/index.dart';
 import 'package:flutter/material.dart';
 
@@ -26,12 +27,22 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
     textFieldPasswordTextControllerValidator;
   // Stores action output result for [Backend Call - API (UserLogin)] action in Button widget.
   ApiCallResponse? apiResultxi5;
+  
+  // Validadores de segurança
+  String? validateUsernameField(BuildContext context, String? value) {
+    return SecurityValidators.validateUsername(value);
+  }
+  
+  String? validatePasswordField(BuildContext context, String? value) {
+    return SecurityValidators.validatePassword(value);
+  }
 
   // Login function to be called on Enter press or button click
   Future<String?> performLogin(BuildContext context) async {
     final username = textFieldUsernameTextController?.text.trim() ?? '';
     final password = textFieldPasswordTextController?.text ?? '';
     
+    // Validação básica de entrada
     if (username.isEmpty || password.isEmpty) {
       return 'Por favor, preencha todos os campos';
     }
@@ -43,6 +54,20 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
       return null;
     }
 
+    // Validação de comprimento mínimo para segurança
+    if (username.length < 3) {
+      return 'Username deve ter pelo menos 3 caracteres';
+    }
+    
+    if (password.length < 6) {
+      return 'Senha deve ter pelo menos 6 caracteres';
+    }
+    
+    // Validação de caracteres permitidos (básica para prevenir injeção)
+    if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(username)) {
+      return 'Username contém caracteres inválidos';
+    }
+
     apiResultxi5 = await UserLoginCall.call(
       username: username,
       password: password,
@@ -50,6 +75,7 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
 
     if (apiResultxi5?.statusCode == 200) {
       FFAppState().loggedInUser = username;
+      // Mantém senha durante a sessão para tela de usuários, mas apenas se login foi bem-sucedido
       FFAppState().loggedInUserPassword = password;
       
       // Load user type immediately after successful login
@@ -75,7 +101,7 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
         if (apiError != null && apiError.toString().isNotEmpty) {
           errorMessage = apiError.toString();
         } else {
-          errorMessage = 'Falha de comunicação';
+          errorMessage = 'Credenciais inválidas';
         }
       }
       
@@ -119,6 +145,10 @@ class InicialModel extends FlutterFlowModel<InicialWidget> {
   @override
   void initState(BuildContext context) {
     textFieldPasswordVisibility = false;
+    
+    // Define validadores de segurança
+    textFieldUsernameTextControllerValidator = validateUsernameField;
+    textFieldPasswordTextControllerValidator = validatePasswordField;
   }
 
   @override

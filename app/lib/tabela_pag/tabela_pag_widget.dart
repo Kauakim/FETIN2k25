@@ -27,6 +27,18 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
   @override
   void initState() {
     super.initState();
+    
+    // Verificação básica de autenticação
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!FFAppState().isLoggedIn) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/inicial', 
+          (route) => false
+        );
+        return;
+      }
+    });
+    
     _model = createModel(context, () => TabelaPagModel());
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();

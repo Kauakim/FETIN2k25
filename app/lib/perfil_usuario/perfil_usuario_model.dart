@@ -24,9 +24,12 @@ class PerfilUsuarioModel extends FlutterFlowModel<PerfilUsuarioWidget> {
 
   // Getters for user data
   String get nomeUsuario => _userInfo?['username'] ?? FFAppState().loggedInUser;
-  String get senhaUsuario => FFAppState().loggedInUserPassword.isNotEmpty 
-    ? FFAppState().loggedInUserPassword 
-    : (_actualPassword.isNotEmpty ? _actualPassword : 'ERROR');
+  String get senhaUsuario {
+    final securePassword = FFAppState().getSecurePassword();
+    if (securePassword.isNotEmpty) return securePassword;
+    if (_actualPassword.isNotEmpty) return _actualPassword;
+    return 'ERROR';
+  }
   String get emailUsuario => _userInfo?['email'] ?? '';
   String get roleUsuario => _userInfo?['role'] ?? '';
   bool get isLoading => _isLoading;
@@ -59,7 +62,7 @@ class PerfilUsuarioModel extends FlutterFlowModel<PerfilUsuarioWidget> {
           
           if (currentUser != null) {
             _userInfo = currentUser;
-            _actualPassword = FFAppState().loggedInUserPassword;
+            _actualPassword = FFAppState().getSecurePassword();
             
             // Set user type based on role from API
             String userRole = _userInfo?['role']?.toString().toLowerCase() ?? 'worker';
@@ -94,7 +97,7 @@ class PerfilUsuarioModel extends FlutterFlowModel<PerfilUsuarioWidget> {
       'email': '',
       'role': 'worker',
     };
-    _actualPassword = FFAppState().loggedInUserPassword;
+    _actualPassword = FFAppState().getSecurePassword();
     FFAppState().userType = 'worker';
   }
   
