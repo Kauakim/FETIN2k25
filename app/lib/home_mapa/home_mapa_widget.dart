@@ -25,39 +25,35 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
   final FocusNode _keyboardFocusNode = FocusNode();
   MapItem? selectedItem;
   
-  // Future para controlar quando recarregar os dados
-  Future<List<MapItem>>? _mapItemsFuture;
+  // Stream para controlar atualizações automáticas dos dados
+  StreamController<List<MapItem>> _mapItemsStreamController = StreamController<List<MapItem>>.broadcast();
   Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => HomeMapaModel());
-    _loadMapItems();
     _startAutoRefresh();
   }
   
-  // Função para carregar dados do mapa
-  void _loadMapItems() {
-    _mapItemsFuture = _model.getAllMapItems();
-  }
-  
-  // Auto refresh opcional (apenas se não há cache válido)
+  // Função para iniciar refresh automático a cada 5 segundos
   void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(Duration(minutes: 1), (timer) {
-      if (!_model.isCacheValid) {
-        _refreshMapItems();
-      }
+    _loadMapItems(); // Carrega dados iniciais
+    
+    _refreshTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      _loadMapItems();
     });
   }
   
-  // Função para recarregar dados (quando necessário)
-  void _refreshMapItems() {
-    if (mounted) {
-      setState(() {
-        _model.clearCache();
-        _loadMapItems();
-      });
+  // Função para carregar dados do mapa e enviar para o stream
+  void _loadMapItems() async {
+    try {
+      final mapItems = await _model.getAllMapItems(forceRefresh: true);
+      if (mounted && !_mapItemsStreamController.isClosed) {
+        _mapItemsStreamController.add(mapItems);
+      }
+    } catch (e) {
+      print('Erro ao carregar itens do mapa: $e');
     }
   }
 
@@ -65,6 +61,7 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
   void dispose() {
     _keyboardFocusNode.dispose();
     _refreshTimer?.cancel();
+    _mapItemsStreamController.close();
     _model.dispose();
     super.dispose();
   }
@@ -82,7 +79,7 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
             !(_model.textFieldFocusNode?.hasFocus ?? false)) {
           setState(() {
             _model.confirmFilters();
-            _loadMapItems();
+            _loadMapItems(); // Força atualização com filtros aplicados
           });
         }
       },
@@ -132,9 +129,9 @@ class _HomeMapaWidgetState extends State<HomeMapaWidget> {
                         },
                         child: Stack(
                           children: [
-                            // Map Items (Beacons and Machines) - loaded from API with caching
-                            FutureBuilder<List<MapItem>>(
-                              future: _mapItemsFuture,
+                            // Map Items (Beacons and Machines) - carregados com atualização automática
+                            StreamBuilder<List<MapItem>>(
+                              stream: _mapItemsStreamController.stream,
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return Positioned(

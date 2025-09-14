@@ -8,8 +8,8 @@ class LoginRequest(BaseModel):
     
     @validator('username')
     def username_alphanumeric(cls, v):
-        if not re.match(r'^[a-zA-Z0-9]+$', v):
-            raise ValueError('Username deve conter apenas letras ou números')
+        if not re.match(r'^[a-zA-Z0-9 ]+$', v):
+            raise ValueError('Username deve conter apenas letras, números ou espaços')
         return v
 
 class SigninResponseSchema(BaseModel):
@@ -20,8 +20,8 @@ class SigninResponseSchema(BaseModel):
     
     @validator('username')
     def username_alphanumeric(cls, v):
-        if not re.match(r'^[a-zA-Z0-9]+$', v):
-            raise ValueError('Username deve conter apenas letras ou números')
+        if not re.match(r'^[a-zA-Z0-9 ]+$', v):
+            raise ValueError('Username deve conter apenas letras, números ou espaços')
         return v
     
     @validator('password')
@@ -54,8 +54,8 @@ class UpdateUserSchema(BaseModel):
     
     @validator('oldUsername', 'newUsername')
     def username_alphanumeric(cls, v):
-        if not re.match(r'^[a-zA-Z0-9]+$', v):
-            raise ValueError('Username deve conter apenas letras ou números')
+        if not re.match(r'^[a-zA-Z0-9 ]+$', v):
+            raise ValueError('Username deve conter apenas letras, números ou espaços')
         return v
     
     @validator('password')
@@ -86,8 +86,8 @@ class DeleteUserSchema(BaseModel):
     
     @validator('username')
     def username_alphanumeric(cls, v):
-        if not re.match(r'^[a-zA-Z0-9]+$', v):
-            raise ValueError('Username deve conter apenas letras ou números')
+        if not re.match(r'^[a-zA-Z0-9 ]+$', v):
+            raise ValueError('Username deve conter apenas letras, números ou espaços')
         return v
 
 class TokenResponse(BaseModel):
@@ -134,8 +134,8 @@ class BeaconCreateRequest(BaseModel):
     
     @validator('beacon')
     def validate_beacon_id(cls, v):
-        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
-            raise ValueError('ID do beacon deve conter apenas letras, números, _ ou -')
+        if not re.match(r'^[a-zA-Z0-9_ -]+$', v):
+            raise ValueError('ID do beacon deve conter apenas letras, números, _, - ou espaços')
         return v
     
     @validator('tipo')
@@ -152,8 +152,8 @@ class BeaconUpdateTypeRequest(BaseModel):
     
     @validator('beacon')
     def validate_beacon_id(cls, v):
-        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
-            raise ValueError('ID do beacon deve conter apenas letras, números, _ ou -')
+        if not re.match(r'^[a-zA-Z0-9_ -]+$', v):
+            raise ValueError('ID do beacon deve conter apenas letras, números, _, - ou espaços')
         return v
     
     @validator('tipo')
@@ -170,8 +170,8 @@ class BeaconUpdateStatusRequest(BaseModel):
     
     @validator('beacon')
     def validate_beacon_id(cls, v):
-        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
-            raise ValueError('ID do beacon deve conter apenas letras, números, _ ou -')
+        if not re.match(r'^[a-zA-Z0-9_ -]+$', v):
+            raise ValueError('ID do beacon deve conter apenas letras, números, _, - ou espaços')
         return v
 
 class BeaconDeleteRequest(BaseModel):
@@ -179,8 +179,8 @@ class BeaconDeleteRequest(BaseModel):
     
     @validator('beacon')
     def validate_beacon_id(cls, v):
-        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
-            raise ValueError('ID do beacon deve conter apenas letras, números, _ ou -')
+        if not re.match(r'^[a-zA-Z0-9_ -]+$', v):
+            raise ValueError('ID do beacon deve conter apenas letras, números, _, - ou espaços')
         return v
 
 #---------------------------------------------------------------------------------------------------------------------------
@@ -225,8 +225,8 @@ class TaskUpdateRequest(BaseModel):
     
     @validator('user')
     def validate_user(cls, v):
-        if v and not re.match(r'^[a-zA-Z0-9]+$', v):
-            raise ValueError('Username deve conter apenas letras ou números')
+        if v and not re.match(r'^[a-zA-Z0-9 ]+$', v):
+            raise ValueError('Username deve conter apenas letras, números ou espaços')
         return v
     
     @validator('tipoDestino')

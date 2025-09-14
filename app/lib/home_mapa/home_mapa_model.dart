@@ -12,14 +12,14 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   Offset mapOffset = Offset.zero;
   
   // Map image dimensions (to be used as reference for coordinate system)
-  double mapWidth = 1600.0;  // Doubled from 800.0
-  double mapHeight = 1200.0; // Doubled from 600.0
+  double mapWidth = 1200.0;
+  double mapHeight = 600.0;
   
   // Base pan limits (will be scaled by zoom level)
-  double maxPanLeft = 600.0;   // Increased base limit
-  double maxPanRight = 600.0;  // Increased base limit
-  double maxPanUp = 450.0;     // Increased base limit
-  double maxPanDown = 450.0;   // Increased base limit
+  double maxPanLeft = 600.0;
+  double maxPanRight = 600.0;
+  double maxPanUp = 450.0;
+  double maxPanDown = 450.0;
   
   // Track if we're at pan limits (for visual feedback)
   bool isAtLeftLimit = false;
@@ -30,10 +30,13 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   // API request completer for beacons
   Completer<ApiCallResponse>? apiRequestCompleter;
   
+  // Auto-refresh timer para atualizar posições a cada 5 segundos
+  Timer? _autoRefreshTimer;
+  
   // Cache variables para reduzir requisições
   List<MapItem>? _cachedMapItems;
   DateTime? _lastFetchTime;
-  static const Duration _cacheTimeout = Duration(seconds: 30);
+  static const Duration _cacheTimeout = Duration(seconds: 5);
   bool _isLoading = false;
   
   // Filter variables
@@ -75,64 +78,84 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   bool filterCarregando = false;
   bool filterCarregado = false;
   
-  Future<List<MapItem>> getAllMapItems() async {
-    // Verifica se tem cache válido
-    if (_cachedMapItems != null && 
-        _lastFetchTime != null && 
-        DateTime.now().difference(_lastFetchTime!) < _cacheTimeout) {
-      return getFilteredMapItems(_cachedMapItems!);
-    }
-    
-    // Evita múltiplas chamadas simultâneas
-    if (_isLoading) {
-      while (_isLoading) {
-        await Future.delayed(Duration(milliseconds: 100));
-      }
-      if (_cachedMapItems != null) {
-        return getFilteredMapItems(_cachedMapItems!);
-      }
-    }
-    
-    _isLoading = true;
-    
-    try {
-      List<MapItem> allItems = [];
+  Future<List<MapItem>> getAllMapItems({bool forceRefresh = false}) async {
+    // Se forçar refresh ou não tem cache válido
+    if (forceRefresh || 
+        _cachedMapItems == null || 
+        _lastFetchTime == null || 
+        DateTime.now().difference(_lastFetchTime!) > _cacheTimeout) {
       
-      final apiResponse = await BeaconsGetAllCall.call();
-      if (apiResponse.statusCode == 200) {
-        final beaconsMap = getJsonField(apiResponse.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
-        
-        for (var beaconData in beaconsMap.values) {
-          // Determine category based on beacon type
-          String category = _getCategoryFromBeaconType(beaconData['tipo'] ?? '');
-          
-          allItems.add(MapItem(
-            id: beaconData['id']?.toString() ?? '',
-            name: beaconData['beacon'] ?? '',
-            type: category,
-            category: category,
-            x: (beaconData['x']?.toDouble() ?? 0.0) * 50.0, // Scale coordinates
-            y: (beaconData['y']?.toDouble() ?? 0.0) * 50.0, // Scale coordinates
-            status: beaconData['status'] ?? 'disponivel',
-          ));
+      // Evita múltiplas chamadas simultâneas
+      if (_isLoading) {
+        while (_isLoading) {
+          await Future.delayed(Duration(milliseconds: 100));
+        }
+        if (_cachedMapItems != null) {
+          return getFilteredMapItems(_cachedMapItems!);
         }
       }
       
-      // Salva no cache
-      _cachedMapItems = allItems;
-      _lastFetchTime = DateTime.now();
+      _isLoading = true;
       
-      return getFilteredMapItems(allItems);
-    } catch (e) {
-      print('Error loading beacons: $e');
-      // Se tem cache, usa ele mesmo expirado
-      if (_cachedMapItems != null) {
-        return getFilteredMapItems(_cachedMapItems!);
+      try {
+        List<MapItem> allItems = [];
+        
+        final apiResponse = await BeaconsGetAllCall.call();
+        if (apiResponse.statusCode == 200) {
+          final beaconsMap = getJsonField(apiResponse.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
+          
+          // Agrupa beacons por ID e pega apenas a última ocorrência (UTC mais recente)
+          Map<String, dynamic> latestBeacons = {};
+          
+          for (var beaconData in beaconsMap.values) {
+            String beaconId = beaconData['beacon'] ?? '';
+            int utc = beaconData['utc'] ?? 0;
+            
+            if (beaconId.isNotEmpty) {
+              if (!latestBeacons.containsKey(beaconId) || 
+                  (latestBeacons[beaconId]['utc'] ?? 0) < utc) {
+                latestBeacons[beaconId] = beaconData;
+              }
+            }
+          }
+          
+          // Converte as últimas ocorrências em MapItems
+          for (var beaconData in latestBeacons.values) {
+            // Determine category based on beacon type
+            String category = _getCategoryFromBeaconType(beaconData['tipo'] ?? '');
+            
+            allItems.add(MapItem(
+              id: beaconData['id']?.toString() ?? '',
+              name: beaconData['beacon'] ?? '',
+              type: category,
+              category: category,
+              x: (beaconData['x']?.toDouble() ?? 0.0) * 100.0, // Scale coordinates
+              y: (beaconData['y']?.toDouble() ?? 0.0) * 100.0, // Scale coordinates
+              status: beaconData['status'] ?? 'disponivel',
+              utc: beaconData['utc'] ?? 0,
+            ));
+          }
+        }
+        
+        // Salva no cache
+        _cachedMapItems = allItems;
+        _lastFetchTime = DateTime.now();
+        
+        return getFilteredMapItems(allItems);
+      } catch (e) {
+        print('Error loading beacons: $e');
+        // Se tem cache, usa ele mesmo expirado
+        if (_cachedMapItems != null) {
+          return getFilteredMapItems(_cachedMapItems!);
+        }
+        return getFilteredMapItems([]);
+      } finally {
+        _isLoading = false;
       }
-      return getFilteredMapItems([]);
-    } finally {
-      _isLoading = false;
     }
+    
+    // Retorna cache válido
+    return getFilteredMapItems(_cachedMapItems!);
   }
   
   // Determine category from beacon type
@@ -156,12 +179,30 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
   void initState(BuildContext context) {
     textController ??= TextEditingController();
     textFieldFocusNode ??= FocusNode();
+    startAutoRefresh(); // Inicia o refresh automático
   }
 
   @override
   void dispose() {
     textController?.dispose();
     textFieldFocusNode?.dispose();
+    stopAutoRefresh(); // Para o refresh automático
+  }
+  
+  // Função para iniciar o refresh automático a cada 5 segundos
+  void startAutoRefresh() {
+    stopAutoRefresh(); // Para qualquer timer existente
+    _autoRefreshTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      // Força uma atualização pegando sempre os dados mais recentes
+      // Não precisa notificar o widget aqui, o widget tem seu próprio timer
+      clearCache(); // Limpa cache para forçar nova busca
+    });
+  }
+  
+  // Função para parar o refresh automático
+  void stopAutoRefresh() {
+    _autoRefreshTimer?.cancel();
+    _autoRefreshTimer = null;
   }
   
   // Get scaled coordinates based on zoom and offset
@@ -442,7 +483,7 @@ class MapItem {
   final double x;
   final double y;
   final String status;
-  final String? linha; // Para máquinas
+  final int utc;
   
   MapItem({
     required this.id,
@@ -452,6 +493,6 @@ class MapItem {
     required this.x,
     required this.y,
     required this.status,
-    this.linha,
+    required this.utc,
   });
 }
