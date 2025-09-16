@@ -282,7 +282,7 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.w600,
                                                         fontSize: 16.0,
-                                                        color: Colors.black,
+                                                        color: FlutterFlowTheme.of(context).primaryText,
                                                       ),
                                                       overflow: TextOverflow.ellipsis,
                                                     ),

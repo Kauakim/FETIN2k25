@@ -168,7 +168,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                             },
                             icon: Icon(
                               _model.showCreateForm ? Icons.close : Icons.add,
-                              color: Colors.white,
+                              color: FlutterFlowTheme.of(context).primaryText,
                               size: 24.0,
                             ),
                             style: IconButton.styleFrom(
@@ -1514,7 +1514,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: FlutterFlowTheme.of(context).primary,
-                      foregroundColor: Colors.white,
+                      foregroundColor: FlutterFlowTheme.of(context).primaryText,
                       padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
