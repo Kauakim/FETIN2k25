@@ -9,11 +9,13 @@ A aplicação utiliza as seguintes dependências Python:
 - **FastAPI**
 - **Uvicorn**
 - **Pydantic**
+- **slowapi**
+- **python-dotenv**
 
 Para instalar as dependências necessárias, execute:
 
 ```bash
-pip install fastapi uvicorn pydantic
+pip install fastapi uvicorn pydantic slowapi python-dotenv
 ```
 
 ## Como Executar
@@ -28,7 +30,29 @@ cd server
 python run.py
 ```
 
-A API estará disponível em: `http://127.0.0.1:5501`
+## Recursos de Segurança
+
+A API implementa várias medidas de segurança:
+
+### Rate Limiting
+- **Login:** 10 requisições por minuto
+- **Cadastro:** 10 requisições por minuto
+- **Operações gerais:** 60 requisições por minuto
+- **Criação de dados:** 30 requisições por minuto
+- **Deleção:** 20 requisições por minuto
+- **RSSI updates:** 120 requisições por minuto
+
+### Validação de Senhas
+- Mínimo de 8 caracteres
+- Pelo menos 1 letra maiúscula
+- Pelo menos 1 letra minúscula
+- Pelo menos 1 número
+- Pelo menos 1 caractere especial
+
+### Validação de Dados
+- Validação rigorosa de entrada usando Pydantic
+- Sanitização de usernames e IDs de beacons
+- Validação de tipos e status permitidos
 
 ## Documentação da API
 
@@ -52,11 +76,22 @@ Cria um novo usuário.
 ```json
 {
   "username": "novo_user",
-  "password": "senha123",
+  "password": "Senha123!",
   "email": "user@email.com",
   "role": "worker"
 }
 ```
+
+**Observações:**
+- A senha deve ter pelo menos 8 caracteres
+- Deve conter ao menos: 1 maiúscula, 1 minúscula, 1 número e 1 caractere especial
+- Roles disponíveis: `admin`, `manager`, `worker`
+
+#### GET `/users/`
+Retorna todos os usuários (sem senhas).
+
+#### GET `/users/get/all/`
+Retorna lista de todos os usuários com informações básicas.
 
 #### POST `/users/update/`
 Atualiza informações de um usuário existente.
@@ -66,11 +101,13 @@ Atualiza informações de um usuário existente.
 {
   "oldUsername": "joao1234",
   "newUsername": "joao_pedro",
-  "password": "nova_senha",
+  "password": "NovaSenha123!",
   "email": "joao@email.com",
   "role": "manager"
 }
 ```
+
+**Observação:** O campo `password` é opcional. Se não fornecido, mantém a senha atual.
 
 #### POST `/users/delete/`
 Remove um usuário do sistema.
@@ -111,6 +148,11 @@ Cria um novo beacon no sistema.
   "y": 20.3
 }
 ```
+
+**Observações:**
+- Tipos disponíveis: `funcionario`, `maquina`, `ferramenta`, `material`
+- RSSI valores devem estar entre -100 e 0
+- Campos `rssi1`, `rssi2`, `rssi3`, `x` e `y` são opcionais
 
 #### POST `/beacons/update/tipo/`
 Atualiza o tipo de um beacon.
@@ -191,13 +233,17 @@ Cria uma nova tarefa.
 {
   "mensagem": "Mover material para estação 2",
   "destino": "estacao_2",
-  "tipoDestino": "local",
+  "tipoDestino": "maquina",
   "beacons": ["beacon_001", "beacon_002"],
-  "dependencias": ["task_001"],
   "tipo": "movimentacao",
   "status": "pendente"
 }
 ```
+
+**Observações:**
+- `tipoDestino` pode ser: `maquina`, `pessoa`, `coordenada`
+- `beacons` deve conter pelo menos 1 item
+- Campo `dependencias` foi removido da implementação atual
 
 #### POST `/tasks/update/`
 Atualiza uma tarefa existente.
@@ -209,13 +255,14 @@ Atualiza uma tarefa existente.
   "user": "joao1234",
   "mensagem": "Mover material para estação 3",
   "destino": "estacao_3",
-  "tipoDestino": "local",
+  "tipoDestino": "maquina",
   "beacons": ["beacon_001"],
-  "dependencias": [],
   "tipo": "movimentacao",
   "status": "em_andamento"
 }
 ```
+
+**Observação:** Campo `user` é opcional.
 
 #### POST `/tasks/status/`
 Atualiza apenas o status de uma tarefa.
@@ -225,18 +272,6 @@ Atualiza apenas o status de uma tarefa.
 {
   "id": 1,
   "status": "concluida"
-}
-```
-
-#### POST `/tasks/cancel/`
-Cancela uma tarefa.
-
-**Body:**
-```json
-{
-  "id": 1,
-  "status": "cancelada",
-  "cancelamento": "Material não disponível"
 }
 ```
 
@@ -252,7 +287,7 @@ Remove uma tarefa do sistema.
 
 ### Rotas de Informações (INFO)
 
-#### GET `/info`
+#### GET `/info/`
 Retorna todas as informações das máquinas do sistema.
 
 #### POST `/info/create/`
@@ -261,7 +296,7 @@ Cria um novo registro de informações de máquina.
 **Body:**
 ```json
 {
-  "maquina": "Impressora 3D",
+  "maquina": "Impressora_3D",
   "tasksConcluidas": 5,
   "tasksCanceladas": 1,
   "horasTrabalhadas": 8.5,
@@ -275,7 +310,7 @@ Atualiza informações de uma máquina.
 **Body:**
 ```json
 {
-  "maquina": "Impressora 3D",
+  "maquina": "Impressora_3D",
   "tasksConcluidas": 10,
   "tasksCanceladas": 2,
   "horasTrabalhadas": 12.0,
@@ -289,7 +324,7 @@ Remove informações de uma máquina.
 **Body:**
 ```json
 {
-  "maquina": "Impressora 3D",
+  "maquina": "Impressora_3D",
   "data": "2024-01-15"
 }
 ```

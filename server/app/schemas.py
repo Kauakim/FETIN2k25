@@ -40,7 +40,7 @@ class SigninResponseSchema(BaseModel):
     
     @validator('role')
     def validate_role(cls, v):
-        allowed_roles = ['admin', 'manager', 'user']
+        allowed_roles = ['admin', 'manager', 'worker']
         if v.lower() not in allowed_roles:
             raise ValueError(f'Role deve ser um dos seguintes: {", ".join(allowed_roles)}')
         return v.lower()
@@ -76,7 +76,7 @@ class UpdateUserSchema(BaseModel):
     
     @validator('role')
     def validate_role(cls, v):
-        allowed_roles = ['admin', 'manager', 'user']
+        allowed_roles = ['admin', 'manager', 'worker']
         if v.lower() not in allowed_roles:
             raise ValueError(f'Role deve ser um dos seguintes: {", ".join(allowed_roles)}')
         return v.lower()
