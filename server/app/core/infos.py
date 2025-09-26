@@ -53,7 +53,7 @@ def calculateBeaconsStatus():
 
         # Beacon carregado ainda na estação de carga
         if status == "carregando":
-            beacon_history = [b for beacon, b in allBeacons.items() if b["beacon"] == beacon["beacon"]]
+            beacon_history = [b for beacon_id, b in allBeacons.items() if b["beacon"] == beacon["beacon"]]
             if beacon_history and all(b["status"] == "carregando" for b in beacon_history):
                 status = "carregado"
         
@@ -72,7 +72,7 @@ def calculateBeaconsStatus():
     
         # Lote processado e alteração das informações
         if status == "processando":
-            beacon_history = [b for beacon, b in allBeacons.items() if b["beacon"] == beacon["beacon"]]
+            beacon_history = [b for beacon_id, b in allBeacons.items() if b["beacon"] == beacon["beacon"]]
             if beacon_history and all(b["status"] == "processando" for b in beacon_history):
                 status = "processado"
                 

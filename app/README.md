@@ -102,11 +102,6 @@ O app consome os seguintes endpoints da API SIMTER:
 flutter build apk --release
 ```
 
-**iOS:**
-```bash
-flutter build ios --release
-```
-
 **Windows:**
 ```bash
 flutter build windows --release

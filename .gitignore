@@ -4,3 +4,6 @@
 # Ignore hardware files
 3d/
 pcb/
+
+# Ignore compiled flutter windows app
+SIMTER.lnk

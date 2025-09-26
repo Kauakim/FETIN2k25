@@ -2,12 +2,12 @@ from . import models
 
 # Posições fixas dos gateways
 gateways = [
-    {"x": 0, "y": 0},
-    {"x": 5, "y": 0},
-    {"x": 2.5, "y": 4}
+    {"x": 0.0, "y": 0.0},
+    {"x": 6.0, "y": 0.0},
+    {"x": 3.0, "y": 8.0}
 ]
 
-def RSSIToDistance(RSSI, txPower=-59, n=2.0):
+def RSSIToDistance(RSSI, txPower=-59.0, n=2.0):
     # txPower = RSSI a 1 metro
     # n = Fator de perda de caminho
     return 10 ** ((txPower - RSSI) / (10 * n))
@@ -42,7 +42,7 @@ def discoverXY(gateways, distancia1, distancia2, distancia3):
 def calculateBeaconsPositions(gateways):
     beacons = models.getLastBeaconsData(10)
     
-    for beacon in beacons:
+    for beacon_id, beacon in beacons.items():
         rssi1 = beacon["rssi1"]
         rssi2 = beacon["rssi2"]
         rssi3 = beacon["rssi3"]
@@ -56,6 +56,6 @@ def calculateBeaconsPositions(gateways):
 
         x,y = discoverXY(gateways, distancia1, distancia2, distancia3)
         
-        print(f"Beacon : {beacon["beacon"]} ({x}, {y})")
+        print(f"Beacon : {beacon['beacon']} ({x}, {y})")
 
         models.updateBeaconPosition(beacon["utc"], beacon["beacon"], x, y)

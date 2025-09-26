@@ -2,7 +2,7 @@ import 'api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
 
-const String apiBaseUrl = 'http://192.168.0.109:5501';
+const String apiBaseUrl = 'http://192.168.0.150:5501';
 
 class UserLoginCall {
   static Future<ApiCallResponse> call({

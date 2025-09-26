@@ -153,9 +153,8 @@ def getLastBeaconsData(time):
     try:
         query = """
         SELECT * FROM beacons 
-        WHERE utc >= UNIX_TIMESTAMP(NOW() - INTERVAL %s SECOND)
         """
-        cursor.execute(query, (time,))
+        cursor.execute(query,)
         beacons = cursor.fetchall()
         return {beacon["id"]: beacon for beacon in beacons}
     except mysql.connector.Error as e:
@@ -227,13 +226,13 @@ def updateBeaconRssi(beacon, rssi1, rssi2, rssi3):
     cursor = connection.cursor()
     try:
         if rssi2 is None and rssi3 is None: 
-            query = "UPDATE beacons SET rssi1 = %s WHERE beacon = %s AND utc >= UNIX_TIMESTAMP(NOW() - INTERVAL 10 SECOND)"
+            query = "UPDATE beacons SET rssi1 = %s WHERE beacon = %s"
             values = (rssi1, beacon)
         elif rssi1 is None and rssi3 is None: 
-            query = "UPDATE beacons SET rssi2 = %s WHERE beacon = %s AND utc >= UNIX_TIMESTAMP(NOW() - INTERVAL 10 SECOND)"
+            query = "UPDATE beacons SET rssi2 = %s WHERE beacon = %s"
             values = (rssi2, beacon)
         elif rssi1 is None and rssi2 is None: 
-            query = "UPDATE beacons SET rssi3 = %s WHERE beacon = %s AND utc >= UNIX_TIMESTAMP(NOW() - INTERVAL 10 SECOND)"
+            query = "UPDATE beacons SET rssi3 = %s WHERE beacon = %s"
             values = (rssi3, beacon)
 
         cursor.execute(query, values)
