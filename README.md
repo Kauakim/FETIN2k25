@@ -7,7 +7,7 @@ O projeto, que atua como um sistema inteligente de rastreamento e gestão indoor
 
 </br>
 <div align="center">
-  <img src="./FotoEquipe.png" alt="Foto do Grupo" width="600">
+  <img src="./Foto do Grupo.jpg" alt="Foto do Grupo" width="600">
 </div>
 </br>
 
@@ -54,9 +54,14 @@ Para saber mais sobre o projeto, acesse o Notion dessa nova versão do SIMTER, d
 
 - **João Pedro**  
   [LinkedIn](https://www.linkedin.com/in/joaopedrofreitasm/) | [GitHub](https://github.com/freitasj1)  
+- **Mateus Shida**
+  [LinkedIn](linkedin.com/in/mateus-shida-a3901b310) | [GitHub](https://github.com/mapteus)  
+- **Enzo Morais**
+  [LinkedIn](linkedin.com/in/enzo-morais-056057313/) | [GitHub](https://github.com/EnzoMrs)  
+- **Samuel de Jesus Pereira**
+  [LinkedIn](linkedin.com/in/samuel-jesus-pereira-03a86333a/)  
 
-ANOTAR OS OUTROS MEMBROS E REDES
-
+- ****
 ### Segunda versão:
 
 - **João Pedro**  
@@ -64,7 +69,7 @@ ANOTAR OS OUTROS MEMBROS E REDES
 - **Kauã Ribeiro**  
   [LinkedIn](https://www.linkedin.com/in/kaua-ribeiro17/) | [GitHub](https://github.com/Kauakim)  
 - **Giovanna Vono**  
-  [LinkedIn](https://www.linkedin.com/in/giovanna-vono-fonseca-36b05a307/) | [GitHub](https://github.com/)  
+  [LinkedIn](https://www.linkedin.com/in/giovanna-vono-fonseca-36b05a307/) | [GitHub](https://github.com/GiovannaVono)  
 - **Núbia Rezende**  
 
 ---
