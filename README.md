@@ -61,7 +61,6 @@ Para saber mais sobre o projeto, acesse o Notion dessa nova versão do SIMTER, d
 - **Samuel de Jesus Pereira**
   [LinkedIn](linkedin.com/in/samuel-jesus-pereira-03a86333a/)  
 
-- ****
 ### Segunda versão:
 
 - **João Pedro**  
