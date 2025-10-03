@@ -146,15 +146,14 @@ def getAllBeaconsData():
         connection.close()
 
 def getLastBeaconsData(time):
+    # Removed time parameter, fetches all beacons instead
     connection = connectToDatabase()
     if connection is None:
         return {}
     cursor = connection.cursor(dictionary=True)
     try:
-        query = """
-        SELECT * FROM beacons 
-        """
-        cursor.execute(query,)
+        query = "SELECT * FROM beacons"
+        cursor.execute(query)
         beacons = cursor.fetchall()
         return {beacon["id"]: beacon for beacon in beacons}
     except mysql.connector.Error as e:

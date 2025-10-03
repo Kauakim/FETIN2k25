@@ -141,11 +141,28 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
   }
 
   List<dynamic> getFilteredBeacons(List<dynamic> beacons) {
+    String searchText = (textController?.text ?? '').toLowerCase();
+    
+    // Apply text search filter first
+    List<dynamic> textFilteredBeacons = beacons;
+    if (searchText.isNotEmpty) {
+      textFilteredBeacons = beacons.where((beacon) {
+        String beaconName = (beacon['beacon'] ?? '').toString().toLowerCase();
+        String tipo = (beacon['tipo'] ?? '').toString().toLowerCase();
+        String status = (beacon['status'] ?? '').toString().toLowerCase();
+        
+        return beaconName.contains(searchText) || 
+               tipo.contains(searchText) || 
+               status.contains(searchText);
+      }).toList();
+    }
+    
+    // If no active filters, return text-filtered results
     if (!hasActiveFilters()) {
-      return beacons;
+      return textFilteredBeacons;
     }
 
-    return beacons.where((beacon) {
+    return textFilteredBeacons.where((beacon) {
       // Machine filters
       if (filterEstacaoCarga || filterImpressora3d || filterImpressora || 
           filterMaquinaCorrosao || filterEstacaoSolda || filterCNC || 
@@ -217,5 +234,53 @@ class TabelaPagModel extends FlutterFlowModel<TabelaPagWidget> {
   // Function to apply filters and close filter menu
   void confirmFilters() {
     showFilterMenu = false;
+  }
+
+  // Function to get latest beacon occurrence for each unique beacon name
+  List<dynamic> getLatestBeaconsOnly(List<dynamic> allBeacons) {
+    Map<String, dynamic> latestBeacons = {};
+    
+    for (var beacon in allBeacons) {
+      String beaconName = (beacon['beacon'] ?? '').toString();
+      int beaconId = beacon['id'] ?? 0;
+      
+      if (beaconName.isNotEmpty) {
+        // Verifica se as coordenadas são válidas (não nulas e >= 0)
+        var xCoord = beacon['x'];
+        var yCoord = beacon['y'];
+        bool hasValidCoordinates = xCoord != null && 
+                                  yCoord != null && 
+                                  (xCoord is num && xCoord >= 0) && 
+                                  (yCoord is num && yCoord >= 0);
+        
+        // Se já existe este beacon
+        if (latestBeacons.containsKey(beaconName)) {
+          var existingBeacon = latestBeacons[beaconName];
+          var existingXCoord = existingBeacon['x'];
+          var existingYCoord = existingBeacon['y'];
+          bool existingHasValidCoordinates = existingXCoord != null && 
+                                           existingYCoord != null && 
+                                           (existingXCoord is num && existingXCoord >= 0) && 
+                                           (existingYCoord is num && existingYCoord >= 0);
+          
+          // Prioridade: beacon com coordenadas válidas > ID maior
+          if (hasValidCoordinates && !existingHasValidCoordinates) {
+            // Novo beacon tem coordenadas válidas, mas o existente não - substitui
+            latestBeacons[beaconName] = beacon;
+          } else if (hasValidCoordinates == existingHasValidCoordinates) {
+            // Ambos têm ou não têm coordenadas válidas - pega o de ID maior
+            if (beaconId > (existingBeacon['id'] ?? 0)) {
+              latestBeacons[beaconName] = beacon;
+            }
+          }
+          // Se o existente tem coordenadas válidas e o novo não, mantém o existente
+        } else {
+          // Primeiro beacon com este nome
+          latestBeacons[beaconName] = beacon;
+        }
+      }
+    }
+    
+    return latestBeacons.values.toList();
   }
 }

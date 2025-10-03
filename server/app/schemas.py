@@ -104,8 +104,8 @@ class BeaconModel(BaseModel):
     beacon: str
     tipo: str
     status: str
-    x: float
-    y: float
+    x: Optional[float] = None
+    y: Optional[float] = None
 
 class BeaconsResponseSchema(BaseModel):
     Beacons: Dict[int, BeaconModel]

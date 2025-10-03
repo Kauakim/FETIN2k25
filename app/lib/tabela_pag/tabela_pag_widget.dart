@@ -128,7 +128,12 @@ class _TabelaPagWidgetState extends State<TabelaPagWidget> {
                                 
                                 final beaconsMap = getJsonField(snapshot.data!.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
                                 final allBeacons = beaconsMap.values.toList();
-                                final filteredBeacons = _model.getFilteredBeacons(allBeacons);
+                                // Primeiro filtra para pegar apenas a última aparição de cada beacon
+                                final latestBeacons = _model.getLatestBeaconsOnly(allBeacons);
+                                final filteredBeacons = _model.getFilteredBeacons(latestBeacons);
+
+                                print(latestBeacons);
+                                print(filteredBeacons);
 
                                 return ListView.builder(
                                   padding: EdgeInsets.zero,

@@ -130,7 +130,6 @@ async def getAllUsers(request: Request):
 #---------------------------------------------------------------------------------------------------------------------------
 
 @router.get("/beacons/get/all/", response_model=schemas.BeaconsResponseSchema)
-@limiter.limit("60/minute")
 async def getAllBeacons(request: Request):
     beaconsData = models.getAllBeaconsData()
     if not beaconsData:
@@ -138,7 +137,6 @@ async def getAllBeacons(request: Request):
     return {"Beacons": beaconsData}
 
 @router.get("/beacons/get/{seconds}/", response_model=schemas.BeaconsResponseSchema)
-@limiter.limit("60/minute")
 async def getLastBeacons(request: Request, seconds: int):
     beaconsData = models.getLastBeaconsData(seconds)
     if not beaconsData:
@@ -207,8 +205,7 @@ async def RSSIRequest(request: Request, rssi_data: schemas.GatewayRequest):
         utc = item.utc
 
         if beacon not in beaconsData:
-            #models.createBeacon(utc, beacon, tipo, beaconStatus, None, None, None, None, None)
-            pass
+            models.createBeacon(utc, beacon, tipo, beaconStatus, None, None, None, None, None)
 
         if gateway < 1 or gateway > 3:
             raise HTTPException(
@@ -216,14 +213,12 @@ async def RSSIRequest(request: Request, rssi_data: schemas.GatewayRequest):
                 detail="Valor de gateway inválido"
             )
         
-        '''
         if (gateway == 1):
             models.updateBeaconRssi(beacon, rssi, None, None)
         elif (gateway == 2):
             models.updateBeaconRssi(beacon, None, rssi, None)
         elif (gateway == 3):
             models.updateBeaconRssi(beacon, None, None, rssi)
-        '''
     
     print(f"Beacon {beacon}, Rssi: {rssi}, gateway {gateway}, utc {utc}")
 

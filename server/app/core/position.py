@@ -2,12 +2,12 @@ from . import models
 
 # Posições fixas dos gateways
 gateways = [
-    {"x": 0.0, "y": 0.0},
+    {"x": 1.0, "y": 0.0},
     {"x": 6.0, "y": 0.0},
-    {"x": 3.0, "y": 8.0}
+    {"x": 3.0, "y": 12.0}
 ]
 
-def RSSIToDistance(RSSI, txPower=-59.0, n=2.0):
+def RSSIToDistance(RSSI, txPower=-89.0, n=1):
     # txPower = RSSI a 1 metro
     # n = Fator de perda de caminho
     return 10 ** ((txPower - RSSI) / (10 * n))

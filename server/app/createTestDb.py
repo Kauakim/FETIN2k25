@@ -11,23 +11,28 @@ if input().upper() == "S":
 
 print("Deseja criar os beacons base? (S/N)")
 if input().upper() == "S":    
-    current_timestamp = int(time.time())
-    models.createBeacon(current_timestamp, "Multimetro", "ferramenta", "disponivel", None, None, None, 10.5, 5.25)
-    models.createBeacon(current_timestamp, "Kit de reparos", "ferramenta", "descarregado", None, None, None, 11.5, 5.25)
+    print("Deseja criar os materiais e ferramentas base? (S/N)")
+    if input().upper() == "S":   
+        current_timestamp = int(time.time())
+        models.createBeacon(current_timestamp, "Multimetro", "ferramenta", "disponivel", None, None, None, 10.5, 5.25)
+        models.createBeacon(current_timestamp, "Kit de reparos", "ferramenta", "descarregado", None, None, None, 11.5, 5.25)
 
-    models.createBeacon(current_timestamp, "Chapa de material", "material", "em uso", None, None, None, 2, 1)
-    models.createBeacon(current_timestamp, "Estanho", "material", "disponivel", None, None, None, 4, 1)
-    models.createBeacon(current_timestamp, "Componentes", "material", "disponivel", None, None, None, 6, 1)
-    models.createBeacon(current_timestamp, "Filamento", "material", "disponivel", None, None, None, 10, 1)
-    
-    models.createBeacon(current_timestamp, "Estacao de carga", "maquina", "disponivel", None, None, None, 11, 5.25)
-    models.createBeacon(current_timestamp, "Impressora 3D", "maquina", "disponivel", None, None, None, 6.75, 4.5)
-    models.createBeacon(current_timestamp, "Impressora", "maquina", "disponivel", None, None, None, 8.2, 2)
-    models.createBeacon(current_timestamp, "Maquina de corrosao", "maquina", "disponivel", None, None, None, 0.6, 2)
-    models.createBeacon(current_timestamp, "Estacao de solda", "maquina", "disponivel", None, None, None, 3, 2)
-    models.createBeacon(current_timestamp, "CNC", "maquina", "disponivel", None, None, None, 3, 4.5)
-    models.createBeacon(current_timestamp, "Maquina de corte", "maquina", "disponivel", None, None, None, 5.6, 2)
-    models.createBeacon(current_timestamp, "Bancada de reparos e carga", "maquina", "disponivel", None, None, None, 11.3, 0.75)
+        models.createBeacon(current_timestamp, "Chapa de material", "material", "em uso", None, None, None, 2, 1)
+        models.createBeacon(current_timestamp, "Estanho", "material", "disponivel", None, None, None, 4, 1)
+        models.createBeacon(current_timestamp, "Componentes", "material", "disponivel", None, None, None, 6, 1)
+        models.createBeacon(current_timestamp, "Filamento", "material", "disponivel", None, None, None, 10, 1)
+
+    print("Deseja criar as maquinas base? (S/N)")
+    if input().upper() == "S":   
+        current_timestamp = int(time.time())    
+        models.createBeacon(current_timestamp, "Estacao de carga", "maquina", "disponivel", None, None, None, 11, 5.25)
+        models.createBeacon(current_timestamp, "Impressora 3D", "maquina", "disponivel", None, None, None, 6.75, 4.5)
+        models.createBeacon(current_timestamp, "Impressora", "maquina", "disponivel", None, None, None, 8.2, 2)
+        models.createBeacon(current_timestamp, "Maquina de corrosao", "maquina", "disponivel", None, None, None, 0.6, 2)
+        models.createBeacon(current_timestamp, "Estacao de solda", "maquina", "disponivel", None, None, None, 3, 2)
+        models.createBeacon(current_timestamp, "CNC", "maquina", "disponivel", None, None, None, 3, 4.5)
+        models.createBeacon(current_timestamp, "Maquina de corte", "maquina", "disponivel", None, None, None, 5.6, 2)
+        models.createBeacon(current_timestamp, "Bancada de reparos e carga", "maquina", "disponivel", None, None, None, 11.3, 0.75)
 
 print("Deseja criar as tasks base? (S/N)")
 if input().upper() == "S":

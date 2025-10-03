@@ -104,17 +104,26 @@ class HomeMapaModel extends FlutterFlowModel<HomeMapaWidget> {
         if (apiResponse.statusCode == 200) {
           final beaconsMap = getJsonField(apiResponse.jsonBody, r'''$.Beacons''') as Map<String, dynamic>? ?? {};
           
-          // Agrupa beacons por ID e pega apenas a última ocorrência (UTC mais recente)
+          // Agrupa beacons por nome e pega apenas a última ocorrência (ID mais alto) com coordenadas válidas
           Map<String, dynamic> latestBeacons = {};
           
           for (var beaconData in beaconsMap.values) {
-            String beaconId = beaconData['beacon'] ?? '';
-            int utc = beaconData['utc'] ?? 0;
+            String beaconName = beaconData['beacon'] ?? '';
+            int beaconId = beaconData['id'] ?? 0;
             
-            if (beaconId.isNotEmpty) {
-              if (!latestBeacons.containsKey(beaconId) || 
-                  (latestBeacons[beaconId]['utc'] ?? 0) < utc) {
-                latestBeacons[beaconId] = beaconData;
+            // Verifica se as coordenadas são válidas (não nulas e >= 0)
+            var xCoord = beaconData['x'];
+            var yCoord = beaconData['y'];
+            bool hasValidCoordinates = xCoord != null && 
+                                      yCoord != null && 
+                                      (xCoord is num && xCoord >= 0) && 
+                                      (yCoord is num && yCoord >= 0);
+            
+            if (beaconName.isNotEmpty && hasValidCoordinates) {
+              // Verifica se já existe esse beacon ou se o ID atual é maior (mais recente)
+              if (!latestBeacons.containsKey(beaconName) || 
+                  (latestBeacons[beaconName]['id'] ?? 0) < beaconId) {
+                latestBeacons[beaconName] = beaconData;
               }
             }
           }
