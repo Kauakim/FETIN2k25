@@ -1,10 +1,3 @@
-Tabela de beacons: ID, Utc, Beacon, Tipo, Status, Linha, RSSI1, RSSI2, RSSI3, X, Y
-Tabela de users: Nome, Senha, Email e Role
-Tabela de notificações: ID, User, Linha, Mensagem, Beacons list, Dependências, Status, Tipo 
-Tabela de informações: Linha, Maquina, Numero de produtos, Horas trabalhadas, Falhas
-
-
-
 GATEWAYS
 - Gateways recebem a informação de todos os beacons que biparam no momento UTC X (Falado pelos próprios beacons), com as chaves Beacon, Status e Tipo, ao longo de X segundos, montam um json, na qual o número de linhas é o numero de beacons, informando, em cada linha, as chaves enviadas pelos beacons, o gateway responsável por enviá-las e o valor de RSSI.
 
@@ -19,9 +12,6 @@ SERVER RELATORIES AND NOTIFICATIONS GENERATION (Resolver depois)
 - Para cada beacon encontrado, descobre quando foi a última vez que este foi encontrado em uso
 - Para cada beacon encontrado em uso nos últimos X minutos, checa o status deste
 - Caso o status seja carregando, procura a primeira vez na sequência em que este estava carregando. Caso o tempo desde o primeiro status de carregando até o último UTC tenham se passado X minutos (Tempo necessário para dar uma carga completa no beacon), troca o status deste para carregado 
-DEFINIÇÃO DA LINHA DE PRODUÇÃO E SUAS ESTATISTICAS
-DEFINIÇÃO E ALTERAÇÃO DOS STATUS
-CRIAÇÃO DAS NOTIFICAÇÕES E ALTERAÇÃO DOS NOMES DOS BEACONS
 
 SERVER NOTIFICATIONS CONTROL
 - A cada X segundos, checa no banco de dados por notificações existentes que não tenham funcionários atribuídos a todas suas etapas

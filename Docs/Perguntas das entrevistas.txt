@@ -19,8 +19,6 @@ Rastreio de pessoas (Gateway + Smartphone)
 - Evitar colisões entre ferramentas, maquinas e pessoas
 - Rastreio de pacientes em hospitais, impedindo que pessoas saiam ou entrem em locais não permitidos
 
-
-
 -----------------------------------------------------------------------------------------------------------------------------------
 
 Perguntas para os gestores das linhas de produção
