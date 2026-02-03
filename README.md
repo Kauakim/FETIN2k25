@@ -2,7 +2,7 @@
 ![Licença Não Comercial](https://img.shields.io/badge/Licen%C3%A7a-N%C3%A3o--Comercial-red)
 ![Em Desenvolvimento](https://img.shields.io/badge/Status-Em%20Desenvolvimento-orange)
 
-O **SIMTER - Sistema de Monitoramento de Equipamentos em Tempo Real** foi um projeto inicialmente desenvolvido para a **ProjETE 2k24**, uma feira de projetos tecnológicos realizada anualmente pela **ETE FMC**, a primeira escola técnica da América Latina e aprimorado completamente, em uma nova versão, para a **FETIN 2k25**, a feira de projetos do **INATEL**.  
+O **SIMTER - Sistema de Monitoramento em Tempo Real** foi um projeto inicialmente desenvolvido para a **ProjETE 2k24**, uma feira de projetos tecnológicos realizada anualmente pela **ETE FMC**, a primeira escola técnica da América Latina e aprimorado completamente, em uma nova versão, para a **FETIN 2k25**, a feira de projetos do **INATEL**.  
 O projeto, que atua como um sistema inteligente de rastreamento e gestão indoor de pessoas, ferramentas e ativos, alinhado aos pilares da Indústria 4.0, tem como foco proporcionar visibilidade em tempo real das operações industriais, otimizando o uso de recursos, automatizando tarefas e aumentando a eficiência operacional por meio da utilização de beacons e gateways BLE (Bluetooth Low Energy).  
 
 </br>
