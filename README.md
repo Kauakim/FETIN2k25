@@ -54,11 +54,11 @@ Para saber mais sobre o projeto, acesse o Notion dessa nova versão do SIMTER, d
 
 - **João Pedro**  
   [LinkedIn](https://www.linkedin.com/in/joaopedrofreitasm/) | [GitHub](https://github.com/freitasj1)  
-- **Mateus Shida**
+- **Mateus Shida**  
   [LinkedIn](linkedin.com/in/mateus-shida-a3901b310) | [GitHub](https://github.com/mapteus)  
-- **Enzo Morais**
+- **Enzo Morais**  
   [LinkedIn](linkedin.com/in/enzo-morais-056057313/) | [GitHub](https://github.com/EnzoMrs)  
-- **Samuel de Jesus Pereira**
+- **Samuel de Jesus Pereira**  
   [LinkedIn](linkedin.com/in/samuel-jesus-pereira-03a86333a/)  
 
 ### Segunda versão:
